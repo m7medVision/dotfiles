@@ -1,5 +1,3 @@
-#!/usr/bin/env sh
-
 # clone or update the repositoy m7medVision/dotfiles
 clone_or_update() {
   if [ -d "$HOME/dotfiles" ]; then
@@ -13,6 +11,7 @@ clone_or_update() {
   fi
 }
 
-function main() {
+main() {
   clone_or_update
 }
+main
