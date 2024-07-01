@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # clone or update the repositoy m7medVision/dotfiles
-function clone_or_update() {
+clone_or_update() {
   if [ -d "$HOME/dotfiles" ]; then
     echo "Updating dotfiles..."
     cd $HOME/dotfiles
