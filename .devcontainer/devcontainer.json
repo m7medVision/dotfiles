@@ -13,5 +13,6 @@
 			"installZsh": true,
 			"upgradePackages": true
 		}
-	}
+	},
+  "onCreateCommand": "curl https://raw.githubusercontent.com/m7medVision/dotfiles/main/install.sh | sh"
 }
