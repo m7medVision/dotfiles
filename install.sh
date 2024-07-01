@@ -8,7 +8,9 @@ function clone_or_update() {
     git pull
   else
     echo "Cloning dotfiles..."
-    git clone
+    git clone https://github.com/m7medVision/dotfiles.git $HOME/dotfiles
+    stow -d $HOME/dotfiles -t $HOME -S bash
+  fi
 }
 
 function main() {
