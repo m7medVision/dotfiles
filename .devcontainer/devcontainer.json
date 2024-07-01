@@ -1,0 +1,15 @@
+{
+	"name": "Ubuntu",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {},
+		"ghcr.io/jungaretti/features/ripgrep:1": {},
+		"ghcr.io/georgofenbeck/features/lazygit-linuxbinary:1": {},
+		"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {},
+		"ghcr.io/devcontainers/features/sshd:1": {},
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": true,
+			"upgradePackages": true
+		}
+	}
+}
