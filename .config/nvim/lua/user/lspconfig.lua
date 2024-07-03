@@ -41,7 +41,6 @@ return { -- LSP Configuration & Plugins
     capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
     local servers = {
       -- clangd = {},
-      -- gopls = {},
       -- pyright = {},
       -- rust_analyzer = {},
       -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
