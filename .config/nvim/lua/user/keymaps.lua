@@ -21,21 +21,20 @@ keymap("n", "#", "#zz", opts)
 keymap("n", "g*", "g*zz", opts)
 keymap("n", "g#", "g#zz", opts)
 
+keymap("n", "<A-j>", ":m .+1<CR>==", opts)
+keymap("n", "<A-k>", ":m .-2<CR>==", opts)
+keymap("n", "<A-Down>", ":m .+1<CR>==", opts)
+keymap("n", "<A-Up>", ":m .-2<CR>==", opts)
 
-keymap('n', '<A-j>', ':m .+1<CR>==', opts)
-keymap('n', '<A-k>', ':m .-2<CR>==', opts)
-keymap('n', '<A-Down>', ':m .+1<CR>==', opts)
-keymap('n', '<A-Up>', ':m .-2<CR>==', opts)
+keymap("x", "<A-j>", ":m '>+1<CR>gv=gv", opts)
+keymap("x", "<A-k>", ":m '<-2<CR>gv=gv", opts)
+keymap("x", "<A-Down>", ":m '>+1<CR>gv=gv", opts)
+keymap("x", "<A-Up>", ":m '<-2<CR>gv=gv", opts)
 
-keymap('x', '<A-j>', ":m '>+1<CR>gv=gv", opts)
-keymap('x', '<A-k>', ":m '<-2<CR>gv=gv", opts)
-keymap('x', '<A-Down>', ":m '>+1<CR>gv=gv", opts)
-keymap('x', '<A-Up>', ":m '<-2<CR>gv=gv", opts)
-
-keymap('i', '<A-j>', '<Esc>:m .+1<CR>==gi', opts)
-keymap('i', '<A-k>', '<Esc>:m .-2<CR>==gi', opts)
-keymap('i', '<A-Down>', '<Esc>:m .+1<CR>==gi', opts)
-keymap('i', '<A-Up>', '<Esc>:m .-2<CR>==gi', opts)
+keymap("i", "<A-j>", "<Esc>:m .+1<CR>==gi", opts)
+keymap("i", "<A-k>", "<Esc>:m .-2<CR>==gi", opts)
+keymap("i", "<A-Down>", "<Esc>:m .+1<CR>==gi", opts)
+keymap("i", "<A-Up>", "<Esc>:m .-2<CR>==gi", opts)
 
 -- Stay in indent mode
 keymap("v", "<", "<gv", opts)
@@ -59,13 +58,25 @@ keymap({ "n", "x" }, "j", "gj", opts)
 keymap({ "n", "x" }, "k", "gk", opts)
 keymap("n", "<leader>w", ":lua vim.wo.wrap = not vim.wo.wrap<CR>", opts)
 
-vim.api.nvim_set_keymap('t', '<C-;>', '<C-\\><C-n>', opts)
+vim.api.nvim_set_keymap("t", "<C-;>", "<C-\\><C-n>", opts)
 keymap("n", "<leader>q", ":q<CR>", opts)
-vim.api.nvim_set_keymap('n', '<C-s>', ':update<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-s>", ":update<CR>", { noremap = true, silent = true })
 keymap("n", "<leader>WQ", ":wq<CR>", opts)
 keymap("n", "<leader>gg", "<cmd>Neogit<CR>", opts)
 vim.keymap.set("n", "_", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
-
 -- Ignore highlight search
 keymap("n", "<leader>\\", ":nohlsearch<CR>", opts)
+
+vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
+vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
+
+vim.keymap.set("n", "]t", function()
+  require("todo-comments").jump_next()
+end, { desc = "Next todo comment" })
+
+vim.keymap.set("n", "[t", function()
+  require("todo-comments").jump_prev()
+end, { desc = "Previous todo comment" })
+
+vim.keymap.set("n", "<leader>t", ":TodoTelescope<CR>", { desc = "Search for todo comments" })
