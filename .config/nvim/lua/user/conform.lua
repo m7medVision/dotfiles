@@ -4,13 +4,15 @@ return {
     require("conform").setup {
       formatters_by_ft = {
         lua = { "stylua" },
-        -- Conform will run multiple formatters sequentially
         python = { "black" },
-        -- Use a sub-list to run only the first available formatter
-        javascript = { { "prettierd", "prettier" } },
-        typescript = { { "prettierd", "prettier" } },
-        typescriptreact = { { "prettierd", "prettier" } },
+        typescript = { "prettier" },
+        javascript = { "prettier" },
+        json = { "prettier" },
+        yaml = { "prettier" },
         markdown = { "prettier" },
+        html = { "prettier" },
+        css = { "prettier" },
+        go = { "goimports", "gofmt" },
       },
     }
     vim.keymap.set("n", "<leader>f", "<cmd>lua require('conform').format()<cr>")
