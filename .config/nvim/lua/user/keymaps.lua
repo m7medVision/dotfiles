@@ -80,3 +80,7 @@ vim.keymap.set("n", "[t", function()
 end, { desc = "Previous todo comment" })
 
 vim.keymap.set("n", "<leader>t", ":TodoTelescope<CR>", { desc = "Search for todo comments" })
+
+-- Navigate between buffers
+keymap("n", "<leader>n", "<cmd>:bn<CR>", opts)
+keymap("n", "<leader>p", "<cmd>:bp<CR>", opts)
