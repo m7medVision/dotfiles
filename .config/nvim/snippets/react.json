@@ -1,0 +1,22 @@
+{
+  "reactLayoutComponent": {
+    "prefix": "rlc",
+    "body": [
+      "export default function ${1:ComponentName}({children}: {children: React.ReactNode}) {",
+      "  return (",
+      "    <div>",
+      "      {children}",
+      "    </div>",
+      "  )",
+      "}"
+    ],
+    "description": "Create React Layout Component"
+  },
+  "useClient": {
+    "prefix": "uc",
+    "body": [
+      "use client"
+    ],
+    "description": "use client"
+  }
+}
