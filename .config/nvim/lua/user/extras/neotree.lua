@@ -4,7 +4,7 @@ return {
     return not vim.g.vscode
   end,
 	keys = { -- only load the plugin on these keymaps_help
-		{ "<leader>`", "<CMD>Neotree toggle<CR>" },
+		{ "<leader>`", "<CMD>Neotree toggle reveal right<CR>" },
 		{ "<leader>nb", "<CMD>Neotree reveal float<CR>" },
 	},
 	branch = "v3.x",
