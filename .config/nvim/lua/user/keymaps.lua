@@ -66,7 +66,7 @@ keymap("n", "<leader>gg", "<cmd>Neogit<CR>", opts)
 vim.keymap.set("n", "_", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 -- Ignore highlight search
-keymap("n", "<leader>\\", ":nohlsearch<CR>", opts)
+keymap("n", "<leader>\\", ":noh[lsearch]<CR>", opts)
 
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
