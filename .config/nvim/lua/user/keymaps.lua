@@ -84,3 +84,4 @@ vim.keymap.set("n", "<leader>t", ":TodoTelescope<CR>", { desc = "Search for todo
 -- Navigate between buffers
 keymap("n", "<leader>n", "<cmd>:bn<CR>", opts)
 keymap("n", "<leader>p", "<cmd>:bp<CR>", opts)
+keymap("n", "<leader>!", "<cmd>:ObsidianSearch ", opts)

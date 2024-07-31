@@ -28,7 +28,7 @@ return {
             ["<C-j>"] = require("telescope.actions").move_selection_next,
             ["<C-k>"] = require("telescope.actions").move_selection_previous,
             ["<C-d>"] = require("telescope.actions").delete_buffer,
-          }
+          },
         },
       },
       extensions = {
@@ -51,7 +51,9 @@ return {
     vim.keymap.set("n", "<leader>sd", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
     vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
     vim.keymap.set("n", "<leader>s.", builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-    vim.keymap.set("n", "<leader>T", function() builtin.colorscheme{ enable_preview = true } end, { desc = "[T]hemes" })
+    vim.keymap.set("n", "<leader>T", function()
+      builtin.colorscheme { enable_preview = true }
+    end, { desc = "[T]hemes" })
     vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "Find existing buffers" })
     vim.keymap.set("n", "<leader>/", function()
       builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown {
@@ -69,5 +71,8 @@ return {
     vim.keymap.set("n", "<leader>sn", function()
       builtin.find_files { cwd = vim.fn.stdpath "config" }
     end, { desc = "[S]earch [N]eovim files" })
+    vim.keymap.set("n", "<leader>st", function()
+      builtin.find_files { cwd = "~/Documents/notes/notes/" }
+    end, { desc = "[S]earch [T]ext files" })
   end,
 }

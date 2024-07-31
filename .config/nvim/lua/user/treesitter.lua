@@ -13,6 +13,10 @@ function M.config()
     autotag = { enable = true },
     highlight = { enable = true },
     indent = { enable = true },
+    ensure_installed = {
+      "markdown",
+      "markdown_inline"
+    },
   }
 end
 
