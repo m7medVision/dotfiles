@@ -66,7 +66,7 @@ keymap("n", "<leader>gg", "<cmd>Neogit<CR>", opts)
 vim.keymap.set("n", "_", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 -- Ignore highlight search
-keymap("n", "<leader>\\", ":noh[lsearch]<CR>", opts)
+keymap("n", "<leader>\\", ":noh<CR>", opts)
 
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
@@ -85,3 +85,7 @@ vim.keymap.set("n", "<leader>t", ":TodoTelescope<CR>", { desc = "Search for todo
 keymap("n", "<leader>n", "<cmd>:bn<CR>", opts)
 keymap("n", "<leader>p", "<cmd>:bp<CR>", opts)
 keymap("n", "<leader>!", "<cmd>:ObsidianSearch ", opts)
+
+keymap("n", "<leader>on", "<cmd>:ObsidianNew<CR>", opts)
+keymap("n", "<leader>os", "<cmd>:ObsidianQuickSwitch<CR>", opts)
+keymap("n", "<leader>oo", "<cmd>:ObsidianOpen<CR>", opts)
