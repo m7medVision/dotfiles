@@ -658,7 +658,12 @@ require('lazy').setup({
   require 'mohammed.plugins.neo-tree',
   require 'mohammed.plugins.copilot',
   require 'mohammed.plugins.oil',
-  -- require 'kickstart.plugins.blink_cmp',
+  require 'mohammed.plugins.tailwind',
+  require 'mohammed.plugins.vimtmux',
+  require 'mohammed.plugins.harpoon',
+  require 'mohammed.plugins.vimvisualmulti',
+  require 'mohammed.plugins.lazygit',
+  require 'mohammed.plugins.autoclose',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
