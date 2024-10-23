@@ -19,3 +19,10 @@ alias ls='lsd'
 
 # Created by `pipx` on 2024-10-20 21:22:45
 export PATH="$PATH:/home/mohammed/.local/bin"
+
+# bun completions
+[ -s "/home/mohammed/.bun/_bun" ] && source "/home/mohammed/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
