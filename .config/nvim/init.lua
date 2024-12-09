@@ -49,12 +49,44 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Function to move the current line or selected lines up or down
+local function move_line(up)
+  local start_line, end_line = vim.fn.line 'v', vim.fn.line '.'
+  if start_line > end_line then
+    start_line, end_line = end_line, start_line
+  end
+
+  if up then
+    vim.cmd(start_line .. ',' .. end_line .. 'move ' .. (start_line - 2))
+  else
+    vim.cmd(start_line .. ',' .. end_line .. 'move ' .. (end_line + 1))
+  end
+end
+
+-- Bind Alt + Up to move line up
+vim.api.nvim_set_keymap('n', '<A-Up>', '<cmd>lua move_line(true)<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<A-Up>', ':lua move_line(true)<CR>', { noremap = true, silent = true })
+
+-- Bind Alt + Down to move line down
+vim.api.nvim_set_keymap('n', '<A-Down>', '<cmd>lua move_line(false)<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<A-Down>', ':lua move_line(false)<CR>', { noremap = true, silent = true })
+
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.highlight.on_yank()
   end,
+})
+
+-- Enable update on insert mode for ts-autotag
+vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+  underline = true,
+  virtual_text = {
+    spacing = 5,
+    severity_limit = 'Warning',
+  },
+  update_in_insert = true,
 })
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -425,6 +457,8 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         html = { 'prettier' },
+        typescript = { 'prettier' },
+        typescriptreact = { 'prettier' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
