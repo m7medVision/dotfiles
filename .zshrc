@@ -3,7 +3,7 @@ ZSH_THEME="gozilla"
 source <(fzf --zsh)
 source $ZSH/oh-my-zsh.sh
 
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git zsh-syntax-highlighting)
 
 
 export NVM_DIR="$HOME/.nvm"
@@ -26,3 +26,6 @@ export PATH="$PATH:/home/mohammed/.local/bin"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+. "$HOME/.cargo/env"
+source $HOME/.cargo/env
