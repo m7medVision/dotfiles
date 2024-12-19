@@ -16,6 +16,7 @@ export PATH=$PATH:$GOPATH/bin
 
 # alies for ls
 alias ls='lsd'
+alias vi="nvim"
 
 # Created by `pipx` on 2024-10-20 21:22:45
 export PATH="$PATH:/home/mohammed/.local/bin"
