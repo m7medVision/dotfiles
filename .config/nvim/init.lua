@@ -1,6 +1,5 @@
--- Commaon setup for nvim
+-- Common setup for nvim
 require 'mohammed.common'
-
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
@@ -32,6 +31,7 @@ require('lazy').setup({
   require 'mohammed.plugins.autopairs',
   require 'mohammed.plugins.neo-tree',
   require 'mohammed.plugins.copilot',
+  require 'mohammed.plugins.chatgpt',
   require 'mohammed.plugins.oil',
   require 'mohammed.plugins.tailwind',
   require 'mohammed.plugins.vimtmux',
