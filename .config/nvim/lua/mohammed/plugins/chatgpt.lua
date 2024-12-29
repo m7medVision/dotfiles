@@ -20,7 +20,6 @@ local prompts = {
 return {
   {
     'CopilotC-Nvim/CopilotChat.nvim',
-    -- version = "v3.3.0", -- Use a specific version to prevent breaking changes
     dependencies = {
       { 'nvim-telescope/telescope.nvim' }, -- Use telescope for help actions
       { 'nvim-lua/plenary.nvim' },
@@ -124,11 +123,10 @@ return {
         desc = 'CopilotChat - Prompt actions',
       },
       -- Code related commands
-      { '<leader>ae', '<cmd>CopilotChatExplain<cr>', desc = 'CopilotChat - Explain code' },
-      { '<leader>at', '<cmd>CopilotChatTests<cr>', desc = 'CopilotChat - Generate tests' },
-      { '<leader>ar', '<cmd>CopilotChatReview<cr>', desc = 'CopilotChat - Review code' },
-      { '<leader>aR', '<cmd>CopilotChatRefactor<cr>', desc = 'CopilotChat - Refactor code' },
-      { '<leader>an', '<cmd>CopilotChatBetterNamings<cr>', desc = 'CopilotChat - Better Naming' },
+      { '<leader>ae', '<cmd>CopilotChatExplain<cr>', desc = 'CopilotChat - Explain code', mode = { 'x', 'n' } },
+      { '<leader>at', '<cmd>CopilotChatTests<cr>', desc = 'CopilotChat - Generate tests', mode = { 'x', 'n' } },
+      { '<leader>ar', '<cmd>CopilotChatReview<cr>', desc = 'CopilotChat - Review code', mode = { 'x', 'n' } },
+      { '<leader>aR', '<cmd>CopilotChatRefactor<cr>', desc = 'CopilotChat - Refactor code', mode = { 'x', 'n' } },
       -- Chat with Copilot in visual mode
       {
         '<leader>av',
@@ -158,17 +156,6 @@ return {
         '<leader>am',
         '<cmd>CopilotChatCommit<cr>',
         desc = 'CopilotChat - Generate commit message for all changes',
-      },
-      -- Quick chat with Copilot
-      {
-        '<leader>aq',
-        function()
-          local input = vim.fn.input 'Quick Chat: '
-          if input ~= '' then
-            vim.cmd('CopilotChatBuffer ' .. input)
-          end
-        end,
-        desc = 'CopilotChat - Quick chat',
       },
       -- Debug
       { '<leader>ad', '<cmd>CopilotChatDebugInfo<cr>', desc = 'CopilotChat - Debug Info' },
