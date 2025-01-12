@@ -2,7 +2,6 @@ return {
   'saghen/blink.cmp',
   dependencies = {
     'rafamadriz/friendly-snippets',
-    'giuxtaposition/blink-cmp-copilot',
   },
 
   version = '*',
@@ -29,15 +28,7 @@ return {
       },
     },
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'buffer', 'copilot' },
-      providers = {
-        copilot = {
-          name = 'copilot',
-          module = 'blink-cmp-copilot',
-          score_offset = 100,
-          async = true,
-        },
-      },
+      default = { 'lsp', 'path', 'snippets', 'buffer' },
     },
   },
   opts_extend = { 'sources.default' },
