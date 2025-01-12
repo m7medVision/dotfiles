@@ -1,29 +1,44 @@
 return {
   'saghen/blink.cmp',
-  lazy = false, -- lazy loading handled internally
-  -- optional: provides snippets for the snippet source
-  dependencies = 'L3MON4D3/LuaSnip',
-
-  -- use a release tag to download pre-built binaries
-  version = 'v0.*',
-  -- OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
-  -- build = 'cargo build --release',
-
-  opts = {
-    highlight = {
-      -- sets the fallback highlight groups to nvim-cmp's highlight groups
-      -- useful for when your theme doesn't support blink.cmp
-      -- will be removed in a future release, assuming themes add support
-      use_nvim_cmp_as_default = true,
-    },
-    -- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-    -- adjusts spacing to ensure icons are aligned
-    nerd_font_variant = 'normal',
-
-    -- experimental auto-brackets support
-    -- accept = { auto_brackets = { enabled = true } }
-
-    -- experimental signature help support
-    -- trigger = { signature_help = { enabled = true } }
+  dependencies = {
+    'rafamadriz/friendly-snippets',
+    'giuxtaposition/blink-cmp-copilot',
   },
+
+  version = '*',
+
+  ---@module 'blink.cmp'
+  ---@type blink.cmp.Config
+  opts = {
+    keymap = {
+      preset = nil,
+      ['<C-y>'] = { 'select_and_accept' },
+      ['<C-space>'] = { 'show', 'accept' },
+      ['<C-c>'] = { 'hide' },
+      ['<up>'] = { 'select_prev' },
+      ['<down>'] = { 'select_next' },
+    },
+
+    appearance = {
+      use_nvim_cmp_as_default = true,
+      nerd_font_variant = 'mono',
+    },
+    completion = {
+      ghost_text = {
+        enabled = true,
+      },
+    },
+    sources = {
+      default = { 'lsp', 'path', 'snippets', 'buffer', 'copilot' },
+      providers = {
+        copilot = {
+          name = 'copilot',
+          module = 'blink-cmp-copilot',
+          score_offset = 100,
+          async = true,
+        },
+      },
+    },
+  },
+  opts_extend = { 'sources.default' },
 }
