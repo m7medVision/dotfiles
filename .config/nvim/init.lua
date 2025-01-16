@@ -33,7 +33,6 @@ require('lazy').setup({
   require 'mohammed.plugins.chatgpt',
   require 'mohammed.plugins.oil',
   require 'mohammed.plugins.tailwind',
-  require 'mohammed.plugins.vimtmux',
   require 'mohammed.plugins.harpoon',
   require 'mohammed.plugins.vimvisualmulti',
   require 'mohammed.plugins.lazygit',
