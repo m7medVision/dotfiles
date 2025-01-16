@@ -57,7 +57,7 @@ bindsym $mod+Return exec ghostty
 bindsym $mod+Shift+q kill
 
 # start firefox using mod f2
-bindsym $mod+F2 exec firefox
+bindsym $mod+F2 exec brave
 
 # lock screen using mod 
 bindsym $mod+F3 exec --no-startup-id ~/.config/scripts/lock
