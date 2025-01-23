@@ -24,6 +24,16 @@ return { -- Fuzzy Finder (files, lsp, etc)
   },
   config = function()
     require('telescope').setup {
+      defaults = {
+        mappings = {
+          i = {
+            ['<C-d>'] = require('telescope.actions').delete_buffer,
+          },
+          n = {
+            ['<C-d>'] = require('telescope.actions').delete_buffer,
+          },
+        },
+      },
       extensions = {
         ['ui-select'] = {
           require('telescope.themes').get_dropdown(),
