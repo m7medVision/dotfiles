@@ -31,10 +31,12 @@ return { -- Autoformat
       }
     end,
     formatters_by_ft = {
+      php = { 'pint' },
       lua = { 'stylua' },
-      html = { 'prettier' },
-      typescript = { 'prettier' },
-      typescriptreact = { 'prettier' },
+      html = { 'prettierd', 'prettier', stop_after_first = true },
+      blade = { 'blade-formatter' },
+      typescript = { 'prettierd', 'prettier', stop_after_first = true },
+      typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
       -- Conform can also run multiple formatters sequentially
       -- python = { "isort", "black" },
       --
