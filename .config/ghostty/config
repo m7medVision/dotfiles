@@ -2,6 +2,7 @@
 window-decoration = false
 mouse-hide-while-typing = true
 confirm-close-surface = false
+gtk-wide-tabs = false
 
 # Keybindings for panes/splits 
 keybind = ctrl+s>\=new_split:right
@@ -13,6 +14,15 @@ keybind = ctrl+s>h=goto_split:left
 keybind = ctrl+s>j=goto_split:bottom
 keybind = ctrl+s>k=goto_split:top
 keybind = ctrl+s>l=goto_split:right
+
+# zooming in/out of splits
+keybind = ctrl+s>z=toggle_split_zoom
+
+# Pane resizing
+keybind = alt+left=resize_split:left,10
+keybind = alt+right=resize_split:right,10
+keybind = alt+up=resize_split:up,10
+keybind = alt+down=resize_split:down,10
 
 # Tab management
 keybind = ctrl+shift+left=previous_tab
