@@ -53,3 +53,21 @@ vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagn
 })
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+-- highlight yank
+local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+  group = highlight_group,
+  pattern = '*',
+})
+
+-- fix comment on new line
+vim.api.nvim_create_autocmd({ 'bufenter', 'bufwinenter' }, {
+  pattern = { '*' },
+  callback = function()
+    vim.cmd [[set formatoptions-=c formatoptions-=r formatoptions-=o]]
+  end,
+})
