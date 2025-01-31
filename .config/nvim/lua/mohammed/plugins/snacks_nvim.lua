@@ -8,6 +8,9 @@ return {
     dashboard = { enabled = true },
     indent = { enabled = true },
     input = { enabled = true },
+    animate = {
+      enabled = true,
+    },
     notifier = {
       enabled = true,
       timeout = 3000,
@@ -145,6 +148,12 @@ return {
       end,
       desc = 'Prev Reference',
       mode = { 'n', 't' },
+    },
+    {
+      '<leader>e',
+      function()
+        Snacks.explorer()
+      end,
     },
     {
       '<leader>N',
