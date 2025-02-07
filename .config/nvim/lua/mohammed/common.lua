@@ -71,3 +71,4 @@ vim.api.nvim_create_autocmd({ 'bufenter', 'bufwinenter' }, {
     vim.cmd [[set formatoptions-=c formatoptions-=r formatoptions-=o]]
   end,
 })
+vim.opt.completeopt = { 'menu', 'menuone', 'noselect', 'preview', 'noinsert' }

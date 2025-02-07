@@ -28,6 +28,8 @@ return {
         },
         filetypes = {
           ['.'] = false,
+          markdown = true,
+          tex = true,
         },
         copilot_node_command = 'node',
       }
