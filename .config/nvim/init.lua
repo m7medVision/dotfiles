@@ -17,7 +17,6 @@ require('lazy').setup({
   require 'mohammed.plugins.gitsigns',
   require 'mohammed.plugins.wakatime',
   require 'mohammed.plugins.markdown',
-  require 'mohammed.plugins.csharp',
   require 'mohammed.plugins.lazydev',
   require 'mohammed.plugins.luvit_meta',
   require 'mohammed.plugins.lsp',
@@ -28,14 +27,14 @@ require('lazy').setup({
   require 'mohammed.plugins.blink_cmp',
   require 'mohammed.plugins.treesitter',
   require 'mohammed.plugins.indent_line',
-  require 'mohammed.plugins.copilot',
-  require 'mohammed.plugins.chatgpt',
   require 'mohammed.plugins.oil',
   require 'mohammed.plugins.tailwind',
   require 'mohammed.plugins.harpoon',
   require 'mohammed.plugins.vimvisualmulti',
   require 'mohammed.plugins.autotag',
   require 'mohammed.plugins.snacks_nvim',
+  require 'mohammed.plugins.copilot',
+  require 'mohammed.plugins.chatgpt',
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {

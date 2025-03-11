@@ -76,9 +76,6 @@ blinking = "On"
 semantic_escape_chars = ",│`|:\"' ()[]{}<>"
 save_to_clipboard = true
 
-# Shell
-[terminal.shell]
-program = "/bin/bash"
 
 # Key bindings
 [[keyboard.bindings]]
@@ -86,10 +83,10 @@ key = "V"
 mods = "Control"
 action = "Paste"
 
-[[keyboard.bindings]]
-key = "C"
-mods = "Control"
-action = "Copy"
+# [[keyboard.bindings]]
+# key = "C"
+# mods = "Control"
+# action = "Copy"
 
 [[keyboard.bindings]]
 key = "Insert"
