@@ -1,3 +1,4 @@
+vim.opt.laststatus = 3
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 

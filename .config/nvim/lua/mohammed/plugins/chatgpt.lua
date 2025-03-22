@@ -1,218 +1,56 @@
-local prompts = {
-  -- Code related prompts
-  Explain = 'Please explain how the following code works.',
-  Review = 'Please review the following code and provide suggestions for improvement.',
-  Tests = 'Please explain how the selected code works, then generate unit tests for it.',
-  Refactor = 'Please refactor the following code to improve its clarity and readability.',
-  FixCode = 'Please fix the following code to make it work as intended.',
-  FixError = 'Please explain the error in the following text and provide a solution.',
-  BetterNamings = 'Please provide better names for the following variables and functions.',
-  Documentation = 'Please provide documentation for the following code.',
-  SwaggerApiDocs = 'Please provide documentation for the following API using Swagger.',
-  SwaggerJsDocs = 'Please write JSDoc for the following API using Swagger.',
-  -- Text related prompts
-  Summarize = 'Please summarize the following text.',
-  Spelling = 'Please correct any grammar and spelling errors in the following text.',
-  Wording = 'Please improve the grammar and wording of the following text.',
-  Concise = 'Please rewrite the following text to make it more concise.',
-}
-
 return {
-  {
-    'folke/which-key.nvim',
-    optional = true,
-    opts = {
-      spec = {
-        { '<leader>a', group = 'ai' },
-      },
-    },
+  dir = '~/avante.nvim/',
+  event = 'VeryLazy',
+  version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
+  opts = {
+    -- add any opts here
+    file_selector = {
+      --- @alias FileSelectorProvider "native" | "fzf" | "mini.pick" | "snacks" | "telescope" | string | fun(params: avante.file_selector.IParams|nil): nil
+      provider = 'fzf',
+      -- Options override for custom providers
+      provider_opts = {},
+    }, -- for example
+    provider = 'copilot',
   },
-  {
-    'CopilotC-Nvim/CopilotChat.nvim',
-    -- version = "v3.3.0", -- Use a specific version to prevent breaking changes
-    dependencies = {
-      { 'nvim-telescope/telescope.nvim' }, -- Use telescope for help actions
-      { 'nvim-lua/plenary.nvim' },
-    },
-    opts = {
-      question_header = '## User ',
-      answer_header = '## Copilot ',
-      error_header = '## Error ',
-      prompts = prompts,
-      auto_follow_cursor = false, -- Don't follow the cursor after getting response
-      mappings = {
-        -- Use tab for completion
-        complete = {
-          detail = 'Use @<Tab> or /<Tab> for options.',
-          insert = '<Tab>',
-        },
-        -- Close the chat
-        close = {
-          normal = 'q',
-          insert = '<C-c>',
-        },
-        -- Reset the chat buffer
-        reset = {
-          normal = '<C-x>',
-          insert = '<C-x>',
-        },
-        -- Submit the prompt to Copilot
-        submit_prompt = {
-          normal = '<CR>',
-          insert = '<C-CR>',
-        },
-        -- Accept the diff
-        accept_diff = {
-          normal = '<C-y>',
-          insert = '<C-y>',
-        },
-        -- Show help
-        show_help = {
-          normal = 'g?',
-        },
-      },
-    },
-    config = function(_, opts)
-      local chat = require 'CopilotChat'
-      chat.setup(opts)
-
-      local select = require 'CopilotChat.select'
-      vim.api.nvim_create_user_command('CopilotChatVisual', function(args)
-        chat.ask(args.args, { selection = select.visual })
-      end, { nargs = '*', range = true })
-
-      -- Inline chat with Copilot
-      vim.api.nvim_create_user_command('CopilotChatInline', function(args)
-        chat.ask(args.args, {
-          selection = select.visual,
-          window = {
-            layout = 'float',
-            relative = 'cursor',
-            width = 1,
-            height = 0.4,
-            row = 1,
+  -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+  build = 'make',
+  -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+  dependencies = {
+    'nvim-treesitter/nvim-treesitter',
+    'stevearc/dressing.nvim',
+    'nvim-lua/plenary.nvim',
+    'MunifTanjim/nui.nvim',
+    --- The below dependencies are optional,
+    'echasnovski/mini.pick', -- for file_selector provider mini.pick
+    'nvim-telescope/telescope.nvim', -- for file_selector provider telescope
+    -- 'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
+    'ibhagwan/fzf-lua', -- for file_selector provider fzf
+    'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
+    'zbirenbaum/copilot.lua', -- for providers='copilot'
+    {
+      -- support for image pasting
+      'HakonHarnes/img-clip.nvim',
+      event = 'VeryLazy',
+      opts = {
+        -- recommended settings
+        default = {
+          embed_image_as_base64 = false,
+          prompt_for_file_name = false,
+          drag_and_drop = {
+            insert_mode = true,
           },
-        })
-      end, { nargs = '*', range = true })
-
-      -- Restore CopilotChatBuffer
-      vim.api.nvim_create_user_command('CopilotChatBuffer', function(args)
-        chat.ask(args.args, { selection = select.buffer })
-      end, { nargs = '*', range = true })
-
-      -- Custom buffer for CopilotChat
-      vim.api.nvim_create_autocmd('BufEnter', {
-        pattern = 'copilot-*',
-        callback = function()
-          vim.opt_local.relativenumber = true
-          vim.opt_local.number = true
-
-          -- Get current filetype and set it to markdown if the current filetype is copilot-chat
-          local ft = vim.bo.filetype
-          if ft == 'copilot-chat' then
-            vim.bo.filetype = 'markdown'
-          end
-        end,
-      })
-    end,
-    event = 'VeryLazy',
-    keys = {
-      -- Show prompts actions with telescope
-      {
-        '<leader>ap',
-        function()
-          local actions = require 'CopilotChat.actions'
-          require('CopilotChat.integrations.telescope').pick(actions.prompt_actions())
-        end,
-        desc = 'CopilotChat - Prompt actions',
+          -- required for Windows users
+          use_absolute_path = true,
+        },
       },
-      {
-        '<leader>ap',
-        ":lua require('CopilotChat.integrations.telescope').pick(require('CopilotChat.actions').prompt_actions({selection = require('CopilotChat.select').visual}))<CR>",
-        mode = 'x',
-        desc = 'CopilotChat - Prompt actions',
+    },
+    {
+      -- Make sure to set this up properly if you have lazy=true
+      'MeanderingProgrammer/render-markdown.nvim',
+      opts = {
+        file_types = { 'markdown', 'Avante' },
       },
-      -- Code related commands
-      { '<leader>ae', '<cmd>CopilotChatExplain<cr>', desc = 'CopilotChat - Explain code' },
-      { '<leader>at', '<cmd>CopilotChatTests<cr>', desc = 'CopilotChat - Generate tests' },
-      { '<leader>ar', '<cmd>CopilotChatReview<cr>', desc = 'CopilotChat - Review code' },
-      { '<leader>aR', '<cmd>CopilotChatRefactor<cr>', desc = 'CopilotChat - Refactor code' },
-      { '<leader>an', '<cmd>CopilotChatBetterNamings<cr>', desc = 'CopilotChat - Better Naming' },
-      -- Chat with Copilot in visual mode
-      {
-        '<leader>av',
-        ':CopilotChatVisual',
-        mode = 'x',
-        desc = 'CopilotChat - Open in vertical split',
-      },
-      {
-        '<leader>ax',
-        ':CopilotChatInline<cr>',
-        mode = 'x',
-        desc = 'CopilotChat - Inline chat',
-      },
-      -- Custom input for CopilotChat
-      {
-        '<leader>ai',
-        function()
-          local input = vim.fn.input 'Ask Copilot: '
-          if input ~= '' then
-            vim.cmd('CopilotChat ' .. input)
-          end
-        end,
-        desc = 'CopilotChat - Ask input',
-      },
-      -- Generate commit message based on the git diff
-      {
-        '<leader>am',
-        '<cmd>CopilotChatCommit<cr>',
-        desc = 'CopilotChat - Generate commit message for all changes',
-      },
-      -- Quick chat with Copilot
-      {
-        '<leader>aq',
-        function()
-          local input = vim.fn.input 'Quick Chat: '
-          if input ~= '' then
-            vim.cmd('CopilotChatBuffer ' .. input)
-          end
-        end,
-        desc = 'CopilotChat - Quick chat',
-      },
-      {
-        '<leader>aap',
-        function()
-          local input = vim.fn.input 'Perplexity: '
-          if input ~= '' then
-            require('CopilotChat').ask(input, {
-              agent = 'perplexityai',
-              selection = false,
-            })
-          end
-        end,
-        desc = 'CopilotChat - Perplexity Search',
-        mode = { 'n', 'v' },
-      },
-      -- Debug
-      { '<leader>ad', '<cmd>CopilotChatDebugInfo<cr>', desc = 'CopilotChat - Debug Info' },
-      -- Fix the issue with diagnostic
-      { '<leader>af', '<cmd>CopilotChatFixDiagnostic<cr>', desc = 'CopilotChat - Fix Diagnostic' },
-      -- Clear buffer and chat history
-      { '<leader>al', '<cmd>CopilotChatReset<cr>', desc = 'CopilotChat - Clear buffer and chat history' },
-      -- Toggle Copilot Chat Vsplit
-      { '<leader>av', '<cmd>CopilotChatToggle<cr>', desc = 'CopilotChat - Toggle' },
-      -- Copilot Chat Models
-      { '<leader>a?', '<cmd>CopilotChatModels<cr>', desc = 'CopilotChat - Select Models' },
-      -- Copilot Chat Agents
-      { '<leader>aa', '<cmd>CopilotChatAgents<cr>', desc = 'CopilotChat - Select Agents' },
+      ft = { 'markdown', 'Avante' },
     },
   },
-  setup = function()
-    require('CopilotChat').setup {
-      highlight_headers = false,
-      separator = '---',
-      error_header = '> [!ERROR] Error',
-      -- rest of your config
-    }
-  end,
 }
