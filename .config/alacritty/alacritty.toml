@@ -136,3 +136,6 @@ chars = "\u001b[H"
 mode = "~AppCursor"
 
 [terminal]
+
+[terminal.shell]
+program = "/bin/zsh"
