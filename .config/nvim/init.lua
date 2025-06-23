@@ -34,7 +34,7 @@ require('lazy').setup({
   require 'mohammed.plugins.autotag',
   require 'mohammed.plugins.snacks_nvim',
   require 'mohammed.plugins.copilot',
-  require 'mohammed.plugins.chatgpt',
+  require 'mohammed.plugins.codex',
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {
