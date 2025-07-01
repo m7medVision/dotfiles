@@ -4,7 +4,8 @@ ZSH_THEME="robbyrussell"
 plugins=(git)
 source $ZSH/oh-my-zsh.sh
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
+alias zshconfig="source ~/.zshrc"
+alias vi="nvim"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 export PATH="/home/mohammed/.config/herd-lite/bin:$PATH"
 export PHP_INI_SCAN_DIR="/home/mohammed/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
