@@ -4,7 +4,7 @@ return { -- Autoformat
   cmd = { 'ConformInfo' },
   keys = {
     {
-      '<leader>f',
+      '<leader>df',
       function()
         require('conform').format { async = true, lsp_format = 'fallback' }
       end,
@@ -33,10 +33,10 @@ return { -- Autoformat
     formatters_by_ft = {
       php = { 'pint' },
       lua = { 'stylua' },
-      html = { 'prettierd', 'prettier', stop_after_first = true },
+      html = { 'prettier' },
       blade = { 'blade-formatter' },
-      typescript = { 'prettierd', 'prettier', stop_after_first = true },
-      typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+      typescript = { 'prettier' },
+      typescriptreact = { 'prettier' },
       -- Conform can also run multiple formatters sequentially
       -- python = { "isort", "black" },
       --
