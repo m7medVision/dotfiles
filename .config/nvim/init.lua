@@ -32,9 +32,11 @@ require('lazy').setup({
   require 'mohammed.plugins.vimvisualmulti',
   require 'mohammed.plugins.autotag',
   require 'mohammed.plugins.snacks_nvim',
-  require 'mohammed.plugins.copilot',
   require 'mohammed.plugins.code_action',
   require 'mohammed.plugins.debug',
+  -- Those plugins are must one is disabled and the other is enabled
+  require 'mohammed.plugins.minuet-ai',
+  require 'mohammed.plugins.copilot',
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {
