@@ -7,7 +7,7 @@ return {
     config = function()
       require('minuet').setup {
         virtualtext = {
-          auto_trigger_ft = {},
+          auto_trigger_ft = { '*' },
           keymap = {
             accept = '<A-a>', -- Accept the entire virtual text completion.
             accept_line = '<A-l>', -- Accept only the current line of the completion.
