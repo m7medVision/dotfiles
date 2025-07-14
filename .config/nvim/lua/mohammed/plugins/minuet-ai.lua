@@ -18,10 +18,13 @@ return {
           },
           show_on_completion_menu = false,
         },
-        provider = 'openai_fim_compatible',
+        -- Set the default provider you want to use on startup
+        -- provider = 'openai_fim_compatible', -- Or 'openai_compatible' to use Groq by default
+        provider = 'openai_compatible',
         n_completions = 3,
         context_window = 512,
         provider_options = {
+          -- this is local backup
           openai_fim_compatible = {
             api_key = 'TERM',
             name = 'Ollama',
@@ -30,6 +33,19 @@ return {
             optional = {
               max_tokens = 56,
               top_p = 0.9,
+            },
+          },
+          -- this is online backup for github
+          openai_compatible = {
+            api_key = 'GROQ_API_KEY',
+            name = 'Groq',
+            end_point = 'https://api.groq.com/openai/v1/chat/completions',
+            model = 'gemma2-9b-it',
+            stream = true,
+            optional = {
+              max_tokens = 1024,
+              top_p = 1,
+              temperature = 1,
             },
           },
         },
