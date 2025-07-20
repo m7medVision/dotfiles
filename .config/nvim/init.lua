@@ -38,6 +38,7 @@ require('lazy').setup({
   -- require 'mohammed.plugins.minuet-ai',
   require 'mohammed.plugins.copilot',
   require 'mohammed.plugins.opencode_context',
+  require 'mohammed.plugins.vimtmux',
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {
