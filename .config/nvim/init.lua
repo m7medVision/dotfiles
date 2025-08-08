@@ -39,6 +39,7 @@ require('lazy').setup({
   require 'mohammed.plugins.copilot',
   require 'mohammed.plugins.opencode_context',
   require 'mohammed.plugins.vimtmux',
+  require 'mohammed.plugins.tiny-inline-diagnostic',
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {

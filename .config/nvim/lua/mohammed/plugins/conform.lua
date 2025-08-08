@@ -37,6 +37,7 @@ return { -- Autoformat
       blade = { 'blade-formatter' },
       typescript = { 'prettier' },
       typescriptreact = { 'prettier' },
+      json = { 'prettier' },
       -- Conform can also run multiple formatters sequentially
       -- python = { "isort", "black" },
       --
