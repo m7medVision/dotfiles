@@ -7,10 +7,11 @@
     "gtk-layer-shell": true,
     "height": 0,
     "modules-left": [
+        "custom/weather",
         "clock",
         "hyprland/workspaces"
     ],
-    "modules-center": ["custom/praytime"],
+    "modules-center": ["custom/praytime", "hyprland/window"],
     "modules-right": [
         "tray",
         "network",
@@ -20,6 +21,14 @@
         "pulseaudio#microphone",
         "custom/pomodoro"
     ],
+
+    "custom/weather": {
+        "format": "{text}",
+        "interval": 60,
+        "exec": "~/.config/waybar/scripts/weather.sh",
+        "return-type": "json",
+        "tooltip": true
+    },
 
     "hyprland/window": {
         "format": "󰣇 {}"
@@ -41,7 +50,7 @@
         "exec": "~/.config/waybar/scripts/pomodoro.sh",
         "on-click": "~/.config/waybar/scripts/pomodoro.sh toggle",
         "tooltip": true
-    },    
+    },
 
     "hyprland/workspaces": {
         "disable-scroll": true,
