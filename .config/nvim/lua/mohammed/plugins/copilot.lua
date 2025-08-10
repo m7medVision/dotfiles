@@ -1,37 +1,26 @@
-return {
-  {
-    'zbirenbaum/copilot.lua',
-    cmd = 'Copilot',
-    event = 'InsertEnter',
-    config = function()
-      require('copilot').setup {
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-          keymap = {
-            accept = '<M-a>',
-            accept_word = '<M-w>',
-            accept_line = '<M-l>',
-            dismiss = '<M-e>',
-            next = '<M-[>',
-            prev = '<M-]>',
-          },
-        },
-        filetypes = {
-          ['.'] = false,
-          markdown = true,
-          tex = true,
-        },
-        copilot_node_command = 'node',
-      }
+vim.pack.add { "https://github.com/zbirenbaum/copilot.lua" }
+vim.pack.add { "https://github.com/AndreM222/copilot-lualine" }
 
-      -- local opts = { noremap = true, silent = true }
-      -- vim.api.nvim_set_keymap("n", "<M-b>", "<cmd>Copilot panel<CR>", opts)   config = function()
-      --   end,
-      --
-    end,
+require('copilot').setup {
+  suggestion = {
+    enabled = true,
+    auto_trigger = true,
+    keymap = {
+      accept = '<M-a>',
+      accept_word = '<M-w>',
+      accept_line = '<M-l>',
+      dismiss = '<M-e>',
+      next = '<M-[>',
+      prev = '<M-]>',
+    },
   },
-  {
-    'AndreM222/copilot-lualine',
+  filetypes = {
+    ['.'] = false,
+    markdown = true,
+    tex = true,
   },
+  copilot_node_command = 'node',
 }
+
+-- Also setup copilot-lualine
+require('copilot-lualine')

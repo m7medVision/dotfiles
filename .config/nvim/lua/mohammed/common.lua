@@ -1,3 +1,6 @@
+vim.pack.add { "https://github.com/tpope/vim-sleuth" }
+vim.pack.add { "https://github.com/nvim-lua/plenary.nvim" }
+
 vim.opt.laststatus = 3
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '

@@ -1,1 +1,1 @@
-return { 'Bilal2453/luvit-meta', lazy = true }
+-- luvit-meta plugin - no additional configuration needed
