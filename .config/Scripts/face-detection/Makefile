@@ -51,6 +51,11 @@ test-shell:
 	@./$(SHELL_SCRIPT)
 	@echo "Exit code: $$?"
 
+# Comprehensive test
+test-all:
+	@echo "Running comprehensive test suite..."
+	@./test_face_detection.sh --verbose
+
 # Check system capabilities
 check-system:
 	@echo "Checking system capabilities..."
@@ -65,21 +70,51 @@ check-system:
 	@command -v v4l2-ctl >/dev/null && echo "  ✓ v4l2-ctl" || echo "  ✗ v4l2-ctl"
 	@command -v lsof >/dev/null && echo "  ✓ lsof" || echo "  ✗ lsof"
 
+# Setup and verify hypridle integration
+setup-hypridle:
+	@echo "Verifying hypridle integration..."
+	@if grep -q "face_check_and_lock.sh" ~/.config/hypr/hypridle.conf; then \
+		echo "✓ hypridle.conf is configured correctly"; \
+	else \
+		echo "✗ hypridle.conf not configured - integration may not work"; \
+	fi
+	@if pgrep hypridle >/dev/null; then \
+		echo "ℹ hypridle is running - restart recommended after changes"; \
+		echo "  Run: pkill hypridle && hypridle &"; \
+	else \
+		echo "ℹ hypridle is not running - start with: hypridle &"; \
+	fi
+
+# Install and setup everything
+install-all: install-arch build test-all setup-hypridle
+	@echo ""
+	@echo "✓ Installation complete!"
+	@echo "Face detection is now integrated with hypridle."
+
+# View logs
+logs:
+	@echo "Recent face detection logs:"
+	@tail -20 /tmp/hypridle-face-detection.log 2>/dev/null || echo "No logs found yet"
+
 # Help
 help:
 	@echo "Face Detection Makefile"
 	@echo ""
 	@echo "Usage:"
-	@echo "  make build         Build the Go binary"
-	@echo "  make clean         Clean build artifacts"
-	@echo "  make test          Test the detector"
-	@echo "  make test-shell    Test shell script version"
-	@echo "  make check-system  Check system capabilities"
+	@echo "  make build           Build the Go binary"
+	@echo "  make clean           Clean build artifacts"
+	@echo "  make test            Test the detector"
+	@echo "  make test-shell      Test shell script version"
+	@echo "  make test-all        Run comprehensive test suite"
+	@echo "  make check-system    Check system capabilities"
+	@echo "  make setup-hypridle  Verify hypridle integration"
+	@echo "  make logs            View recent detection logs"
 	@echo ""
 	@echo "Installation (choose your distro):"
 	@echo "  make install-arch     Install deps on Arch Linux"
 	@echo "  make install-ubuntu   Install deps on Ubuntu/Debian"
 	@echo "  make install-fedora   Install deps on Fedora"
+	@echo "  make install-all      Complete setup (Arch Linux)"
 	@echo ""
 	@echo "Exit codes:"
 	@echo "  0 = Face/presence detected"
