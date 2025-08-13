@@ -94,11 +94,11 @@ def fetch_weather():
         current_weather_status = today_forecast.get("weatherStatus")
 
     weather_icons = {
-        "sun": "\uf185",
-        "clouds_sun": "\uf0c2",
-        "overcast": "\uf0c4",
-        "rain": "\uf043",
-        "fog": "\uf0eb",
+        "sun": "☀",
+        "clouds_sun": "⛅",
+        "overcast": "☁",
+        "rain": "🌧",
+        "fog": "🌫",
     }
 
     weather_data = {
