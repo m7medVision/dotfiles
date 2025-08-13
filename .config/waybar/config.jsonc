@@ -25,7 +25,7 @@
     "custom/weather": {
         "format": "{text}",
         "interval": 60,
-        "exec": "~/.config/waybar/scripts/weather.sh",
+        "exec": "~/.config/Scripts/weather_fetch_om.py",
         "return-type": "json",
         "tooltip": true
     },
