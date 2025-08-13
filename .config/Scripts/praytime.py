@@ -9,20 +9,21 @@ try:
 except:  # noqa: E722
     import os
 
-    os.system("yay -S python-requests")
+    _ = os.system("yay -S python-requests")
 try:
     from lxml import html
 except:  # noqa: E722
     import os
 
-    os.system("yay -S python-lxml")
+    _ = os.system("yay -S python-lxml")
+
+import json
+import os
+import sys
+from datetime import datetime, timedelta
 
 import requests
 from lxml import html
-import json
-import sys
-from datetime import datetime, timedelta
-import os
 
 warnings.filterwarnings(
     "ignore", message="Unverified HTTPS request is being made to host"
@@ -52,23 +53,24 @@ def load_from_cache():
     """Load prayer times from cache if available and not expired."""
     if not os.path.exists(CACHE_FILE):
         return None
-    
+
     try:
         with open(CACHE_FILE, "r") as f:
             cached_data = json.load(f)
-        
+
         # Check if cache is for today
         cached_date_str = cached_data.get("date")
         if not cached_date_str:
             return None
-            
+
         cached_date = datetime.strptime(cached_date_str, "%Y-%m-%d").date()
         if cached_date == datetime.now().date():
             return cached_data
-            
+
     except (json.JSONDecodeError, FileNotFoundError):
         return None
     return None
+
 
 def save_to_cache(data):
     """Save prayer times to cache."""
@@ -90,7 +92,9 @@ def get_government_data(date):
         "https://www.mara.gov.om/calendar_page3.asp", data=data, verify=False
     )
     if response.status_code != 200:
-        raise Exception(f"Failed to fetch government data for {date.strftime('%Y-%m-%d')}")
+        raise Exception(
+            f"Failed to fetch government data for {date.strftime('%Y-%m-%d')}"
+        )
     return response.content
 
 
@@ -140,13 +144,15 @@ def convert_to_24h(time_str):
 def get_next_prayer_time(full_prayer_data, city="Muscat"):
     now = datetime.now()
     today_str = now.strftime("%Y-%m-%d")
-    
+
     # Check today's prayer times
-    today_prayers = full_prayer_data.get(today_str, {}).get("prayer_times", {}).get(city, {})
+    today_prayers = (
+        full_prayer_data.get(today_str, {}).get("prayer_times", {}).get(city, {})
+    )
     if today_prayers:
         prayer_order = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"]
         current_time_24h = now.strftime("%H:%M")
-        
+
         for prayer in prayer_order:
             prayer_time_str = today_prayers.get(prayer, "").strip()
             if not prayer_time_str:
@@ -168,8 +174,10 @@ def get_next_prayer_time(full_prayer_data, city="Muscat"):
     # If no prayer is left for today, check for tomorrow's Fajr
     tomorrow = now + timedelta(days=1)
     tomorrow_str = tomorrow.strftime("%Y-%m-%d")
-    
-    tomorrow_prayers = full_prayer_data.get(tomorrow_str, {}).get("prayer_times", {}).get(city, {})
+
+    tomorrow_prayers = (
+        full_prayer_data.get(tomorrow_str, {}).get("prayer_times", {}).get(city, {})
+    )
     if tomorrow_prayers and "Fajr" in tomorrow_prayers:
         fajr_time = tomorrow_prayers["Fajr"].strip()
         if "AM" not in fajr_time and "PM" not in fajr_time:
@@ -180,7 +188,14 @@ def get_next_prayer_time(full_prayer_data, city="Muscat"):
     return "Fajr", "N/A"
 
 
-def format_for_waybar(next_prayer, next_time, city="Muscat", all_prayers=None, arabic_date=None, full_cache=None):
+def format_for_waybar(
+    next_prayer,
+    next_time,
+    city="Muscat",
+    all_prayers=None,
+    arabic_date=None,
+    full_cache=None,
+):
     icon_map = {
         "Fajr": "🌅",
         "Sunrise": "☀️",
@@ -189,10 +204,10 @@ def format_for_waybar(next_prayer, next_time, city="Muscat", all_prayers=None, a
         "Maghrib": "🌆",
         "Isha": "🌃",
     }
-    
+
     icon = icon_map.get(next_prayer, "🕌")
     text = f"{icon} {next_prayer} {next_time}"
-    
+
     # Create detailed tooltip with all prayer times for today and tomorrow
     tooltip_lines = [f"🕌 Prayer Times for {city}"]
     if arabic_date:
@@ -200,7 +215,7 @@ def format_for_waybar(next_prayer, next_time, city="Muscat", all_prayers=None, a
     tooltip_lines.append("━" * 35)
     tooltip_lines.append(f"🔔 Next: {next_prayer} at {next_time}")
     tooltip_lines.append("━" * 35)
-    
+
     if all_prayers:
         tooltip_lines.append("Today's Prayers:")
         for prayer, time in all_prayers.items():
@@ -212,7 +227,9 @@ def format_for_waybar(next_prayer, next_time, city="Muscat", all_prayers=None, a
 
     if full_cache:
         tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
-        tomorrow_prayers = full_cache.get(tomorrow, {}).get("prayer_times", {}).get(city, {})
+        tomorrow_prayers = (
+            full_cache.get(tomorrow, {}).get("prayer_times", {}).get(city, {})
+        )
         if tomorrow_prayers:
             tooltip_lines.append("\nTomorrow's Prayers:")
             for prayer, time in tomorrow_prayers.items():
@@ -220,18 +237,14 @@ def format_for_waybar(next_prayer, next_time, city="Muscat", all_prayers=None, a
                 tooltip_lines.append(f"   {prayer_icon} {prayer:<8} {time}")
 
     tooltip = "\n".join(tooltip_lines)
-    
-    return {
-        "text": text,
-        "tooltip": tooltip,
-        "class": "prayer-time"
-    }
+
+    return {"text": text, "tooltip": tooltip, "class": "prayer-time"}
 
 
 if __name__ == "__main__":
     try:
         cached_data = load_from_cache()
-        
+
         if cached_data:
             prayer_times_today = cached_data["prayer_times"]
             arabic_date_today = cached_data["arabic_date"]
@@ -240,44 +253,68 @@ if __name__ == "__main__":
             # Fetch data for the next 3 days and cache it
             all_prayer_data = {}
             today = datetime.now().date()
-            
+
             for i in range(CACHE_DURATION_DAYS):
                 current_date = today + timedelta(days=i)
                 html_data = get_government_data(current_date)
-                
+
                 prayer_times = get_prayer_times(html_data)
                 arabic_date = get_today_date_arabic(html_data)
-                
+
                 date_str = current_date.strftime("%Y-%m-%d")
                 all_prayer_data[date_str] = {
                     "prayer_times": prayer_times,
-                    "arabic_date": arabic_date
+                    "arabic_date": arabic_date,
                 }
 
             # Save to cache
-            save_to_cache({
-                "date": today.strftime("%Y-%m-%d"),
-                "prayer_times": all_prayer_data[today.strftime("%Y-%m-%d")]["prayer_times"],
-                "arabic_date": all_prayer_data[today.strftime("%Y-%m-%d")]["arabic_date"],
-                "full_cache": all_prayer_data
-            })
-            
-            prayer_times_today = all_prayer_data[today.strftime("%Y-%m-%d")]["prayer_times"]
-            arabic_date_today = all_prayer_data[today.strftime("%Y-%m-%d")]["arabic_date"]
+            save_to_cache(
+                {
+                    "date": today.strftime("%Y-%m-%d"),
+                    "prayer_times": all_prayer_data[today.strftime("%Y-%m-%d")][
+                        "prayer_times"
+                    ],
+                    "arabic_date": all_prayer_data[today.strftime("%Y-%m-%d")][
+                        "arabic_date"
+                    ],
+                    "full_cache": all_prayer_data,
+                }
+            )
+
+            prayer_times_today = all_prayer_data[today.strftime("%Y-%m-%d")][
+                "prayer_times"
+            ]
+            arabic_date_today = all_prayer_data[today.strftime("%Y-%m-%d")][
+                "arabic_date"
+            ]
             full_prayer_data = all_prayer_data
 
         if len(sys.argv) > 1 and sys.argv[1] == "--waybar":
             city = sys.argv[2] if len(sys.argv) > 2 else "Muscat"
             next_prayer, next_time = get_next_prayer_time(full_prayer_data, city)
             all_prayers = prayer_times_today.get(city, {})
-            waybar_output = format_for_waybar(next_prayer, next_time, city, all_prayers, arabic_date_today, full_prayer_data)
+            waybar_output = format_for_waybar(
+                next_prayer,
+                next_time,
+                city,
+                all_prayers,
+                arabic_date_today,
+                full_prayer_data,
+            )
             print(json.dumps(waybar_output))
         elif len(sys.argv) > 1 and sys.argv[1] == "--lockscreen":
             city = "Muscat"
             prayers = prayer_times_today.get(city, {})
             prayer_order = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"]
-            icons = {"Fajr": "🌅", "Sunrise": "☀️", "Dhuhr": "🌞", "Asr": "🌇", "Maghrib": "🌆", "Isha": "🌃"}
-            
+            icons = {
+                "Fajr": "🌅",
+                "Sunrise": "☀️",
+                "Dhuhr": "🌞",
+                "Asr": "🌇",
+                "Maghrib": "🌆",
+                "Isha": "🌃",
+            }
+
             result = []
             for prayer in prayer_order:
                 if prayer in prayers:
@@ -304,7 +341,7 @@ if __name__ == "__main__":
             error_output = {
                 "text": "🕌 Prayer times unavailable",
                 "tooltip": f"Error loading prayer times:\n{str(e)}\n\nPlease check your internet connection.",
-                "class": "prayer-time-error"
+                "class": "prayer-time-error",
             }
             print(json.dumps(error_output))
         else:
