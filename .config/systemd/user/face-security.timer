@@ -1,0 +1,12 @@
+[Unit]
+Description=Random Face Detection Security Checks
+Requires=face-security.service
+
+[Timer]
+OnCalendar=*:0/15
+RandomizedDelaySec=10min
+FixedRandomDelay=yes
+Persistent=true
+
+[Install]
+WantedBy=timers.target
