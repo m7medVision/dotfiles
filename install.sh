@@ -35,13 +35,6 @@ PY_PKGS=(requests lxml)
 echo "[INFO] Installing Python libraries..."
 pip3 install --user --upgrade "${PY_PKGS[@]}"
 
-# --- Install and enable systemd user services for face security ---
-if [ -f "$HOME/dotfiles/.config/hypr/bin/install_face_security.sh" ]; then
-  bash "$HOME/dotfiles/.config/hypr/bin/install_face_security.sh"
-else
-  echo "[WARN] install_face_security.sh not found, skipping face security systemd setup."
-fi
-
 
 # --- Install dotfiles using stow ---
 DOTFILES_DIR="$HOME/dotfiles"
