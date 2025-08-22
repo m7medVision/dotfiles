@@ -1,0 +1,11 @@
+[Unit]
+Description=Face Recognition Security Timer
+Requires=face-security.service
+
+[Timer]
+OnCalendar=*:0/5
+RandomizedDelaySec=1800
+Persistent=true
+
+[Install]
+WantedBy=timers.target

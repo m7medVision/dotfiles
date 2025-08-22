@@ -1,0 +1,11 @@
+[Unit]
+Description=Face Recognition Security Check
+After=graphical-session.target
+
+[Service]
+Type=oneshot
+Environment=DISPLAY=:0
+Environment=WAYLAND_DISPLAY=wayland-0
+ExecStart=%h/.config/Scripts/face-security.sh
+StandardOutput=journal
+StandardError=journal
