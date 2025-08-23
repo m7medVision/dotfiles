@@ -11,7 +11,7 @@
         "clock",
         "hyprland/workspaces"
     ],
-    "modules-center": ["custom/praytime", "hyprland/window"],
+    "modules-center": ["custom/praytime"],
     "modules-right": [
         "tray",
         "network",
@@ -30,17 +30,13 @@
         "tooltip": true
     },
 
-    "hyprland/window": {
-        "format": "󰣇 {}"
-    },
-
     "custom/praytime": {
         "format": "{}",
         "return-type": "json",
         "interval": 60,
         "exec": "~/.config/waybar/scripts/praytime.sh Muscat",
         "on-click": "~/.config/waybar/scripts/praytime.sh Muscat",
-        "tooltip": true
+        "tooltip": true,
     },
 
     "custom/pomodoro": {
