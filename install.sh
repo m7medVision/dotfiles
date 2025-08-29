@@ -23,8 +23,8 @@ fi
 # --- System/AUR packages ---
 PKGS=(
   hyprland waybar kitty playerctl jq python-requests python-lxml python-pip python-virtualenv \
-  libnotify hyprlock lazygit alacritty fuzzel nwg-look ripgrep neovim wl-clipboard ttf-font-awesome ttf-jetbrains-mono
-  stow
+  libnotify hyprlock lazygit alacritty fuzzel nwg-look ripgrep neovim wl-clipboard ttf-font-awesome ttf-jetbrains-mono \
+  stow cmake meson cpio pkg-config git gcc g++
 )
 
 echo "[INFO] Installing system/AUR packages..."
@@ -48,5 +48,10 @@ else
 files repository first."
   exit 1
 fi
+
+# --- Install Hyprland plugins ---
+echo "[INFO] Installing split-monitor-workspaces plugin..."
+hyprpm add https://github.com/Duckonaut/split-monitor-workspaces
+hyprpm enable split-monitor-workspaces
 
 echo "[INFO] Install complete."
