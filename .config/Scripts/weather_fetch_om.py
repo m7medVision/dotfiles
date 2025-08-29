@@ -6,10 +6,10 @@ import sys
 import requests
 
 # Al Swaiq Weather Station
-STATION_ID = "61af0361-fc82-4c03-bdd1-46e67e457e79"
+# STATION_ID = "61af0361-fc82-4c03-bdd1-46e67e457e79"
 
 # # Uncomment the line below to set a different station ID
-# STATION_ID = ''
+STATION_ID = "2e84086d-57b4-4ad2-b0c9-88bfbb1b5df9"
 
 API_URL = "https://met.caa.gov.om/wp-admin/admin-ajax.php"
 HOME_URL = "https://met.caa.gov.om/en/home/"
