@@ -1,21 +1,19 @@
-vim.pack.add { "https://github.com/aserowy/tmux.nvim" }
-
-local tmux = require 'tmux'
-tmux.setup {
-  navigation = { enable_default_keybindings = false },
-  resize = { enable_default_keybindings = false },
+return {
+  "aserowy/tmux.nvim",
+  keys = {
+    { "<M-left>", function() require('tmux').resize_left() end, mode = { 'n', 'i', 't', 'v', 's', 'x', 'o', 'c' }, desc = "tmux resize left" },
+    { "<M-down>", function() require('tmux').resize_bottom() end, mode = { 'n', 'i', 't', 'v', 's', 'x', 'o', 'c' }, desc = "tmux resize down" },
+    { "<M-up>", function() require('tmux').resize_top() end, mode = { 'n', 'i', 't', 'v', 's', 'x', 'o', 'c' }, desc = "tmux resize up" },
+    { "<M-right>", function() require('tmux').resize_right() end, mode = { 'n', 'i', 't', 'v', 's', 'x', 'o', 'c' }, desc = "tmux resize right" },
+    { "<C-left>", function() require('tmux').move_left() end, mode = { 'n', 'i', 't', 'v', 's', 'x', 'o', 'c' }, desc = "tmux move left" },
+    { "<C-down>", function() require('tmux').move_bottom() end, mode = { 'n', 'i', 't', 'v', 's', 'x', 'o', 'c' }, desc = "tmux move down" },
+    { "<C-up>", function() require('tmux').move_top() end, mode = { 'n', 'i', 't', 'v', 's', 'x', 'o', 'c' }, desc = "tmux move up" },
+    { "<C-right>", function() require('tmux').move_right() end, mode = { 'n', 'i', 't', 'v', 's', 'x', 'o', 'c' }, desc = "tmux move right" },
+  },
+  config = function()
+    require('tmux').setup {
+      navigation = { enable_default_keybindings = false },
+      resize = { enable_default_keybindings = false },
+    }
+  end,
 }
-
-local modes = { 'n', 'i', 't', 'v', 's', 'x', 'o', 'c' }
-
--- Resize mappings
-vim.keymap.set(modes, '<M-left>', tmux.resize_left, { desc = 'tmux resize left' })
-vim.keymap.set(modes, '<M-down>', tmux.resize_bottom, { desc = 'tmux resize down' })
-vim.keymap.set(modes, '<M-up>', tmux.resize_top, { desc = 'tmux resize up' })
-vim.keymap.set(modes, '<M-right>', tmux.resize_right, { desc = 'tmux resize right' })
-
--- Navigation mappings (note: use move_*, not navigate_*)
-vim.keymap.set(modes, '<C-left>', tmux.move_left, { desc = 'tmux move left' })
-vim.keymap.set(modes, '<C-down>', tmux.move_bottom, { desc = 'tmux move down' })
-vim.keymap.set(modes, '<C-up>', tmux.move_top, { desc = 'tmux move up' })
-vim.keymap.set(modes, '<C-right>', tmux.move_right, { desc = 'tmux move right' })

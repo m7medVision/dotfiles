@@ -1,3 +1,6 @@
-vim.pack.add { "https://github.com/folke/todo-comments.nvim" }
-
-require('todo-comments').setup({ signs = false })
+return {
+  "folke/todo-comments.nvim",
+  event = { "BufReadPre", "BufNewFile" },
+  dependencies = { "nvim-lua/plenary.nvim" },
+  opts = { signs = false },
+}

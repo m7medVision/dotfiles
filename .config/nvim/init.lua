@@ -1,25 +1,40 @@
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
+end
+vim.opt.rtp:prepend(lazypath)
+
 require 'mohammed.common'
 
-require 'mohammed.plugins.theme'
-require 'mohammed.plugins.lualine'
-require 'mohammed.plugins.which_key'
-require 'mohammed.plugins.gitsigns'
-require 'mohammed.plugins.wakatime'
-require 'mohammed.plugins.lsp'
-require 'mohammed.plugins.conform'
-require 'mohammed.plugins.todo_highlight'
-require 'mohammed.plugins.mini_nvim'
-require 'mohammed.plugins.treesitter'
-require 'mohammed.plugins.indent_line'
-require 'mohammed.plugins.oil'
-require 'mohammed.plugins.harpoon'
-require 'mohammed.plugins.vimvisualmulti'
-require 'mohammed.plugins.autotag'
-require 'mohammed.plugins.debug'
-require 'mohammed.plugins.copilot'
-require 'mohammed.plugins.dadbod'
-require 'mohammed.plugins.vimtmux'
-require 'mohammed.plugins.tiny-inline-diagnostic'
-require 'mohammed.plugins.snacks_nvim'
-require 'mohammed.plugins.blink_cmp'
-require 'mohammed.plugins.opencode'
+require("lazy").setup({
+  spec = {
+    { import = "mohammed.plugins" },
+  },
+  install = { colorscheme = { "habamax" } },
+  checker = { enabled = true },
+  performance = {
+    rtp = {
+      disabled_plugins = {
+        "gzip",
+        "matchit",
+        "matchparen",
+        "netrwPlugin",
+        "tarPlugin",
+        "tohtml",
+        "tutor",
+        "zipPlugin",
+      },
+    },
+  },
+})

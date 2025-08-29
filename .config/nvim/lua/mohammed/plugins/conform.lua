@@ -1,39 +1,75 @@
-vim.pack.add { "https://github.com/stevearc/conform.nvim" }
-
-require('conform').setup({
-  notify_on_error = false,
-  format_on_save = function(bufnr)
-    -- Disable "format_on_save lsp_fallback" for languages that don't
-    -- have a well standardized coding style. You can add additional
-    -- languages here or re-enable it for the disabled ones.
-    local disable_filetypes = { c = true, cpp = true }
-    local lsp_format_opt
-    if disable_filetypes[vim.bo[bufnr].filetype] then
-      lsp_format_opt = 'never'
-    else
-      lsp_format_opt = 'fallback'
-    end
-    return {
-      timeout_ms = 500,
-      lsp_format = lsp_format_opt,
+return {
+  'stevearc/conform.nvim',
+  event = { 'BufWritePre' },
+  cmd = { 'ConformInfo' },
+  keys = {
+    {
+      '<leader>df',
+      function()
+        require('conform').format { async = true, lsp_format = 'fallback' }
+      end,
+      mode = { 'n', 'v' },
+      desc = '[F]ormat buffer',
+    },
+  },
+  config = function()
+    require('conform').setup {
+      notify_on_error = false,
+      notify_no_formatters = true,
+      lsp_format = 'fallback',
+      stop_after_first = false,
+      format_on_save = function(bufnr)
+        local disable_filetypes = { c = true, cpp = true, htmldjango = true }
+        if disable_filetypes[vim.bo[bufnr].filetype] then
+          return nil
+        else
+          return {
+            timeout_ms = 500,
+            lsp_format = 'fallback',
+          }
+        end
+      end,
+      formatters = {
+        typstyle = { args = { '-t', '4', '-l', '100' } },
+        sqlfmt = {
+          append_args = { '-d', 'clickhouse' },
+        },
+        latexindent = {
+          append_args = { '-l' },
+        },
+      },
+      formatters_by_ft = {
+        ['*'] = { 'trim_whitespace', 'trim_newlines' },
+        cs = { 'csharpier' },
+        lua = { 'stylua', lsp_format = 'prefer' },
+        css = { 'prettierd' },
+        html = { 'prettierd' },
+        htmldjango = { 'prettierd' },
+        json = { 'jq' },
+        sh = { 'shfmt' },
+        sql = { 'sqlfmt' },
+        yaml = { 'yamlfmt' },
+        zsh = { 'beautysh' },
+        rust = { 'rustfmt' },
+        tex = { 'latexindent' },
+        typescript = { 'prettierd' },
+        typst = { 'typstyle', lsp_format = 'fallback' },
+        javascript = { 'biome', 'prettierd' },
+        toml = { 'taplo' },
+        php = { 'pint' },
+        blade = { 'blade-formatter' },
+        typescriptreact = { 'prettier' },
+        python = function(bufnr)
+          if require('conform').get_formatter_info('ruff_format', bufnr).available then
+            return { 'ruff_organize_imports', 'ruff_format' }
+          else
+            return { 'isort', 'black' }
+          end
+        end,
+      },
+      default_format_opts = {
+        lsp_format = 'fallback',
+      },
     }
   end,
-  formatters_by_ft = {
-    php = { 'pint' },
-    lua = { 'stylua' },
-    html = { 'prettier' },
-    blade = { 'blade-formatter' },
-    typescript = { 'prettier' },
-    typescriptreact = { 'prettier' },
-    json = { 'prettier' },
-    -- Conform can also run multiple formatters sequentially
-    -- python = { "isort", "black" },
-    --
-    -- You can use 'stop_after_first' to run the first available formatter from the list
-    -- javascript = { "prettierd", "prettier", stop_after_first = true },
-  },
-})
-
-vim.keymap.set({ 'n', 'v' }, '<leader>df', function()
-  require('conform').format { async = true, lsp_format = 'fallback' }
-end, { desc = '[F]ormat buffer' })
+}

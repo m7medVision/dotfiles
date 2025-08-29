@@ -1,28 +1,10 @@
-vim.pack.add { 'https://github.com/NickvanDyke/opencode.nvim' }
-
--- Setup opencode.nvim
-require('opencode').setup {
-  -- Your configuration, if any
+return {
+  "NickvanDyke/opencode.nvim",
+  keys = {
+    { "<leader>ot", function() require('opencode').toggle() end, desc = "Toggle embedded opencode" },
+    { "<leader>oa", function() require('opencode').ask() end, mode = "n", desc = "Ask opencode" },
+    { "<leader>oa", function() require('opencode').ask '@selection: ' end, mode = "v", desc = "Ask opencode about selection" },
+    { "<leader>op", function() require('opencode').select_prompt() end, mode = { "n", "v" }, desc = "Select prompt" },
+  },
+  opts = {},
 }
-
--- Keymaps
-local function map(key, fn, desc, mode)
-  mode = mode or 'n'
-  vim.keymap.set(mode, key, fn, { desc = desc })
-end
-
-map('<leader>ot', function()
-  require('opencode').toggle()
-end, 'Toggle embedded opencode')
-
-map('<leader>oa', function()
-  require('opencode').ask()
-end, 'Ask opencode', 'n')
-
-map('<leader>oa', function()
-  require('opencode').ask '@selection: '
-end, 'Ask opencode about selection', 'v')
-
-map('<leader>op', function()
-  require('opencode').select_prompt()
-end, 'Select prompt', { 'n', 'v' })

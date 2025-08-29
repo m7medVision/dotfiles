@@ -1,1 +1,4 @@
-vim.pack.add { "https://github.com/mg979/vim-visual-multi" }
+return {
+  "mg979/vim-visual-multi",
+  event = { "BufReadPre", "BufNewFile" },
+}

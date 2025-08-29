@@ -1,8 +1,12 @@
-vim.pack.add { "https://github.com/stevearc/oil.nvim" }
-
-require('oil').setup {
-  columns = {
-    'icon',
+return {
+  "stevearc/oil.nvim",
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  keys = {
+    { "-", "<CMD>Oil<CR>", desc = "Open parent directory" },
+  },
+  opts = {
+    columns = {
+      "icon",
+    },
   },
 }
-vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
