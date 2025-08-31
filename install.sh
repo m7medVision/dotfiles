@@ -24,6 +24,7 @@ fi
 PKGS=(
   hyprland waybar kitty playerctl jq python-requests python-lxml python-pip python-virtualenv \
   libnotify hyprlock lazygit alacritty fuzzel nwg-look ripgrep neovim wl-clipboard ttf-font-awesome ttf-jetbrains-mono \
+  sassc gtk-engine-murrine gnome-themes-extra \
   stow cmake meson cpio pkg-config git gcc g++
 )
 
@@ -53,5 +54,37 @@ fi
 echo "[INFO] Installing split-monitor-workspaces plugin..."
 hyprpm add https://github.com/Duckonaut/split-monitor-workspaces
 hyprpm enable split-monitor-workspaces
+
+# --- Install Gruvbox GTK Theme ---
+echo "[INFO] Installing Gruvbox GTK Theme..."
+TMP_DIR="/tmp/gruvbox-gtk-theme"
+rm -rf "$TMP_DIR"
+mkdir -p "$TMP_DIR"
+
+if [ ! -d "$HOME/.themes/Gruvbox" ]; then
+  git clone --depth=1 https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme "$TMP_DIR/repo"
+  pushd "$TMP_DIR/repo"
+  # Install dark + light, standard size, libadwaita link, default accent (blue)
+  ./install.sh --color dark light --size standard --libadwaita --dest "$HOME/.themes"
+  popd
+else
+  echo "[INFO] Gruvbox GTK already present under ~/.themes. Skipping build."
+fi
+
+# Apply GTK theme if gsettings is available (defaults to dark)
+if command -v gsettings >/dev/null 2>&1; then
+  echo "[INFO] Applying GTK theme via gsettings..."
+  gsettings set org.gnome.desktop.interface gtk-theme "Gruvbox"
+  gsettings set org.gnome.desktop.interface color-scheme "prefer-dark" || true
+fi
+
+# Flatpak overrides (optional)
+if command -v flatpak >/dev/null 2>&1; then
+  echo "[INFO] Setting Flatpak overrides for GTK themes/icons..."
+  sudo flatpak override --filesystem=$HOME/.themes || true
+  sudo flatpak override --filesystem=xdg-config/gtk-4.0 || true
+fi
+
+rm -rf "$TMP_DIR"
 
 echo "[INFO] Install complete."

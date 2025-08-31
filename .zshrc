@@ -22,3 +22,5 @@ export NVM_DIR="$HOME/.nvm"
 if [ -f ~/.zshenv ]; then
   source ~/.zshenv
 fi
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin

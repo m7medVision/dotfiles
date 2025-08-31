@@ -1,48 +1,21 @@
 return {
-  "catppuccin/nvim",
-  name = "catppuccin",
+  "ellisonleao/gruvbox.nvim",
+  name = "gruvbox",
   lazy = false,
   priority = 1000,
   config = function()
-    require('catppuccin').setup({
-      term_colors = true,
-      transparent_background = true,
-      dim_inactive = {
-        enabled = false,
-        shade = 'dark',
-        percentage = 0.15,
+    require('gruvbox').setup({
+      terminal_colors = true,
+      transparent_mode = true,
+      italics = {
+        comments = true,
+        strings = false,
+        operators = false,
+        folds = true,
       },
-      integrations = {
-        cmp = true,
-        gitsigns = true,
-        treesitter = true,
-        harpoon = true,
-        telescope = true,
-        fidget = true,
-        native_lsp = {
-          enabled = true,
-          virtual_text = {
-            errors = { 'italic' },
-            hints = { 'italic' },
-            warnings = { 'italic' },
-            information = { 'italic' },
-          },
-          underlines = {
-            errors = { 'underline' },
-            hints = { 'underline' },
-            warnings = { 'underline' },
-            information = { 'underline' },
-          },
-          inlay_hints = {
-            background = true,
-          },
-        },
-        mini = {
-          enabled = true,
-          indentscope_color = '',
-        },
-      },
+      overrides = {},
     })
-    vim.cmd.colorscheme 'catppuccin-macchiato'
+    vim.o.background = 'dark'
+    vim.cmd.colorscheme 'gruvbox'
   end,
 }
