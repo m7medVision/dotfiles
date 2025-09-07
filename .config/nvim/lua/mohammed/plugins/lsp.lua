@@ -20,7 +20,7 @@ return {
       'WhoIsSethDaniel/mason-tool-installer.nvim',
     },
     config = function()
-      vim.lsp.enable { 'lua_ls', 'biome', 'tinymist', 'emmetls', 'css-lsp', 'ruff' }
+      vim.lsp.enable { 'lua_ls', 'tinymist', 'emmetls', 'css-lsp', 'ruff' }
 
       require('lspconfig').lua_ls.setup {
         settings = {
@@ -59,7 +59,7 @@ return {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     config = function()
       require('mason-tool-installer').setup {
-        ensure_installed = { 'lua_ls', 'biome', 'tinymist', 'emmet-ls', 'stylua', 'basedpyright', 'ruff', 'css-lsp' },
+        ensure_installed = { 'lua_ls', 'tinymist', 'emmet-ls', 'stylua', 'basedpyright', 'ruff', 'css-lsp' },
       }
     end,
   },

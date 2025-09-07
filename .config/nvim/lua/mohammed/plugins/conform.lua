@@ -54,7 +54,7 @@ return {
         tex = { 'latexindent' },
         typescript = { 'prettierd' },
         typst = { 'typstyle', lsp_format = 'fallback' },
-        javascript = { 'biome', 'prettierd' },
+        javascript = { 'prettierd' },
         toml = { 'taplo' },
         php = { 'pint' },
         blade = { 'blade-formatter' },
