@@ -34,8 +34,7 @@ yay -S --needed --noconfirm "${PKGS[@]}"
 # --- Python libraries (global, for Scripts/) ---
 PY_PKGS=(requests lxml)
 echo "[INFO] Installing Python libraries..."
-pip3 install --user --upgrade "${PY_PKGS[@]}"
-
+yay -S --needed --noconfirm "python-${PKGS[@]}"
 
 # --- Install dotfiles using stow ---
 DOTFILES_DIR="$HOME/dotfiles"
