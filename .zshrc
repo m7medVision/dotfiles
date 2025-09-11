@@ -14,6 +14,7 @@ alias vi="nvim"
 alias vim="nvim"
 alias lg="lazygit"
 alias ld="lazydocker"
+alias venv=source venv/bin/activate
 export PATH="/home/mohammed/.config/herd-lite/bin:$PATH"
 export PHP_INI_SCAN_DIR="/home/mohammed/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
 if [ -f ~/.zshenv ]; then
