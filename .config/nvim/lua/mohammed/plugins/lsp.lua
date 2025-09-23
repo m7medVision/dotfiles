@@ -17,20 +17,16 @@ return {
     dependencies = {
       'williamboman/mason.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
+      'b0o/schemastore.nvim',
+      'neovim/nvim-lspconfig',
     },
     config = function()
-      vim.lsp.config('lua_ls', {
-        settings = {
-          Lua = {
-            runtime = { version = 'LuaJIT' },
-            diagnostics = { globals = { 'vim', 'require' } },
-            workspace = { library = vim.api.nvim_get_runtime_file('', true) },
-            telemetry = { enable = false },
-          },
-        },
-      })
-
-      vim.lsp.enable { 'lua_ls', 'tinymist', 'emmet_ls', 'cssls', 'tailwindcss', 'ruff' }
+      -- Enable LSP servers
+      vim.lsp.enable {
+        'lua_ls',
+        'tailwindcss',
+        'ts_ls',
+      }
     end,
   },
   {
@@ -44,7 +40,19 @@ return {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     config = function()
       require('mason-tool-installer').setup {
-        ensure_installed = { 'lua-language-server', 'tinymist', 'emmet-ls', 'stylua', 'basedpyright', 'ruff', 'css-lsp', 'tailwindcss-language-server' },
+        ensure_installed = {
+          'lua-language-server',
+          'tinymist',
+          'emmet-ls',
+          'stylua',
+          'basedpyright',
+          'ruff',
+          'css-lsp',
+          'tailwindcss-language-server',
+          'typescript-language-server',
+          'html-lsp',
+          'json-lsp',
+        },
       }
     end,
   },
