@@ -45,18 +45,18 @@ PY_PKGS=(requests lxml)
 echo "[INFO] Installing Python libraries..."
 yay -S --needed --noconfirm "python-${PKGS[@]}"
 
-# --- Install dotfiles using stow ---
-DOTFILES_DIR="$HOME/dotfiles"
-if [ -d "$DOTFILES_DIR" ]; then
-  echo "[INFO] Installing dotfiles using stow..."
-  pushd "$DOTFILES_DIR"
-  stow --no-folding --target="$HOME" --restow --adopt --verbose *
-  popd
-else
-  echo "[ERROR] Dotfiles directory $DOTFILES_DIR not found. Please clone your dot
-files repository first."
-  exit 1
-fi
+# # --- Install dotfiles using stow ---
+# DOTFILES_DIR="$HOME/dotfiles"
+# if [ -d "$DOTFILES_DIR" ]; then
+#   echo "[INFO] Installing dotfiles using stow..."
+#   pushd "$DOTFILES_DIR"
+#   stow --no-folding --target="$HOME" --restow --adopt --verbose *
+#   popd
+# else
+#   echo "[ERROR] Dotfiles directory $DOTFILES_DIR not found. Please clone your dot
+# files repository first."
+#   exit 1
+# fi
 
 # --- Install Hyprland plugins ---
 echo "[INFO] Installing split-monitor-workspaces plugin..."
@@ -65,6 +65,15 @@ hyprpm add https://github.com/Duckonaut/split-monitor-workspaces
 hyprpm enable split-monitor-workspaces
 
 
+
+echo "[INFO] Installing Gruvbox-GTK-Theme"
+cd ~
+git clone https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
+cd Gruvbox-GTK-Theme/
+cd themes/
+./install.sh -n "Gruvbox-Float-Border" --tweaks outline float
+cd ~
+rm -rf Gruvbox-GTK-Theme/
 
 rm -rf "$TMP_DIR"
 
