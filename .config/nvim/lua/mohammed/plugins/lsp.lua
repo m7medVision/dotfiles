@@ -1,4 +1,6 @@
+---@type LazySpec
 return {
+  -- Treesitter for syntax highlighting and code understanding
   {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -11,24 +13,56 @@ return {
       }
     end,
   },
+
+  -- LSP default configurations
   {
     'neovim/nvim-lspconfig',
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
       'williamboman/mason.nvim',
+      'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       'b0o/schemastore.nvim',
-      'neovim/nvim-lspconfig',
     },
     config = function()
-      -- Enable LSP servers
-      vim.lsp.enable {
-        'lua_ls',
-        'tailwindcss',
-        'ts_ls',
+      -- Setup mason-lspconfig to automatically enable all installed LSP servers
+      require('mason-lspconfig').setup {
+        automatic_enable = true, -- This is the default, automatically enables all installed servers
       }
     end,
   },
+
+  -- JSON and YAML schemas
+  {
+    'b0o/schemastore.nvim',
+    config = function()
+      vim.lsp.config('jsonls', {
+        settings = {
+          json = {
+            schemas = require('schemastore').json.schemas(),
+            validate = { enable = true },
+          },
+        },
+      })
+      vim.lsp.config('yamlls', {
+        settings = {
+          yaml = {
+            schemaStore = { enable = false, url = '' },
+            schemas = vim.tbl_extend('error', require('schemastore').yaml.schemas(), {
+              ['https://www.artillery.io/schema.json'] = {
+                '*.load-test.yml',
+                '*.test.yml',
+                '*.load-test.yaml',
+                '*.test.yaml',
+              },
+            }),
+          },
+        },
+      })
+    end,
+  },
+
+  -- LSP installation
   {
     'williamboman/mason.nvim',
     cmd = 'Mason',
@@ -36,6 +70,8 @@ return {
       require('mason').setup()
     end,
   },
+
+  -- Automatic LSP server installation
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     config = function()
@@ -56,6 +92,8 @@ return {
       }
     end,
   },
+
+  -- Load Lua types lazily
   {
     'folke/lazydev.nvim',
     ft = 'lua',
@@ -68,15 +106,21 @@ return {
       }
     end,
   },
+
+  -- Typst preview
   {
     'chomosuke/typst-preview.nvim',
     ft = 'typst',
     lazy = true,
   },
+
+  -- Auto-indent detection
   {
     'tpope/vim-sleuth',
     event = { 'BufReadPre', 'BufNewFile' },
   },
+
+  -- Plenary utilities
   {
     'nvim-lua/plenary.nvim',
     lazy = true,
