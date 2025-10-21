@@ -29,8 +29,7 @@ PKGS=(
   ttf-nerd-fonts-symbols claude-code vicinae-bin \
   nwg-displays nodejs-lts-jod npm \
   visual-studio-code-bin claude-code github-cli luarocks \
-  zsh zoxide tmux
-
+  zsh zoxide tmux pamixer
 )
 
 echo "[INFO] Installing system/AUR packages..."

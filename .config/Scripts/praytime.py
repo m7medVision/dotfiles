@@ -205,25 +205,36 @@ def format_for_waybar(
         "Isha": "🌃",
     }
 
+    arabic_names = {
+        "Fajr": "الفجر",
+        "Sunrise": "الشروق",
+        "Dhuhr": "الظهر",
+        "Asr": "العصر",
+        "Maghrib": "المغرب",
+        "Isha": "العشاء",
+    }
+
     icon = icon_map.get(next_prayer, "🕌")
-    text = f"{icon} {next_prayer} {next_time}"
+    arabic_name = arabic_names.get(next_prayer, next_prayer)
+    text = f"{icon} {arabic_name} {next_time}"
 
     # Create detailed tooltip with all prayer times for today and tomorrow
-    tooltip_lines = [f"🕌 Prayer Times for {city}"]
+    tooltip_lines = [f"🕌 أوقات الصلاة في {city}"]
     if arabic_date:
         tooltip_lines.append(f"📅 {arabic_date}")
     tooltip_lines.append("━" * 35)
-    tooltip_lines.append(f"🔔 Next: {next_prayer} at {next_time}")
+    tooltip_lines.append(f"🔔 التالي: {arabic_name} في {next_time}")
     tooltip_lines.append("━" * 35)
 
     if all_prayers:
-        tooltip_lines.append("Today's Prayers:")
+        tooltip_lines.append("صلوات اليوم:")
         for prayer, time in all_prayers.items():
             prayer_icon = icon_map.get(prayer, "🕌")
+            prayer_arabic = arabic_names.get(prayer, prayer)
             if prayer == next_prayer and next_time == time:
-                tooltip_lines.append(f"➤ {prayer_icon} {prayer:<8} {time} (Next)")
+                tooltip_lines.append(f"➤ {prayer_icon} {prayer_arabic:<8} {time} (التالي)")
             else:
-                tooltip_lines.append(f"   {prayer_icon} {prayer:<8} {time}")
+                tooltip_lines.append(f"   {prayer_icon} {prayer_arabic:<8} {time}")
 
     if full_cache:
         tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
@@ -231,10 +242,11 @@ def format_for_waybar(
             full_cache.get(tomorrow, {}).get("prayer_times", {}).get(city, {})
         )
         if tomorrow_prayers:
-            tooltip_lines.append("\nTomorrow's Prayers:")
+            tooltip_lines.append("\nصلوات الغد:")
             for prayer, time in tomorrow_prayers.items():
                 prayer_icon = icon_map.get(prayer, "🕌")
-                tooltip_lines.append(f"   {prayer_icon} {prayer:<8} {time}")
+                prayer_arabic = arabic_names.get(prayer, prayer)
+                tooltip_lines.append(f"   {prayer_icon} {prayer_arabic:<8} {time}")
 
     tooltip = "\n".join(tooltip_lines)
 
@@ -339,8 +351,8 @@ if __name__ == "__main__":
     except Exception as e:
         if len(sys.argv) > 1 and sys.argv[1] == "--waybar":
             error_output = {
-                "text": "🕌 Prayer times unavailable",
-                "tooltip": f"Error loading prayer times:\n{str(e)}\n\nPlease check your internet connection.",
+                "text": "🕌 أوقات الصلاة غير متوفرة",
+                "tooltip": f"خطأ في تحميل أوقات الصلاة:\n{str(e)}\n\nيرجى التحقق من اتصالك بالإنترنت.",
                 "class": "prayer-time-error",
             }
             print(json.dumps(error_output))
