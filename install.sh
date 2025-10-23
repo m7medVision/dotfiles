@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
 set -e
 
-# Idempotent install script for Arch/Hyprland dotfiles
-# Installs yay, system/AUR packages, Python libs, and systemd user services
+# Idempotent install/update script for Arch/Hyprland dotfiles
+# Installs/updates yay, system/AUR packages, Python libs, and systemd user services
 
 # --- Helper functions ---
 command_exists() { command -v "$1" >/dev/null 2>&1; }
 
-# --- Install yay if missing ---
-if ! command_exists yay; then
+# --- Update system packages first ---
+echo "[INFO] Updating system packages..."
+sudo pacman -Syu --noconfirm
+
+# --- Update yay if it exists, install if missing ---
+if command_exists yay; then
+  echo "[INFO] Updating yay..."
+  yay -Syu --noconfirm yay
+else
   echo "[INFO] yay not found. Installing yay..."
   sudo pacman -S --needed --noconfirm git base-devel
   git clone https://aur.archlinux.org/yay.git /tmp/yay
@@ -16,33 +23,53 @@ if ! command_exists yay; then
   makepkg -si --noconfirm
   popd
   rm -rf /tmp/yay
-else
-  echo "[INFO] yay is already installed."
 fi
+
 
 # --- System/AUR packages ---
 PKGS=(
   hyprland waybar kitty playerctl jq python-requests python-lxml python-pip python-virtualenv \
-  libnotify hyprlock lazygit alacritty vicinae-bin nwg-look ripgrep neovim wl-clipboard ttf-font-awesome ttf-jetbrains-mono \
+  libnotify hyprlock lazygit alacritty nwg-look ripgrep neovim wl-clipboard ttf-font-awesome ttf-jetbrains-mono \
   sassc gtk-engine-murrine gnome-themes-extra \
   stow cmake meson cpio pkg-config git gcc g++ \
-  ttf-nerd-fonts-symbols claude-code vicinae-bin \
+  ttf-nerd-fonts-symbols claude-code \
   nwg-displays nodejs-lts-jod npm \
   visual-studio-code-bin claude-code github-cli luarocks \
-  zsh zoxide tmux pamixer
+  zsh zoxide tmux pamixer auto-cpufreq \
+  docker docker-compose podman impala
 )
 
-echo "[INFO] Installing system/AUR packages..."
-yay -S --needed --noconfirm "${PKGS[@]}"
+echo "[INFO] Installing/updating system/AUR packages..."
+yay -Syu --needed --noconfirm "${PKGS[@]}"
 
-# --- Install npm packages ---
-echo "[INFO] Installing global npm packages..."
+# --- Docker setup ---
+echo "[INFO] Setting up Docker..."
+
+# Add user to docker group
+if ! groups $USER | grep -q '\bdocker\b'; then
+  echo "[INFO] Adding user to docker group..."
+  sudo usermod -aG docker $USER
+  echo "[INFO] User added to docker group. You may need to log out and back in for changes to take effect."
+else
+  echo "[INFO] User is already in docker group."
+fi
+
+# Enable and start Docker service
+echo "[INFO] Enabling and starting Docker service..."
+sudo systemctl enable docker.service
+sudo systemctl start docker.service
+
+# Enable Docker socket for user
+sudo systemctl enable docker.socket
+
+# --- Install/update npm packages ---
+echo "[INFO] Installing/updating global npm packages..."
 sudo npm install -g @github/copilot
 
 # --- Python libraries (global, for Scripts/) ---
 PY_PKGS=(requests lxml)
-echo "[INFO] Installing Python libraries..."
-yay -S --needed --noconfirm "python-${PKGS[@]}"
+echo "[INFO] Installing/updating Python libraries..."
+yay -S --needed --noconfirm "python-${PY_PKGS[@]}"
 
 # # --- Install dotfiles using stow ---
 # DOTFILES_DIR="$HOME/dotfiles"
@@ -57,23 +84,30 @@ yay -S --needed --noconfirm "python-${PKGS[@]}"
 #   exit 1
 # fi
 
-# --- Install Hyprland plugins ---
-echo "[INFO] Installing split-monitor-workspaces plugin..."
-hyprpm update
-hyprpm add https://github.com/Duckonaut/split-monitor-workspaces
-hyprpm enable split-monitor-workspaces
 
-
-
-echo "[INFO] Installing Gruvbox-GTK-Theme"
+# --- Install/update Gruvbox-GTK-Theme ---
+echo "[INFO] Installing/updating Gruvbox-GTK-Theme"
 cd ~
-git clone https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
-cd Gruvbox-GTK-Theme/
+if [ -d "Gruvbox-GTK-Theme" ]; then
+  echo "[INFO] Updating existing Gruvbox-GTK-Theme..."
+  cd Gruvbox-GTK-Theme
+  git pull
+else
+  echo "[INFO] Cloning Gruvbox-GTK-Theme..."
+  git clone https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git
+  cd Gruvbox-GTK-Theme
+fi
 cd themes/
 ./install.sh -n "Gruvbox-Float-Border" --tweaks outline float
 cd ~
-rm -rf Gruvbox-GTK-Theme/
 
-rm -rf "$TMP_DIR"
+# Services
+echo "[INFO] Enabling system services..."
+sudo systemctl enable --now auto-cpufreq.service
 
-echo "[INFO] Install complete."
+# --- Final system update ---
+echo "[INFO] Running final system update..."
+sudo pacman -Syu --noconfirm
+
+echo "[INFO] Install/update complete."
+echo "[INFO] Note: If you were added to the docker group, please log out and back in for changes to take effect."
