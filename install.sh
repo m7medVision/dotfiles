@@ -36,7 +36,8 @@ PKGS=(
   nwg-displays nodejs-lts-jod npm \
   visual-studio-code-bin claude-code github-cli luarocks \
   zsh zoxide tmux pamixer auto-cpufreq \
-  docker docker-compose podman impala lazydocker
+  docker docker-compose podman impala lazydocker \
+  jome gimp
 )
 
 echo "[INFO] Installing/updating system/AUR packages..."

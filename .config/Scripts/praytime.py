@@ -141,6 +141,85 @@ def convert_to_24h(time_str):
         return time_str
 
 
+def is_between_athan_and_iqama(prayer_time_str, current_time_str=None):
+    """Check if current time is between Athan and Iqama for a given prayer"""
+    if current_time_str is None:
+        current_time_str = datetime.now().strftime("%H:%M")
+
+    # Add AM/PM if not present (same logic as in get_next_prayer_time)
+    if "AM" not in prayer_time_str and "PM" not in prayer_time_str:
+        # This function will be called with prayer names from context
+        # For now, assume we need to determine the prayer type
+        return False, None
+
+    # Convert prayer time to 24h format
+    prayer_time_24h = convert_to_24h(prayer_time_str)
+
+    # Parse times to datetime objects for comparison
+    prayer_dt = datetime.strptime(prayer_time_24h, "%H:%M")
+    current_dt = datetime.strptime(current_time_str, "%H:%M")
+
+    # Iqama delays (in minutes)
+    iqama_delays = {
+        "Fajr": 25,
+        "Sunrise": 0,  # No Iqama for sunrise
+        "Dhuhr": 25,
+        "Asr": 25,
+        "Maghrib": 15,  # Maghrib special case
+        "Isha": 25,
+    }
+
+    return False, None  # Will be called from context with prayer name
+
+
+def is_between_athan_and_iqama_for_prayer(prayer_name, prayer_time_str, current_time_str=None):
+    """Check if current time is between Athan and Iqama for a specific prayer"""
+    if current_time_str is None:
+        current_time_str = datetime.now().strftime("%H:%M")
+
+    # Skip sunrise as it doesn't have Iqama
+    if prayer_name == "Sunrise":
+        return False
+
+    # Add AM/PM if not present
+    time_str = prayer_time_str.strip()
+    if "AM" not in time_str and "PM" not in time_str:
+        if prayer_name in ["Fajr", "Sunrise"]:
+            time_str += " AM"
+        elif prayer_name == "Dhuhr":
+            hour = int(time_str.split(":")[0])
+            time_str += " AM" if hour < 12 else " PM"
+        else:
+            time_str += " PM"
+
+    # Convert prayer time to 24h format and then to minutes
+    prayer_time_24h = convert_to_24h(time_str)
+    prayer_minutes = int(prayer_time_24h.split(":")[0]) * 60 + int(prayer_time_24h.split(":")[1])
+
+    # Convert current time to minutes (handle both 24h and 12h with AM/PM formats)
+    if "AM" in current_time_str or "PM" in current_time_str:
+        current_time_24h = convert_to_24h(current_time_str)
+        current_minutes = int(current_time_24h.split(":")[0]) * 60 + int(current_time_24h.split(":")[1])
+    else:
+        # Assume 24h format
+        current_minutes = int(current_time_str.split(":")[0]) * 60 + int(current_time_str.split(":")[1])
+
+    # Iqama delays (in minutes)
+    iqama_delays = {
+        "Fajr": 25,
+        "Dhuhr": 25,
+        "Asr": 25,
+        "Maghrib": 15,  # Maghrib special case
+        "Isha": 25,
+    }
+
+    delay = iqama_delays.get(prayer_name, 25)
+    iqama_minutes = prayer_minutes + delay
+
+    # Check if current time is between Athan and Iqama
+    return prayer_minutes <= current_minutes <= iqama_minutes
+
+
 def get_next_prayer_time(full_prayer_data, city="Muscat"):
     now = datetime.now()
     today_str = now.strftime("%Y-%m-%d")
@@ -214,9 +293,25 @@ def format_for_waybar(
         "Isha": "العشاء",
     }
 
+    # Check if current time is between Athan and Iqama for any prayer
+    current_time = datetime.now().strftime("%H:%M")
+    special_text = None
+
+    if all_prayers:
+        for prayer_name, prayer_time in all_prayers.items():
+            if is_between_athan_and_iqama_for_prayer(prayer_name, prayer_time, current_time):
+                arabic_name = arabic_names.get(prayer_name, prayer_name)
+                special_text = f"غايتها صلاة {arabic_name}"
+                break
+
     icon = icon_map.get(next_prayer, "🕌")
     arabic_name = arabic_names.get(next_prayer, next_prayer)
-    text = f"{icon} {arabic_name} {next_time}"
+
+    # Use special text if in Iqama period, otherwise show next prayer
+    if special_text:
+        text = special_text
+    else:
+        text = f"{icon} {arabic_name} {next_time}"
 
     # Create detailed tooltip with all prayer times for today and tomorrow
     tooltip_lines = [f"🕌 أوقات الصلاة في {city}"]
