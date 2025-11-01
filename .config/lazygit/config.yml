@@ -3,6 +3,7 @@ customCommands:
     description: "pick AI commit"
     command: 'git commit -m "{{.Form.Msg}}"'
     context: "files"
+    loadingText: "Generating AI commit..."
     prompts:
       - type: "menuFromCommand"
         title: "ai Commits"
@@ -11,3 +12,25 @@ customCommands:
         filter: '^(?P<raw>.+)$'
         valueFormat: "{{ .raw }}"
         labelFormat: "{{ .raw | green }}"
+  - key: "<c-b>" # ctrl + b
+    description: "Pick AI commit (edit before committing)"
+    context: "files"
+    loadingText: "Generating AI commit..."
+    command: >
+      bash -c 'msg="{{.Form.Msg}}"; echo "$msg" > .git/COMMIT_EDITMSG && ${EDITOR:-nvim} .git/COMMIT_EDITMSG && if [ -s .git/COMMIT_EDITMSG ]; then
+
+        git commit -F .git/COMMIT_EDITMSG;
+      else
+
+        echo "Commit message is empty, commit aborted.";
+      fi'
+
+    prompts:
+      - type: "menuFromCommand"
+        title: "ai Commits"
+        key: "Msg"
+        command: "lazycommit commit"
+        filter: '^(?P<raw>.+)$'
+        valueFormat: "{{ .raw }}"
+        labelFormat: "{{ .raw | green }}"
+    output: terminal
