@@ -37,7 +37,7 @@ PKGS=(
   visual-studio-code-bin claude-code github-cli luarocks \
   zsh zoxide tmux pamixer auto-cpufreq \
   docker docker-compose podman impala lazydocker \
-  jome gimp
+  jome gimp hypridle google-chrome-stable seahorse gnome-keyring
 )
 
 echo "[INFO] Installing/updating system/AUR packages..."
@@ -105,6 +105,8 @@ cd ~
 # Services
 echo "[INFO] Enabling system services..."
 sudo systemctl enable --now auto-cpufreq.service
+
+flatpak override --user --socket=wayland --socket=fallback-x11
 
 # --- Final system update ---
 echo "[INFO] Running final system update..."
