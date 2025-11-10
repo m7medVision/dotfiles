@@ -3,7 +3,6 @@ customCommands:
     description: "pick AI commit"
     command: 'git commit -m "{{.Form.Msg}}"'
     context: "files"
-    loadingText: "Generating AI commit..."
     prompts:
       - type: "menuFromCommand"
         title: "ai Commits"
