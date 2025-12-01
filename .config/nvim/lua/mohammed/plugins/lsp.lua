@@ -77,6 +77,7 @@ return {
     config = function()
       require('mason-tool-installer').setup {
         ensure_installed = {
+          'copilot-language-server',
           'lua-language-server',
           'tinymist',
           'emmet-ls',
