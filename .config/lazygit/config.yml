@@ -33,3 +33,9 @@ customCommands:
         valueFormat: "{{ .raw }}"
         labelFormat: "{{ .raw | green }}"
     output: terminal
+  - key: "C"
+    command: "git cz --name cz_lazycommit commit"
+    description: "commit with commitizen"
+    context: "files"
+    loadingText: "opening commitizen commit tool"
+    output: terminal
