@@ -1,39 +1,16 @@
-local M = {
+return {
   {
-    'zbirenbaum/copilot.lua',
+    'github/copilot.vim',
+    branch = 'release',
     cmd = 'Copilot',
     event = 'BufReadPost',
     config = function()
-      require('copilot').setup {
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-          debounce = 75,
-          keymap = {
-            accept = '<C-l>',
-            accept_word = false,
-            accept_line = false,
-            next = '<C-j>',
-            prev = '<C-k>',
-            dismiss = '<C-h>',
-          },
-        },
-        server_opts_overrides = {
-          settings = {
-            advanced = {
-              listCount = 10,
-              inlineSuggestCount = 5,
-            },
-          },
-        },
-      }
-    end,
-  },
-  {
-    'AndreM222/copilot-lualine',
-    dependencies = { 'zbirenbaum/copilot.lua' },
-    config = function()
-      require 'copilot-lualine'
+      vim.g.copilot_no_tab_map = true
+      vim.keymap.set('i', '<M-a>', 'copilot#Accept("\\<CR>")', {
+        expr = true,
+        replace_keycodes = false,
+        silent = true,
+      })
     end,
   },
   {
@@ -47,16 +24,6 @@ local M = {
       },
     },
     keys = {
-      {
-        '<Tab>',
-        function()
-          if not require('sidekick').nes_jump_or_apply() then
-            return '<Tab>'
-          end
-        end,
-        expr = true,
-        desc = 'Goto/Apply Next Edit Suggestion',
-      },
       {
         '<Leader>aa',
         function()
@@ -117,8 +84,5 @@ local M = {
   {
     'sourcegraph/sg.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
-    build = 'nvim -l build/init.lua',
   },
 }
-
-return M
