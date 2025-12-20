@@ -60,13 +60,5 @@
       "url": "https://mcp.grep.app",
       "enabled": true
     },
-    "react-design-systems": {
-      "type": "local",
-      "command": [
-        "npx",
-        "@agentience/react-design-systems-mcp"
-      ],
-      "enabled": true
-    }
   }
 }
