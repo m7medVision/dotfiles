@@ -8,19 +8,19 @@
       "model": "github-copilot/gpt-5.2"
     },
     "librarian": {
-      "model": "zai/glm-4.5-air"
+      "model": "zai/glm-4.6"
     },
     "explore": {
       "model": "opencode/grok-code"
     },
     "frontend-ui-ux-engineer": {
-      "model": "google/gemini-3-pro-preview"
+      "model": "github-copilot/gemini-3-pro-preview"
     },
     "document-writer": {
-      "model": "google/gemini-3-flash-preview"
+      "model": "github-copilot/gemini-3-flash-preview"
     },
     "multimodal-looker": {
-      "model": "google/gemini-2.5-flash"
+      "model": "github-copilot/gemini-3-flash-preview"
     }
   },
   "google_auth": true
