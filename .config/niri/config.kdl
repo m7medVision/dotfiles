@@ -430,7 +430,7 @@ binds {
     Mod+Ctrl+V hotkey-overlay-title="Clipboard History" { spawn "vicinae" "vicinae://extensions/vicinae/clipboard/history"; }
 
     // Lock and logout
-    Mod+L hotkey-overlay-title="Lock Screen: swaylock" { spawn "swaylock"; }
+    Mod+L hotkey-overlay-title="Lock Screen: " { spawn "dms" "ipc" "call" "lock" "lock"; }
     Mod+Shift+Escape hotkey-overlay-title="Logout: wlogout" { spawn "wlogout"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
