@@ -1,0 +1,16 @@
+{
+  "displayManager": {
+    "enabled": true,
+    "brightness_HDMI-A-1": 100,
+    "contrast_HDMI-A-1": 38.97605020491803
+  },
+  "dankPomodoroTimer": {
+    "enabled": true
+  },
+  "dankBatteryAlerts": {
+    "enabled": true
+  },
+  "displayMirror": {
+    "enabled": true
+  }
+}
