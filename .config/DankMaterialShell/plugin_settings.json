@@ -1,0 +1,14 @@
+{
+  "dankPomodoroTimer": {
+    "enabled": true
+  },
+  "dankBatteryAlerts": {
+    "enabled": true
+  },
+  "displayMirror": {
+    "enabled": true
+  },
+  "displaySettings": {
+    "enabled": true
+  }
+}

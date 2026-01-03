@@ -1,6 +1,6 @@
 {
-  "currentThemeName": "dynamic",
-  "customThemeFile": "/home/mohammed/.config/DankMaterialShell/themes/gruvbox-material/theme.json",
+  "currentThemeName": "custom",
+  "customThemeFile": "/home/mohammed/.config/DankMaterialShell/themes/theme.json",
   "matugenScheme": "scheme-tonal-spot",
   "runUserMatugenTemplates": true,
   "matugenTargetMonitor": "",
@@ -86,6 +86,16 @@
     },
     {
       "id": "darkMode",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "idleInhibitor",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "builtin_vpn",
       "enabled": true,
       "width": 50
     }
@@ -283,6 +293,13 @@
         },
         {
           "id": "controlCenterButton",
+          "enabled": true,
+          "showNetworkIcon": true,
+          "showBluetoothIcon": true,
+          "showAudioIcon": true
+        },
+        {
+          "id": "dankPomodoroTimer",
           "enabled": true
         }
       ],
