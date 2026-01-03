@@ -280,7 +280,7 @@
       ],
       "rightWidgets": [
         {
-          "id": "systemTray",
+          "id": "dankPomodoroTimer",
           "enabled": true
         },
         {
@@ -292,14 +292,11 @@
           "enabled": true
         },
         {
-          "id": "controlCenterButton",
-          "enabled": true,
-          "showNetworkIcon": true,
-          "showBluetoothIcon": true,
-          "showAudioIcon": true
+          "id": "systemTray",
+          "enabled": true
         },
         {
-          "id": "dankPomodoroTimer",
+          "id": "controlCenterButton",
           "enabled": true
         }
       ],
