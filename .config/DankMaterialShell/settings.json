@@ -1,6 +1,6 @@
 {
-  "currentThemeName": "dynamic",
-  "customThemeFile": "/home/mohammed/.config/DankMaterialShell/themes/gruvbox-material/theme.json",
+  "currentThemeName": "custom",
+  "customThemeFile": "/home/mohammed/.config/DankMaterialShell/themes/theme.json",
   "matugenScheme": "scheme-tonal-spot",
   "runUserMatugenTemplates": true,
   "matugenTargetMonitor": "",
@@ -90,17 +90,12 @@
       "width": 50
     },
     {
-      "id": "builtin_vpn",
-      "enabled": true,
-      "width": 50
-    },
-    {
       "id": "idleInhibitor",
       "enabled": true,
       "width": 50
     },
     {
-      "id": "plugin_displayMirror",
+      "id": "builtin_vpn",
       "enabled": true,
       "width": 50
     }
@@ -146,6 +141,8 @@
   "launcherLogoBrightness": 0.5,
   "launcherLogoContrast": 1,
   "launcherLogoSizeOffset": 0,
+  "fontFamily": "Inter Variable",
+  "monoFontFamily": "Fira Code",
   "fontWeight": 400,
   "fontScale": 1,
   "notepadUseMonospace": true,
@@ -283,7 +280,7 @@
       ],
       "rightWidgets": [
         {
-          "id": "systemTray",
+          "id": "dankPomodoroTimer",
           "enabled": true
         },
         {
@@ -292,6 +289,10 @@
         },
         {
           "id": "battery",
+          "enabled": true
+        },
+        {
+          "id": "systemTray",
           "enabled": true
         },
         {
