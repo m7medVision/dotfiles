@@ -156,7 +156,6 @@ layout {
 
         // How many logical pixels the ring extends out from the windows.
         width 4
-
         // Colors can be set in a variety of ways:
         // - CSS named colors: "red"
         // - RGB hex: "#rgb", "#rgba", "#rrggbb", "#rrggbbaa"
@@ -412,6 +411,7 @@ binds {
     //
     // Most actions that you can bind here can also be invoked programmatically with
     // `niri msg action do-something`.
+    Mod+P { spawn-sh "~/.config/niri/toggle-mirror.sh"; }
 
     // Mod-Shift-/, which is usually the same as Mod-?,
     // shows a list of important hotkeys.
@@ -419,7 +419,7 @@ binds {
 
     // Application launchers (matching Hyprland bindings)
     Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
-    Mod+B hotkey-overlay-title="Open Browser: zen-browser" { spawn "zen-browser"; }
+    Mod+B hotkey-overlay-title="Open Browser: Chrome" { spawn "google-chrome"; }
     Mod+N hotkey-overlay-title="Open Notes: Obsidian" { spawn "flatpak" "run" "md.obsidian.Obsidian"; }
     Mod+E hotkey-overlay-title="Open Editor: vi" { spawn "vi"; }
     Mod+S hotkey-overlay-title="Open Editor: VSCode" { spawn "code"; }
