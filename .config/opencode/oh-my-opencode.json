@@ -8,7 +8,7 @@
       "model": "github-copilot/gpt-5-mini"
     },
     "librarian": {
-      "model": "zai/glm-4.6"
+      "model": "github-copilot/gpt-5-mini"
     },
     "explore": {
       "model": "github-copilot/gpt-5-mini"
