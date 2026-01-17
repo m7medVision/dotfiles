@@ -1,4 +1,5 @@
 return {
+  'nvim-treesitter/nvim-treesitter',
   opts = function(_, opts)
     opts.highlight = opts.highlight or {}
     opts.highlight.additional_vim_regex_highlighting = { 'markdown' }
