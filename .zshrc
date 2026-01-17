@@ -10,6 +10,7 @@ ZSH_THEME="robbyrussell"
 plugins=(git npm node docker zoxide bun uv dotnet)
 source $ZSH/oh-my-zsh.sh
 alias zshconfig="source ~/.zshrc"
+alias cd="z"
 alias vi="nvim"
 alias vim="nvim"
 alias lg="lazygit"
@@ -29,3 +30,14 @@ export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+# bun completions
+[ -s "/home/mohammed/.bun/_bun" ] && source "/home/mohammed/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# opencode
+export PATH=/home/mohammed/.opencode/bin:$PATH
+export PATH="$PATH:$HOME/.cargo/bin"
