@@ -1,90 +1,61 @@
 return {
   {
     'saghen/blink.cmp',
-    version = 'v1.6.0',
-    event = { 'InsertEnter', 'CmdlineEnter' },
     dependencies = {
       'rafamadriz/friendly-snippets',
-      'onsails/lspkind.nvim',
-      'nvim-tree/nvim-web-devicons',
+      'fang2hou/blink-copilot',
     },
+    version = '*',
+
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
     opts = {
-      fuzzy = {
-        implementation = 'lua',
-      },
       keymap = {
         preset = 'super-tab',
+        ['<Tab>'] = {
+          function(cmp)
+            if vim.b[vim.api.nvim_get_current_buf()].nes_state then
+              cmp.hide()
+              return (require('copilot-lsp.nes').apply_pending_nes() and require('copilot-lsp.nes').walk_cursor_end_edit())
+            end
+            if cmp.snippet_active() then
+              return cmp.accept()
+            else
+              return cmp.select_and_accept()
+            end
+          end,
+          'snippet_forward',
+          'fallback',
+        },
       },
+
       appearance = {
         use_nvim_cmp_as_default = true,
+        nerd_font_variant = 'mono',
       },
-      completion = {
-        trigger = {
-          show_on_trigger_character = true,
-          show_on_insert_on_trigger_character = true,
-          show_on_x_blocked_trigger_characters = { "'", '"', '(', '{' },
-        },
-        menu = {
-          border = 'rounded',
-          draw = {
-            treesitter = { 'lsp' },
-            columns = { { 'label', 'label_description', gap = 1 }, { 'kind_icon', 'kind', gap = 1 } },
-            components = {
-              kind_icon = {
-                text = function(ctx)
-                  local lspkind = require 'lspkind'
-                  local icon = ctx.kind_icon
-                  if vim.tbl_contains({ 'Path' }, ctx.source_name) then
-                    local dev_icon = require('nvim-web-devicons').get_icon(ctx.label)
-                    if dev_icon then
-                      icon = dev_icon
-                    end
-                  else
-                    icon = lspkind.symbolic(ctx.kind, { mode = 'symbol' })
-                  end
-                  return icon .. ctx.icon_gap
-                end,
-                highlight = function(ctx)
-                  local hl = ctx.kind_hl
-                  if vim.tbl_contains({ 'Path' }, ctx.source_name) then
-                    local _, dev_hl = require('nvim-web-devicons').get_icon(ctx.label)
-                    if dev_hl then
-                      hl = dev_hl
-                    end
-                  end
-                  return hl
-                end,
-              },
-            },
-          },
-        },
-        accept = {
-          auto_brackets = { enabled = false },
-        },
-        documentation = {
-          auto_show = true,
-          auto_show_delay_ms = 500,
-          treesitter_highlighting = true,
-          window = {
-            border = 'rounded',
-          },
-        },
-        ghost_text = {
-          enabled = false,
-        },
-      },
-      signature = {
-        enabled = true,
-        window = {
-          border = 'rounded',
-        },
-      },
+
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'buffer' },
-        per_filetype = {
-          sql = { 'snippets', 'buffer' },
+        default = { 'lsp', 'path', 'snippets', 'buffer', 'copilot' },
+        providers = {
+          copilot = {
+            name = 'copilot',
+            module = 'blink-copilot',
+            score_offset = 100,
+            async = true,
+            enabled = true,
+          },
         },
+      },
+
+      signature = { enabled = true },
+
+      completion = {
+        documentation = { auto_show = true, auto_show_delay_ms = 500 },
+        menu = { border = 'rounded' },
+        ghost_text = { enabled = true },
       },
     },
+    fuzzy = { implementation = 'rust' },
+    opts_extend = { 'sources.default' },
   },
 }
