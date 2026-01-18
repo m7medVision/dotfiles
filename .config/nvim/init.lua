@@ -16,6 +16,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require 'mohammed.common'
+require 'mohammed.markdown_syntax'
 
 require('lazy').setup {
   spec = {
@@ -23,19 +24,4 @@ require('lazy').setup {
   },
   install = { colorscheme = { 'habamax' } },
   checker = { enabled = false },
-  change_detection = { enabled = true },
-  performance = {
-    rtp = {
-      disabled_plugins = {
-        'gzip',
-        'matchit',
-        'matchparen',
-        'netrwPlugin',
-        'tarPlugin',
-        'tohtml',
-        'tutor',
-        'zipPlugin',
-      },
-    },
-  },
 }
