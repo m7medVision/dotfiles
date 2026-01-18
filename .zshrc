@@ -16,6 +16,7 @@ alias vim="nvim"
 alias lg="lazygit"
 alias ld="lazydocker"
 alias lcfzf="lazycommit commit | fzf --prompt='Pick commit> ' | xargs -r -I {} git commit -m \"{}\" "
+alias oh="sh ~/dotfiles/.config/Scripts/toggle-omo.sh"
 alias venv=source venv/bin/activate
 export PATH="/home/mohammed/.config/herd-lite/bin:$PATH"
 export PHP_INI_SCAN_DIR="/home/mohammed/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
