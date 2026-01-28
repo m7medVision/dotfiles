@@ -25,13 +25,17 @@
   # Networking & Locale
   networking.hostName = "laptop";
   networking.networkmanager.enable = true;
-  time.timeZone = "UTC"; # Change this to your timezone!
+  time.timeZone = "Asia/Muscat"; # Change this to your timezone!
 
   # Desktop Environment
   services.xserver.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
+  services.displayManager.gdm.enable = true;
+  services.displayManager.gdm.wayland = true;
+  services.desktopManager.gnome.enable = true;
+  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.extraLocaleSettings = {
+    LC_TIME = "en_US.UTF-8";  # Uses 12-hour format
+  };
   # User Setup
   users.users.mohammed = {
     isNormalUser = true;
@@ -52,7 +56,7 @@
 
   # Optimization for Laptop
   services.thermald.enable = true;
-  
+
   # Power Management (GNOME default)
   services.power-profiles-daemon.enable = true;
 
