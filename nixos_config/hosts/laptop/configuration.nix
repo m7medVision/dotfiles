@@ -39,7 +39,7 @@
   # User Setup
   users.users.mohammed = {
     isNormalUser = true;
-    description = "Mohammed";
+    description = "Mohammed Al Jahwari";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
     # Password can be set via 'passwd mohammed' after install
   };
