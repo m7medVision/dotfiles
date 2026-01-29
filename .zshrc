@@ -42,4 +42,7 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # opencode
 export PATH=/home/mohammed/.opencode/bin:$PATH
 export PATH="$PATH:$HOME/.cargo/bin"
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+if [ -d "$HOME/.linuxbrew" ] || [ -d "/home/linuxbrew/.linuxbrew" ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
