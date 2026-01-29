@@ -21,7 +21,6 @@
     curl
     wget
     unzip
-    zsh
     tmux
 
     gcc # Required for nvim-treesitter to compile parsers
