@@ -12,6 +12,7 @@
     neovim-unwrapped
     bitwarden-desktop
     opencode
+    gh # github
 
     # Utilities
     wl-clipboard
