@@ -85,7 +85,6 @@ return {
           'tinymist',
           'emmet-ls',
           'stylua',
-          'ruff',
           'css-lsp',
           'tailwindcss-language-server',
           'html-lsp',
