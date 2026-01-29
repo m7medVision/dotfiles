@@ -5,74 +5,15 @@ return {
     -- Required for `snacks` provider.
     ---@module 'snacks' <- Loads `snacks.nvim` types for configuration intellisense.
   },
-  keys = {
-    {
-      '<C-a>',
-      function()
-        require('opencode').ask('@this: ', { submit = true })
-      end,
-      mode = { 'n', 'x' },
-      desc = 'Ask opencode…',
-    },
-    {
-      '<C-x>',
-      function()
-        require('opencode').select()
-      end,
-      mode = { 'n', 'x' },
-      desc = 'Execute opencode action…',
-    },
-    {
-      '<leader>oc',
-      function()
-        require('opencode').toggle()
-      end,
-      mode = { 'n', 't' },
-      desc = 'Toggle opencode',
-    },
-    {
-      'go',
-      function()
-        return require('opencode').operator '@this '
-      end,
-      mode = { 'n', 'x' },
-      desc = 'Add range to opencode',
-      expr = true,
-    },
-    {
-      'goo',
-      function()
-        return require('opencode').operator '@this ' .. '_'
-      end,
-      mode = 'n',
-      desc = 'Add line to opencode',
-      expr = true,
-    },
-    {
-      '<S-C-u>',
-      function()
-        require('opencode').command 'session.half.page.up'
-      end,
-      mode = 'n',
-      desc = 'Scroll opencode up',
-    },
-    {
-      '<S-C-d>',
-      function()
-        require('opencode').command 'session.half.page.down'
-      end,
-      mode = 'n',
-      desc = 'Scroll opencode down',
-    },
-    { '+', '<C-a>', mode = 'n', desc = 'Increment under cursor', remap = true },
-    { '-', '<C-x>', mode = 'n', desc = 'Decrement under cursor', remap = true },
-  },
   config = function()
     ---@type opencode.Opts
     vim.g.opencode_opts = {
       -- Your configuration, if any — see `lua/opencode/config.lua`, or "goto definition" on the type or field.
     }
-
+    vim.keymap.set({ "n", "x" }, "<C-p>", function() require("opencode").select() end,                          { desc = "Execute opencode action…" })
+    vim.keymap.set({ "n", "t" }, "<C-.>", function() require("opencode").toggle() end,                          { desc = "Toggle opencode" })
+    vim.keymap.set({ "n", "x" }, "go",  function() return require("opencode").operator("@this ") end,        { desc = "Add range to opencode", expr = true })
+    vim.keymap.set("n",          "goo", function() return require("opencode").operator("@this ") .. "_" end, { desc = "Add line to opencode", expr = true })
     -- Required for `opts.events.reload`.
     vim.o.autoread = true
   end,
