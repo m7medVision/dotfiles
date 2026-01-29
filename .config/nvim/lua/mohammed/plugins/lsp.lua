@@ -2,10 +2,11 @@ return {
   -- Treesitter for syntax highlighting and code understanding
   {
     'nvim-treesitter/nvim-treesitter',
+    branch = "master",
     build = ':TSUpdate',
     lazy = false,
     config = function()
-      require('nvim-treesitter.configs').setup {
+      require('nvim-treesitter').setup {
         modules = {},
         sync_install = true,
         ensure_installed = {},
