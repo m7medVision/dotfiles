@@ -23,6 +23,7 @@
     unzip
     tmux
     zoxide
+    lsof
 
     gcc # Required for nvim-treesitter to compile parsers
     gnumake # Often required for building plugins
@@ -42,12 +43,10 @@
     glib # for gsettings
   ];
 
-  home.file.".config/nvim" = {
-    source = ../../../.config/nvim;
-  };
-  home.file.".config/lazygit".source = ../../../.config/lazygit;
-  home.file.".tmux.conf".source = ../../../.tmux.conf;
-  home.file.".zshrc".source = ../../../.zshrc;
+  home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.config/nvim";
+  home.file.".config/lazygit".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.config/lazygit";
+  home.file.".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.tmux.conf";
+  home.file.".zshrc".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.zshrc";
 
   # Basic Git Config
   programs.git = {
