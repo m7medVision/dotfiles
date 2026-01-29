@@ -22,6 +22,7 @@
     wget
     unzip
     tmux
+    zoxide
 
     gcc # Required for nvim-treesitter to compile parsers
     gnumake # Often required for building plugins
@@ -62,6 +63,9 @@
         editor = "nano";         # default editor for gh prompts
     };
   };
+
+
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
