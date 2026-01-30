@@ -6,11 +6,11 @@
 
   hardware.nvidia = {
     modesetting.enable = true;
-    powerManagement.enable = true; # Needed for suspend/resume
-    powerManagement.finegrained = true; # Turn off GPU when not in use
+    powerManagement.enable = false; # More stable for hybrid/suspend
+    # powerManagement.finegrained = false; # Keep off for max suspend stability (uncomment only if truly needed)
     open = false; # Use proprietary drivers for better laptop support
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.stable; # Most compatible/stable package choice
 
     prime = {
       offload = {
@@ -29,6 +29,10 @@
     enable32Bit = true;
   };
 
+   boot.kernelParams = [
+     "nvidia.NVreg_TemporaryFilePath=/var/tmp"
+     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+   ];
   # Helper script to run apps on Nvidia
   # Usage: nvidia-offload <program>
   environment.systemPackages = [
