@@ -2,9 +2,13 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "oh-my-opencode",
-    "opencode-antigravity-auth@latest"
+    "opencode-antigravity-auth@latest",
+    "yet-another-opencode-cursor-auth"
   ],
   "provider": {
+    "cursor": {
+      "name": "Cursor"
+    },
     "google": {
       "name": "Google",
       "models": {
