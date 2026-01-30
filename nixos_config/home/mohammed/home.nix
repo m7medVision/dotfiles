@@ -1,72 +1,13 @@
-{ config, pkgs, ... }:
-
 {
-  home.username = "mohammed";
-  home.homeDirectory = "/home/mohammed";
-  home.stateVersion = "25.11";
-
-  home.packages = with pkgs; [
-    google-chrome
-    lazydocker
-    lazygit
-    neovim-unwrapped
-    bitwarden-desktop
-    opencode
-
-    # Utilities
-    wl-clipboard
-    nvtopPackages.full # GPU monitoring
-    htop
-    git
-    curl
-    wget
-    unzip
-    tmux
-    zoxide
-    lsof
-    cargo
-
-    gcc # Required for nvim-treesitter to compile parsers
-    gnumake # Often required for building plugins
-    ripgrep # Required for Telescope/grep searches
-    fd # Required for fast file finding
-    # Dependencies for scripts and tools
-    kitty
-    fontconfig
-    gnome-calculator
-    pavucontrol
-    networkmanagerapplet
-    brightnessctl
-    pamixer
-    playerctl
-    nodejs_22
-    # Theme management
-    glib # for gsettings
+  imports = [
+    ./modules/core.nix
+    ./modules/packages/apps.nix
+    ./modules/packages/dev-tools.nix
+    ./modules/packages/utils.nix
+    ./modules/symlinks.nix
+    ./modules/programs/git.nix
+    ./modules/programs/gh.nix
   ];
 
-  home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.config/nvim";
-  home.file.".config/kitty".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.config/kitty";
-  home.file.".config/lazygit".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.config/lazygit";
-  home.file.".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.tmux.conf";
-  home.file.".zshrc".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.zshrc";
-
-  # Basic Git Config
-  programs.git = {
-    enable = true;
-    settings.user.name = "Mohammed";
-    settings.user.email = "88824957+m7medVision@users.noreply.github.com";
-  };
-
-  programs.gh = {
-    enable = true;
-    settings = {
-      git_protocol = "https";    # preferred protocol e.g., "ssh" or "https"
-        editor = "nivm";         # default editor for gh prompts
-    };
-  };
-
-
-
-  # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
