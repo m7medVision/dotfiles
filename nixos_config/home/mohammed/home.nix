@@ -24,6 +24,7 @@
     tmux
     zoxide
     lsof
+    cargo
 
     gcc # Required for nvim-treesitter to compile parsers
     gnumake # Often required for building plugins
@@ -44,6 +45,7 @@
   ];
 
   home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.config/nvim";
+  home.file.".config/kitty".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.config/kitty";
   home.file.".config/lazygit".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.config/lazygit";
   home.file.".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.tmux.conf";
   home.file.".zshrc".source = config.lib.file.mkOutOfStoreSymlink "/home/mohammed/dotfiles/.zshrc";
@@ -59,7 +61,7 @@
     enable = true;
     settings = {
       git_protocol = "https";    # preferred protocol e.g., "ssh" or "https"
-        editor = "nano";         # default editor for gh prompts
+        editor = "nivm";         # default editor for gh prompts
     };
   };
 
