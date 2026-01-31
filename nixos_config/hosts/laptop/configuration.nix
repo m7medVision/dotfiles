@@ -31,8 +31,9 @@
   services.xserver.enable = true;
   services.displayManager.gdm.enable = true;
   services.displayManager.gdm.wayland = true;
-  services.desktopManager.gnome.enable = true;
 
+  # Gnome
+  services.desktopManager.gnome.enable = true;
   # Niri Wayland Compositor
   programs.niri.enable = true;
 
