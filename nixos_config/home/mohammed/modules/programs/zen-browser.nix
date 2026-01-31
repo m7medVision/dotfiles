@@ -279,7 +279,7 @@
   };
 
   xdg.mimeApps = let
-    browser = inputs.zen-browser.packages.${pkgs.system}.beta.meta.desktopFileName;
+    browser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.beta.meta.desktopFileName;
     types = [
       "text/html"
       "x-scheme-handler/http"
