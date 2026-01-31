@@ -33,6 +33,9 @@
   services.displayManager.gdm.wayland = true;
   services.desktopManager.gnome.enable = true;
 
+  # Niri Wayland Compositor
+  programs.niri.enable = true;
+
 
 
   i18n.defaultLocale = "en_US.UTF-8";
