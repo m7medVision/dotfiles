@@ -1,5 +1,10 @@
 { config, pkgs, inputs, ... }:
 
+let
+  pkgsUnstable = import inputs.nixpkgsunstable {
+    system = pkgs.system;
+  };
+in
 {
   imports = [
     ./hardware.nix
@@ -9,6 +14,8 @@
   # Nix Settings
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.auto-optimise-store = true;
+  nix.settings.substituters = [ "https://vicinae.cachix.org" ];
+  nix.settings.trusted-public-keys = [ "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc=" ];
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -34,6 +41,24 @@
 
   # Gnome
   services.desktopManager.gnome.enable = true;
+
+  programs.dank-material-shell = {
+    enable = true;
+
+    systemd = {
+      enable = true;             # Systemd service for auto-start
+      restartIfChanged = true;   # Auto-restart dms.service when dms-shell changes
+    };
+
+    # Core features
+    enableSystemMonitoring = true;     # System monitoring widgets (dgop)
+    enableClipboardPaste = true;        # Clipboard history manager
+    enableVPN = true;                  # VPN management widget
+    enableDynamicTheming = true;       # Wallpaper-based theming (matugen)
+    enableAudioWavelength = true;      # Audio visualizer (cava)
+    enableCalendarEvents = true;       # Calendar integration (khal)
+  };
+
   # Niri Wayland Compositor
   programs.niri.enable = true;
 
@@ -83,7 +108,6 @@
    };
 
    # GNOME suspend/resume hooks (optional, uncomment if you see gnome-shell issues)
-   /*
    systemd.services.gnome-suspend = {
      description = "Suspend gnome shell before sleep";
      before = [
@@ -118,7 +142,6 @@
        ExecStart = "${pkgs.procps}/bin/pkill -f -CONT gnome-shell";
      };
    };
-   */
 
    system.stateVersion = "25.11";
 }

@@ -11,22 +11,43 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    dms = {
-      url = "github:AvengeMedia/DankMaterialShell";
-      inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgsunstable = {
+      url = "github:nixos/nixpkgs/nixos-unstable";
     };
-    dgop = {
-      url = "github:AvengeMedia/dgop";
+    dms-shell = {
+      url = "github:AvengeMedia/DankMaterialShell";
+      inputs.nixpkgs.follows = "nixpkgsunstable";
+    };
+    vicinae = {
+      url = "github:vicinaehq/vicinae";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, dms, dgop, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, nixpkgsunstable, dms-shell, vicinae, ... }@inputs: {
     nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; };
+      specialArgs = {
+        inherit inputs;
+      };
       modules = [
         ./hosts/laptop/configuration.nix
         home-manager.nixosModules.home-manager
+        # Import dms-shell module with unstable packages
+        ({ config, lib, pkgs, ... }:
+          let
+            pkgsUnstable = import nixpkgsunstable {
+              system = pkgs.system;
+              config.allowUnfree = true;
+            };
+          in
+          {
+            imports = [
+              (dms-shell.nixosModules.default {
+                inherit config lib;
+                pkgs = pkgsUnstable;
+              })
+            ];
+          })
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;

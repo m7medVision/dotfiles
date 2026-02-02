@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ ... }:
 
 {
   imports = [
@@ -10,8 +10,7 @@
     ./modules/programs/git.nix
     ./modules/programs/gh.nix
     ./modules/programs/zen-browser.nix
-    ./modules/programs/dank-material-shell.nix
-    inputs.dms.homeModules.dank-material-shell
+    ./modules/programs/vicinae.nix
   ];
 
   programs.home-manager.enable = true;
