@@ -27,7 +27,7 @@ input {
     touchpad {
         // off
         tap
-        // dwt
+        dwt
         // dwtp
         // drag false
         // drag-lock
@@ -37,7 +37,6 @@ input {
         // scroll-method "two-finger"
         // disabled-on-external-mouse
     }
-
     mouse {
         // off
         // natural-scroll
@@ -84,7 +83,7 @@ input {
     mode "1920x1080@120.030"
 
     // You can use integer or fractional scale, for example use 1.5 for 150% scale.
-    scale 2
+    scale 1
 
     // Transform allows to rotate the output counter-clockwise, valid values are:
     // normal, 90, 180, 270, flipped, flipped-90, flipped-180 and flipped-270.
@@ -692,3 +691,7 @@ binds {
     // moving the mouse or pressing any other key.
     Mod+Shift+P { power-off-monitors; }
 }
+
+include "dms/outputs.kdl"
+
+include "dms/cursor.kdl"
