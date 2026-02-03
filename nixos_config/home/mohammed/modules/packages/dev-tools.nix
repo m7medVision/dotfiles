@@ -12,5 +12,11 @@
     ripgrep
     fd
     nodejs_22
+    fzf
+    jq
+
+
+    # I will move this later on to other module
+    nuclei
   ];
 }
