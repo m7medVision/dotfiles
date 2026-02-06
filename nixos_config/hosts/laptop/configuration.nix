@@ -8,6 +8,7 @@ in
 {
   imports = [
     ./hardware.nix
+    ./nh.nix
   ];
 
   # Nix Settings
@@ -15,11 +16,11 @@ in
   nix.settings.auto-optimise-store = true;
   nix.settings.substituters = [ "https://vicinae.cachix.org" ];
   nix.settings.trusted-public-keys = [ "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc=" ];
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
+  # nix.gc = {
+  #   automatic = true;
+  #   dates = "weekly";
+  #   options = "--delete-older-than 7d";
+  # };
 
   # Allow Unfree packages (needed for Nvidia)
   nixpkgs.config.allowUnfree = true;
