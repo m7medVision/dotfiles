@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ pkgs, inputs, ... }:
 
 let
   pkgsUnstable = import inputs.nixpkgsunstable {
@@ -8,7 +8,6 @@ in
 {
   imports = [
     ./hardware.nix
-    ./nvidia.nix
   ];
 
   # Nix Settings
