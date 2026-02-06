@@ -9,6 +9,7 @@
     cargo
     gcc
     gnumake
+    just
     ripgrep
     fd
     nodejs_22
