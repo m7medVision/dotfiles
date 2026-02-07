@@ -1,21 +1,21 @@
 # Justfile for dotfiles management
 
-# Build and switch to the laptop configuration
+# Build and switch to the laptop configuration using nh
 rebuild:
-	sudo nixos-rebuild switch --flake ~/dotfiles/nixos_config#laptop
+	nh os switch ~/dotfiles/nixos_config --hostname laptop
 
-# Test build (no activation)
+# Test build (no activation) using nh
 build:
-	sudo nixos-rebuild build --flake ~/dotfiles/nixos_config#laptop
+	nh os build ~/dotfiles/nixos_config --hostname laptop
 
-# Dry-activate configuration
-check:
-	sudo nixos-rebuild dry-activate --flake ~/dotfiles/nixos_config#laptop
-
-# Home Manager switch (standalone)
+# Home Manager switch (standalone) using nh
 home:
-	home-manager switch --flake ~/dotfiles/nixos_config
+	nh home switch ~/dotfiles/nixos_config
 
 # Update flake inputs
 update:
 	nix flake update --flake ~/dotfiles/nixos_config
+
+# Clean old generations using nh
+clean:
+	nh clean all

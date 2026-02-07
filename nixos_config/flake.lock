@@ -3,7 +3,7 @@
     "dms-shell": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgsunstable"
+          "nixpkgs-unstable"
         ],
         "quickshell": "quickshell"
       },
@@ -79,13 +79,13 @@
         "type": "github"
       }
     },
-    "nixpkgsunstable": {
+    "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1769461804,
-        "narHash": "sha256-msG8SU5WsBUfVVa/9RPLaymvi5bI8edTavbIq3vRlhI=",
+        "lastModified": 1770197578,
+        "narHash": "sha256-AYqlWrX09+HvGs8zM6ebZ1pwUqjkfpnv8mewYwAo+iM=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "bfc1b8a4574108ceef22f02bafcf6611380c100d",
+        "rev": "00c21e4c93d963c50d4c0c89bfa84ed6e0694df2",
         "type": "github"
       },
       "original": {
@@ -122,7 +122,7 @@
         "dms-shell": "dms-shell",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
-        "nixpkgsunstable": "nixpkgsunstable",
+        "nixpkgs-unstable": "nixpkgs-unstable",
         "vicinae": "vicinae",
         "zen-browser": "zen-browser"
       }

@@ -5,5 +5,6 @@
     google-chrome
     bitwarden-desktop
     opencode
+    vscode
   ];
 }

@@ -1,14 +1,22 @@
-{ pkgs, inputs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 let
-  pkgsUnstable = import inputs.nixpkgsunstable {
+  # Unstable channel packages - for software needing the latest versions
+  pkgsUnstable = import inputs.nixpkgs-unstable {
     system = pkgs.system;
+    config.allowUnfree = true;
   };
 in
+
 {
   imports = [
     ./hardware.nix
     ./nh.nix
+    # Dank Material Shell - imported with unstable packages
+    (inputs.dms-shell.nixosModules.default {
+      inherit config lib;
+      pkgs = pkgsUnstable;
+    })
   ];
 
   # Nix Settings
