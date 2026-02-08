@@ -15,7 +15,7 @@
     nodejs_22
     fzf
     jq
-
+    ast-grep
 
     # I will move this later on to other module
     nuclei
