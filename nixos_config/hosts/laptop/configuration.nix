@@ -70,6 +70,11 @@ in
   # Niri Wayland Compositor
   programs.niri.enable = true;
 
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+  };
+
 
 
   i18n.defaultLocale = "en_US.UTF-8";

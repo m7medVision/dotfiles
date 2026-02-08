@@ -11,6 +11,7 @@
     ./modules/programs/gh.nix
     ./modules/programs/zen-browser.nix
     ./modules/programs/vicinae.nix
+    ./modules/programs/vscode.nix
   ];
 
   programs.home-manager.enable = true;
