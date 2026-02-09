@@ -16,6 +16,8 @@
     fzf
     jq
     ast-grep
+    act # github runner
+    gitlab-ci-local # gitlab runner
 
     # I will move this later on to other module
     nuclei
