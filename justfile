@@ -8,10 +8,6 @@ rebuild:
 build:
 	nh os build ~/dotfiles/nixos_config --hostname laptop
 
-# Home Manager switch (standalone) using nh
-home:
-	nh home switch ~/dotfiles/nixos_config
-
 # Update flake inputs
 update:
 	nix flake update --flake ~/dotfiles/nixos_config
