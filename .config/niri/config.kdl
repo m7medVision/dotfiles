@@ -202,7 +202,7 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
-    Mod+B hotkey-overlay-title="Open Browser: Chrome" { spawn "google-chrome"; }
+    Mod+B hotkey-overlay-title="Open Browser: Chrome" { spawn "zen"; }
     Mod+N hotkey-overlay-title="Open Notes: Obsidian" { spawn "flatpak" "run" "md.obsidian.Obsidian"; }
     Mod+E hotkey-overlay-title="Open Editor: vi" { spawn "vi"; }
     Mod+S hotkey-overlay-title="Open Editor: VSCode" { spawn "code"; }
