@@ -12,7 +12,7 @@ return {
         ensure_installed = {},
         ignore_install = {},
         auto_install = true,
-        highlight = { enable = true, additional_vim_regex_highlighting = { 'markdown' } },
+        highlight = { enable = true },
         indent = { enable = true },
       }
     end,
