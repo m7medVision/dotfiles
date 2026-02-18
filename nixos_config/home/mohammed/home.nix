@@ -9,6 +9,7 @@
     ./modules/symlinks.nix
     ./modules/programs/git.nix
     ./modules/programs/gh.nix
+    ./modules/programs/opencode.nix
     ./modules/programs/zen-browser.nix
     ./modules/programs/vicinae.nix
     ./modules/programs/vscode.nix

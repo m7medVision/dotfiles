@@ -3,7 +3,7 @@
 let
   # Unstable channel packages - for software needing the latest versions
   pkgsUnstable = import inputs.nixpkgs-unstable {
-    system = pkgs.system;
+    system = pkgs.stdenv.hostPlatform.system;
     config.allowUnfree = true;
   };
 in
@@ -19,6 +19,12 @@ in
     })
   ];
 
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+  libGL
+  glib
+  stdenv.cc.cc.lib
+  ];
   # Nix Settings
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.auto-optimise-store = true;
@@ -29,6 +35,14 @@ in
   #   dates = "weekly";
   #   options = "--delete-older-than 7d";
   # };
+
+  services.blueman.enable = true;
+  sops = {
+    defaultSopsFile = ../../secrets.yaml;
+    age.keyFile = "/home/mohammed/.config/sops/age/keys.txt";
+
+    secrets.example = { };
+  };
 
   # Allow Unfree packages (needed for Nvidia)
   nixpkgs.config.allowUnfree = true;
