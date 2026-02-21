@@ -20,6 +20,9 @@ alias oh="sh ~/dotfiles/.config/Scripts/toggle-omo.sh"
 alias venv=source venv/bin/activate
 export PATH="/home/mohammed/.config/herd-lite/bin:$PATH"
 export PHP_INI_SCAN_DIR="/home/mohammed/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
+
+export EDITOR="nvim"
+
 if [ -f ~/.zshenv ]; then
   source ~/.zshenv
 fi
@@ -45,4 +48,8 @@ export PATH="$PATH:$HOME/.cargo/bin"
 
 if [ -d "$HOME/.linuxbrew" ] || [ -d "/home/linuxbrew/.linuxbrew" ]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+if [ -d "$HOME/.local/bin" ]; then
+  export PATH="$HOME/.local/bin:$PATH"
 fi

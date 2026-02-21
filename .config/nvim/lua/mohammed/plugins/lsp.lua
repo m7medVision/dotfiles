@@ -2,7 +2,7 @@ return {
   -- Treesitter for syntax highlighting and code understanding
   {
     'nvim-treesitter/nvim-treesitter',
-    branch = "master",
+    branch = 'master',
     build = ':TSUpdate',
     lazy = false,
     config = function()
@@ -15,6 +15,13 @@ return {
         highlight = { enable = true },
         indent = { enable = true },
       }
+
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'svelte',
+        callback = function()
+          pcall(vim.cmd, 'TSBufEnable highlight')
+        end,
+      })
     end,
   },
 

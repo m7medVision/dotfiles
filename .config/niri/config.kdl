@@ -104,11 +104,9 @@ layout {
 // Polkit agent for password prompts
 spawn-at-startup "/usr/lib/polkit-kde-authentication-agent-1"
 
-// Clipboard manager
-spawn-sh-at-startup "wl-paste --type text --watch cliphist store"
-spawn-sh-at-startup "wl-paste --type image --watch cliphist store"
-
-spawn-at-startup "vicinae" "server"
+// // Clipboard manager
+// spawn-sh-at-startup "wl-paste --type text --watch cliphist store"
+// spawn-sh-at-startup "wl-paste --type image --watch cliphist store"
 
 spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
 
@@ -394,5 +392,4 @@ binds {
 }
 
 include "dms/outputs.kdl"
-
 include "dms/cursor.kdl"

@@ -1,24 +1,20 @@
-local config = require 'blink.cmp.completion.brackets.config'
--- Copilot configuration with blink.cmp integration
 return {
   {
-    'github/copilot.vim',
+    'zbirenbaum/copilot.lua',
     cmd = 'Copilot',
-    event = 'BufWinEnter',
-    init = function()
-      vim.g.copilot_no_maps = true
-    end,
-    config = function()
-      -- Block Copilot suggestions in brackets and quotes
-      vim.api.nvim_create_augroup('github_copilot', { clear = true })
-      vim.api.nvim_create_autocmd({ 'FileType', 'BufUnload' }, {
-        group = 'github_copilot',
-        callback = function(args)
-          vim.fn['copilot#On' .. args.event]()
-        end,
-      })
-      vim.fn['copilot#OnFileType']()
-    end,
+    event = 'InsertEnter',
+    opts = {
+      suggestion = { enabled = false },
+      panel = { enabled = false },
+      nes = {
+        enabled = true,
+        keymap = {
+          accept_and_goto = '<S-Tab>',
+          accept = false,
+          dismiss = '<Esc>',
+        },
+      },
+    },
   },
 
   {
@@ -26,6 +22,10 @@ return {
     init = function()
       vim.g.copilot_nes_debounce = 500
       vim.lsp.enable 'copilot_ls'
+      vim.keymap.set('i', '<Esc>', function()
+        require('copilot-lsp.nes').clear()
+        return '<Esc>'
+      end, { desc = 'Dismiss Copilot NES suggestion', expr = true })
     end,
     opts = {
       nes = {
