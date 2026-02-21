@@ -6,6 +6,7 @@
   programs.zen-browser = {
     enable = true;
     languagePacks = ["en-US"];
+    suppressXdgMigrationWarning = true;
 
     policies = {
       DisableTelemetry = true;
@@ -172,82 +173,47 @@
           "amazondotcom-us".metaData.hidden = true;
         };
       };
-
+      containersForce = true;
+      containers = {
+        Personal = {
+          color = "purple";
+          icon = "fingerprint";
+          id = 1;
+        };
+        Work = {
+          color = "blue";
+          icon = "briefcase";
+          id = 2;
+        };
+        development = {
+          color = "green";
+          icon = "fence";
+          id = 3;
+        };
+      };
       spacesForce = true;
       spaces = {
         "Personal" = {
           id = "c6de089c-410d-4206-961d-ab11f988d40a";
           icon = "🏠";
+          container = containers.Personal.id;
           position = 1000;
-          theme = {
-            type = "gradient";
-            colors = [{
-              algorithm = "floating";
-              type = "explicit-lightness";
-              red = 124;
-              green = 58;
-              blue = 58;
-              lightness = 45;
-              position = { x = 150; y = 150; };
-            }];
-            opacity = 0.7;
-          };
         };
         "Work" = {
           id = "cdd10fab-4fc5-494b-9041-325e5759195b";
           icon = "💼";
+          container = containers.Work.id;
           position = 2000;
-          theme = {
-            type = "gradient";
-            colors = [{
-              algorithm = "floating";
-              type = "explicit-lightness";
-              red = 84;
-              green = 140;
-              blue = 171;
-              lightness = 45;
-              position = { x = 200; y = 100; };
-            }];
-            opacity = 0.7;
-          };
         };
         "Development" = {
           id = "78aabdad-8aae-4fe0-8ff0-2a0c6c4ccc24";
           icon = "👨‍💻";
+          container = containers.development.id;
           position = 3000;
-          theme = {
-            type = "gradient";
-            colors = [{
-              algorithm = "floating";
-              type = "explicit-lightness";
-              red = 85;
-              green = 125;
-              blue = 85;
-              lightness = 45;
-              position = { x = 180; y = 120; };
-            }];
-            opacity = 0.7;
-          };
         };
       };
 
-      pinsForce = true;
-      pins = {
-        "GitHub" = {
-          id = "9d8a8f91-7e29-4688-ae2e-da4e49d4a179";
-          workspace = spaces."Development".id;
-          url = "https://github.com";
-          position = 100;
-          isEssential = true;
-        };
-      };
 
-      containersForce = true;
-      containers = {
-        "Banking" = { color = "green"; icon = "dollar"; id = 1; };
-        "Shopping" = { color = "yellow"; icon = "cart"; id = 2; };
-        "Social" = { color = "blue"; icon = "circle"; id = 3; };
-      };
 
       bookmarks = {
         force = true;
@@ -262,19 +228,6 @@
           }
         ];
       };
-
-      extraConfig = ''
-        user_pref("network.http.max-connections", 1800);
-        user_pref("network.dnsCacheExpiration", 3600);
-        user_pref("general.smoothScroll", true);
-        user_pref("mousewheel.default.delta_multiplier_y", 300);
-        user_pref("apz.overscroll.enabled", true);
-        user_pref("security.cert_pinning.enforcement_level", 2);
-        user_pref("toolkit.telemetry.unified", false);
-        user_pref("toolkit.telemetry.enabled", false);
-        user_pref("webgl.disabled", false);
-        user_pref("gfx.webrender.all", true);
-      '';
     };
   };
 

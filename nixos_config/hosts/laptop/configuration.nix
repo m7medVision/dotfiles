@@ -1,18 +1,47 @@
-{ config, pkgs, inputs, ... }:
+{ config, lib, pkgs, inputs, ... }:
+
+let
+  # Unstable channel packages - for software needing the latest versions
+  pkgsUnstable = import inputs.nixpkgs-unstable {
+    system = pkgs.stdenv.hostPlatform.system;
+    config.allowUnfree = true;
+  };
+in
 
 {
   imports = [
     ./hardware.nix
-    ./nvidia.nix
+    ./nh.nix
+    # Dank Material Shell - imported with unstable packages
+    (inputs.dms-shell.nixosModules.default {
+      inherit config lib;
+      pkgs = pkgsUnstable;
+    })
   ];
 
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+  libGL
+  glib
+  stdenv.cc.cc.lib
+  ];
   # Nix Settings
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.auto-optimise-store = true;
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
+  nix.settings.substituters = [ "https://vicinae.cachix.org" ];
+  nix.settings.trusted-public-keys = [ "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc=" ];
+  # nix.gc = {
+  #   automatic = true;
+  #   dates = "weekly";
+  #   options = "--delete-older-than 7d";
+  # };
+
+  services.blueman.enable = true;
+  sops = {
+    defaultSopsFile = ../../secrets.yaml;
+    age.keyFile = "/home/mohammed/.config/sops/age/keys.txt";
+
+    secrets.example = { };
   };
 
   # Allow Unfree packages (needed for Nvidia)
@@ -34,8 +63,31 @@
 
   # Gnome
   services.desktopManager.gnome.enable = true;
+
+  programs.dank-material-shell = {
+    enable = true;
+
+    systemd = {
+      enable = true;             # Systemd service for auto-start
+      restartIfChanged = true;   # Auto-restart dms.service when dms-shell changes
+    };
+
+    # Core features
+    enableSystemMonitoring = true;     # System monitoring widgets (dgop)
+    enableClipboardPaste = true;        # Clipboard history manager
+    enableVPN = true;                  # VPN management widget
+    enableDynamicTheming = true;       # Wallpaper-based theming (matugen)
+    enableAudioWavelength = true;      # Audio visualizer (cava)
+    enableCalendarEvents = true;       # Calendar integration (khal)
+  };
+
   # Niri Wayland Compositor
   programs.niri.enable = true;
+
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+  };
 
 
 
@@ -83,7 +135,6 @@
    };
 
    # GNOME suspend/resume hooks (optional, uncomment if you see gnome-shell issues)
-   /*
    systemd.services.gnome-suspend = {
      description = "Suspend gnome shell before sleep";
      before = [
@@ -118,7 +169,6 @@
        ExecStart = "${pkgs.procps}/bin/pkill -f -CONT gnome-shell";
      };
    };
-   */
 
    system.stateVersion = "25.11";
 }

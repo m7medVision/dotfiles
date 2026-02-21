@@ -2,3 +2,7 @@
 .config/opencode/antigravity-accounts.json
 .config/DankMaterialShell/
 .config/niri/dms/
+.config/nvim/lua/plugins/dankcolors.lua
+
+# Local sops age keys
+.config/sops/age/keys.txt

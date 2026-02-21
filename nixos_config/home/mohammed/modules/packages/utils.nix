@@ -20,5 +20,6 @@
     pamixer
     playerctl
     glib
+    libreoffice-qt
   ];
 }

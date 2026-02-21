@@ -4,6 +4,5 @@
     # Applications
     google-chrome
     bitwarden-desktop
-    opencode
   ];
 }
