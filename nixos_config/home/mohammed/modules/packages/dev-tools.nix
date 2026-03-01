@@ -28,6 +28,8 @@
     tree
     uv
     ollama
+    antigravity
+    unityhub
   ];
   services.ollama.enable = true;
 }

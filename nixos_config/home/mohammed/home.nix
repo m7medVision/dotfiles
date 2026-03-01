@@ -13,7 +13,6 @@
     ./modules/programs/zen-browser.nix
     ./modules/programs/vicinae.nix
     ./modules/programs/vscode.nix
-    ./modules/programs/openclaw.nix
   ];
 
   programs.home-manager.enable = true;
