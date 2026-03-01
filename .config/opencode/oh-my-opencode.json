@@ -39,7 +39,7 @@
       "variant": "medium"
     },
     "atlas": {
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "google/antigravity-gemini-3.1-pro"
     }
   },
   "categories": {
