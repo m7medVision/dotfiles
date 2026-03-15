@@ -1,149 +1,67 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
-    "opencode-antigravity-auth@latest",
-    "yet-another-opencode-cursor-auth",
-    "oh-my-opencode@latest"
+    // "opencode-antigravity-auth@latest",
   ],
-  "provider": {
-    "cursor": {
-      "name": "Cursor"
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "ctx7sk-b17c8183-640f-4ce4-9560-d59b7216a384"
+      },
+      "enabled": true
     },
-    "google": {
-      "name": "Google",
-      "models": {
-        "antigravity-gemini-3-pro": {
-          "name": "Gemini 3 Pro (Antigravity)",
-          "limit": {
-            "context": 1048576,
-            "output": 65535
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "low": {
-              "thinkingLevel": "low"
-            },
-            "high": {
-              "thinkingLevel": "high"
-            }
-          }
-        },
-        "antigravity-gemini-3-flash": {
-          "name": "Gemini 3 Flash (Antigravity)",
-          "limit": {
-            "context": 1048576,
-            "output": 65536
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "minimal": {
-              "thinkingLevel": "minimal"
-            },
-            "low": {
-              "thinkingLevel": "low"
-            },
-            "medium": {
-              "thinkingLevel": "medium"
-            },
-            "high": {
-              "thinkingLevel": "high"
-            }
-          }
-        },
-        "antigravity-claude-sonnet-4-5": {
-          "name": "Claude Sonnet 4.5 (Antigravity)",
-          "limit": {
-            "context": 200000,
-            "output": 64000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          }
-        },
-        "antigravity-claude-sonnet-4-5-thinking": {
-          "name": "Claude Sonnet 4.5 Thinking (Antigravity)",
-          "limit": {
-            "context": 200000,
-            "output": 64000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "low": {
-              "thinkingConfig": {
-                "thinkingBudget": 8192
-              }
-            },
-            "max": {
-              "thinkingConfig": {
-                "thinkingBudget": 32768
-              }
-            }
-          }
-        },
-        "antigravity-claude-opus-4-5-thinking": {
-          "name": "Claude Opus 4.5 Thinking (Antigravity)",
-          "limit": {
-            "context": 200000,
-            "output": 64000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "low": {
-              "thinkingConfig": {
-                "thinkingBudget": 8192
-              }
-            },
-            "max": {
-              "thinkingConfig": {
-                "thinkingBudget": 32768
-              }
-            }
-          }
-        }
+    "youtrack": {
+      "type": "remote",
+      "url": "https://aman-om.youtrack.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer perm-TW9oYW1tZWQuYWxqYWh3YXJp.NTUtMg==.i6rwbrxwbqG0vipiPXNGHRmUXK3pgr"
       }
+    },
+    "exa": {
+      "type": "remote",
+      "url": "https://mcp.exa.ai/mcp",
+      "enabled": true
+    },
+    "gh_grep": {
+      "type": "remote",
+      "url": "https://mcp.grep.app",
+      "enabled": true
+    },
+    "CodeGraphContext": {
+      "type": "local",
+      "command": [
+        "cgc",
+        "mcp",
+        "start"
+      ],
+      "environment": {
+        "DEFAULT_DATABASE": "falkordb",
+        "FALKORDB_PATH": "/home/mohammed/.codegraphcontext/falkordb.db",
+        "FALKORDB_SOCKET_PATH": "/home/mohammed/.codegraphcontext/falkordb.sock",
+        "INDEX_VARIABLES": "true",
+        "ALLOW_DB_DELETION": "false",
+        "DEBUG_LOGS": "false",
+        "DEBUG_LOG_PATH": "/home/mohammed/mcp_debug.log",
+        "ENABLE_APP_LOGS": "CRITICAL",
+        "LIBRARY_LOG_LEVEL": "WARNING",
+        "LOG_FILE_PATH": "/home/mohammed/.codegraphcontext/logs/cgc.log",
+        "MAX_FILE_SIZE_MB": "10",
+        "IGNORE_TEST_FILES": "false",
+        "IGNORE_HIDDEN_FILES": "true",
+        "ENABLE_AUTO_WATCH": "false",
+        "COMPLEXITY_THRESHOLD": "10",
+        "MAX_DEPTH": "unlimited",
+        "PARALLEL_WORKERS": "4",
+        "CACHE_ENABLED": "true",
+        "IGNORE_DIRS": "node_modules,venv,.venv,env,.env,dist,build,target,out,.git,.idea,.vscode,__pycache__",
+        "INDEX_SOURCE": "true",
+        "SCIP_INDEXER": "false",
+        "SCIP_LANGUAGES": "python,typescript,go,rust,java",
+        "SKIP_EXTERNAL_RESOLUTION": "false"
+      },
+      "enabled": true
     }
   }
 }
