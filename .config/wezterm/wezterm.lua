@@ -1,6 +1,7 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
 local mux = wezterm.mux
+local smart_splits = wezterm.plugin.require("https://github.com/mrjones2014/smart-splits.nvim")
 
 local config = wezterm.config_builder()
 
@@ -57,44 +58,6 @@ end
 
 local function process_name(pane)
 	return basename(pane:get_foreground_process_name())
-end
-
-local function is_vim(pane)
-	local user_vars = pane:get_user_vars()
-	if user_vars and user_vars.IS_NVIM == "true" then
-		return true
-	end
-
-	local process = process_name(pane)
-	return process == "vim" or process == "view" or process == "nvim" or process == "nvimx" or process == "vimx"
-end
-
-local direction_keys = {
-	h = "Left",
-	j = "Down",
-	k = "Up",
-	l = "Right",
-}
-
-local function split_nav(kind, key)
-	local mods = kind == "resize" and "ALT" or "CTRL"
-
-	return {
-		key = key,
-		mods = mods,
-		action = wezterm.action_callback(function(window, pane)
-			if is_vim(pane) then
-				window:perform_action(act.SendKey({ key = key, mods = mods }), pane)
-				return
-			end
-
-			if kind == "resize" then
-				window:perform_action(act.AdjustPaneSize({ direction_keys[key], 1 }), pane)
-			else
-				window:perform_action(act.ActivatePaneDirection(direction_keys[key]), pane)
-			end
-		end),
-	}
 end
 
 local function split_pane(direction)
@@ -389,15 +352,6 @@ for i = 1, 9 do
 	})
 end
 
-table.insert(keys, split_nav("move", "h"))
-table.insert(keys, split_nav("move", "j"))
-table.insert(keys, split_nav("move", "k"))
-table.insert(keys, split_nav("move", "l"))
-table.insert(keys, split_nav("resize", "h"))
-table.insert(keys, split_nav("resize", "j"))
-table.insert(keys, split_nav("resize", "k"))
-table.insert(keys, split_nav("resize", "l"))
-
 table.insert(keys, {
 	key = "Backspace",
 	mods = "ALT",
@@ -423,6 +377,14 @@ if ai_commander then
 end
 
 config.keys = keys
+
+smart_splits.apply_to_config(config, {
+	direction_keys = { "h", "j", "k", "l" },
+	modifiers = {
+		move = "CTRL",
+		resize = "ALT",
+	},
+})
 
 wezterm.on("augment-command-palette", function(window, pane)
 	return {
