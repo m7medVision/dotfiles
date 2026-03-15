@@ -1,3 +1,6 @@
+[terminal]
+shell = { program = "/usr/bin/zsh" }
+
 [colors.bright]
 black = "#928374"
 blue = "#83a598"
