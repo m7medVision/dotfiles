@@ -190,6 +190,11 @@
           icon = "fence";
           id = 3;
         };
+        University = {
+          color = "orange";
+          icon = "tree";
+          id = 4;
+        };
       };
       spacesForce = true;
       spaces = {
@@ -210,6 +215,12 @@
           icon = "👨‍💻";
           container = containers.development.id;
           position = 3000;
+        };
+        "University" = {
+          id = "0641737f-babb-46ed-be14-aea9b668fb4b";
+          icon = "🎓";
+          container = containers.University.id;
+          position = 4000;
         };
       };
 

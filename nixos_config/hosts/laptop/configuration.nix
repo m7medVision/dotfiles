@@ -21,9 +21,11 @@ in
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
-  libGL
-  glib
-  stdenv.cc.cc.lib
+    libGL
+    glib
+    stdenv.cc.cc.lib
+    libxml2_13
+    vulkan-loader
   ];
   # Nix Settings
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -83,6 +85,22 @@ in
 
   # Niri Wayland Compositor
   programs.niri.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-gnome
+    ];
+    config.common.default = "*";
+    config.common."org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+  };
+
+  environment.systemPackages = with pkgs; [
+    nautilus
+    libglvnd
+    vulkan-loader
+  ];
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
