@@ -10,9 +10,8 @@ ZSH_THEME="robbyrussell"
 plugins=(git npm node docker zoxide bun uv dotnet)
 source $ZSH/oh-my-zsh.sh
 alias zshconfig="source ~/.zshrc"
-alias cd="z"
-alias vi="nvim"
-alias vim="nvim"
+alias z="zoxide"
+alias v="nvim"
 alias lg="lazygit"
 alias ld="lazydocker"
 alias lcfzf="lazycommit commit | fzf --prompt='Pick commit> ' | xargs -r -I {} git commit -m \"{}\" "
@@ -20,6 +19,11 @@ alias oh="sh ~/dotfiles/.config/Scripts/toggle-omo.sh"
 alias venv=source venv/bin/activate
 export PATH="/home/mohammed/.config/herd-lite/bin:$PATH"
 export PHP_INI_SCAN_DIR="/home/mohammed/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
+
+
+alias l="eza -l --icons --git -a"
+alias lt="eza --tree --level=2 --long --icons --git"
+alias ltree="eza --tree --level=2  --icons --git"
 
 export EDITOR="nvim"
 
