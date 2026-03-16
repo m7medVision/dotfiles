@@ -1,80 +1,80 @@
 return {
-  "folke/sidekick.nvim",
+  'folke/sidekick.nvim',
   opts = {
     cli = {
       mux = {
-        backend = "tmux",
+        backend = 'tmux',
         enabled = true,
       },
     },
   },
   keys = {
     {
-      "<c-.>",
+      '<c-.>',
       function()
-        require("sidekick.cli").toggle()
+        require('sidekick.cli').toggle()
       end,
-      desc = "Sidekick Toggle",
-      mode = { "n", "t", "i", "x" },
+      desc = 'Sidekick Toggle',
+      mode = { 'n', 't', 'i', 'x' },
     },
     {
-      "<leader>aa",
+      '<leader>aa',
       function()
-        require("sidekick.cli").toggle()
+        require('sidekick.cli').toggle()
       end,
-      desc = "Sidekick Toggle CLI",
+      desc = 'Sidekick Toggle CLI',
     },
     {
-      "<leader>as",
+      '<leader>as',
       function()
-        require("sidekick.cli").select()
+        require('sidekick.cli').select()
       end,
-      desc = "Select CLI",
+      desc = 'Select CLI',
     },
     {
-      "<leader>ad",
+      '<leader>ad',
       function()
-        require("sidekick.cli").close()
+        require('sidekick.cli').close()
       end,
-      desc = "Detach a CLI Session",
+      desc = 'Detach a CLI Session',
     },
     {
-      "<leader>at",
+      '<leader>at',
       function()
-        require("sidekick.cli").send({ msg = "{this}" })
+        require('sidekick.cli').send { msg = '{this}' }
       end,
-      mode = { "x", "n" },
-      desc = "Send This",
+      mode = { 'x', 'n' },
+      desc = 'Send This',
     },
     {
-      "<leader>af",
+      '<leader>af',
       function()
-        require("sidekick.cli").send({ msg = "{file}" })
+        require('sidekick.cli').send { msg = '{file}' }
       end,
-      desc = "Send File",
+      desc = 'Send File',
     },
     {
-      "<leader>av",
+      '<leader>av',
       function()
-        require("sidekick.cli").send({ msg = "{selection}" })
+        require('sidekick.cli').send { msg = '{selection}' }
       end,
-      mode = { "x" },
-      desc = "Send Visual Selection",
+      mode = { 'x' },
+      desc = 'Send Visual Selection',
     },
     {
-      "<leader>ap",
+      '<leader>ap',
       function()
-        require("sidekick.cli").prompt()
+        require('sidekick.cli').prompt()
       end,
-      mode = { "n", "x" },
-      desc = "Sidekick Select Prompt",
+      mode = { 'n', 'x' },
+      desc = 'Sidekick Select Prompt',
     },
     {
-      "<leader>ac",
+      '<leader>ac',
       function()
-        require("sidekick.cli").toggle({ name = "claude", focus = true })
+        require('sidekick.cli').toggle { name = 'claude', focus = true }
       end,
-      desc = "Sidekick Toggle Claude",
+      desc = 'Sidekick Toggle Claude',
     },
   },
 }
