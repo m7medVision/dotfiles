@@ -1,12 +1,12 @@
 return {
-  "nvim-lualine/lualine.nvim",
+  'nvim-lualine/lualine.nvim',
   dependencies = { 'AndreM222/copilot-lualine' },
-  event = "VeryLazy",
+  event = 'VeryLazy',
   config = function()
     require('lualine').setup {
       options = {
         icons_enabled = true,
-        theme = 'auto',
+        theme = 'tokyonight',
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         disabled_filetypes = {
