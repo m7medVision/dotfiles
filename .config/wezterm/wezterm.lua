@@ -5,21 +5,17 @@ local smart_splits = wezterm.plugin.require("https://github.com/mrjones2014/smar
 
 local config = wezterm.config_builder()
 
-local theme = {
-	bg = "#282828",
-	bg_soft = "#32302f",
-	bg_hard = "#1d2021",
-	fg = "#ebdbb2",
-	fg_dim = "#a89984",
-	red = "#fb4934",
-	green = "#b8bb26",
-	yellow = "#fabd2f",
-	blue = "#83a598",
-	purple = "#d3869b",
-	aqua = "#8ec07c",
-	orange = "#fe8019",
-	gray = "#928374",
+local custom_colors = {
+	green = "#9ece6a",
+	yellow = "#e0af68",
+	blue = "#7aa2f7",
+	orange = "#ff9e64",
+	aqua = "#7dcfff",
+	gray = "#414868",
+	fg_dim = "#a9b1d6",
 }
+
+config.color_scheme = "tokyonight_night"
 
 local function basename(path)
 	if not path or path == "" then
@@ -86,10 +82,10 @@ do
 			right_status = { enabled = false },
 			icons = { style = "unicode" },
 			colors = {
-				working = theme.green,
-				waiting = theme.yellow,
-				idle = theme.blue,
-				inactive = theme.gray,
+				working = custom_colors.green,
+				waiting = custom_colors.yellow,
+				idle = custom_colors.blue,
+				inactive = custom_colors.gray,
 			},
 			notifications = {
 				enabled = true,
@@ -125,24 +121,24 @@ wezterm.on("update-right-status", function(window, pane)
 	if agent_deck then
 		local counts = agent_deck.count_agents_by_status()
 		if counts.waiting > 0 then
-			table.insert(cells, { Foreground = { Color = theme.yellow } })
+			table.insert(cells, { Foreground = { Color = custom_colors.yellow } })
 			table.insert(cells, { Text = " AI:" .. counts.waiting .. " waiting " })
 		elseif counts.working > 0 then
-			table.insert(cells, { Foreground = { Color = theme.green } })
+			table.insert(cells, { Foreground = { Color = custom_colors.green } })
 			table.insert(cells, { Text = " AI:" .. counts.working .. " working " })
 		end
 	end
 
 	if window:leader_is_active() then
-		table.insert(cells, { Foreground = { Color = theme.orange } })
+		table.insert(cells, { Foreground = { Color = custom_colors.orange } })
 		table.insert(cells, { Text = " PREFIX " })
 	end
 
-	table.insert(cells, { Foreground = { Color = theme.blue } })
+	table.insert(cells, { Foreground = { Color = custom_colors.blue } })
 	table.insert(cells, { Text = " " .. window:active_workspace() .. " " })
-	table.insert(cells, { Foreground = { Color = theme.aqua } })
+	table.insert(cells, { Foreground = { Color = custom_colors.aqua } })
 	table.insert(cells, { Text = " " .. cwd_label(pane) .. " " })
-	table.insert(cells, { Foreground = { Color = theme.fg_dim } })
+	table.insert(cells, { Foreground = { Color = custom_colors.fg_dim } })
 	table.insert(cells, { Text = " " .. process_name(pane) .. " " })
 
 	window:set_right_status(wezterm.format(cells))
@@ -202,61 +198,6 @@ config.window_padding = {
 
 config.window_background_opacity = 0.96
 config.text_background_opacity = 1.0
-config.colors = {
-	foreground = theme.fg,
-	background = theme.bg,
-	cursor_bg = theme.fg,
-	cursor_fg = theme.bg,
-	cursor_border = theme.fg,
-	selection_bg = theme.gray,
-	selection_fg = theme.fg,
-	scrollbar_thumb = theme.gray,
-	split = theme.gray,
-	ansi = {
-		"#282828",
-		theme.red,
-		theme.green,
-		theme.yellow,
-		theme.blue,
-		theme.purple,
-		theme.aqua,
-		theme.fg,
-	},
-	brights = {
-		"#928374",
-		"#fb4934",
-		"#b8bb26",
-		"#fabd2f",
-		"#83a598",
-		theme.purple,
-		"#8ec07c",
-		"#fbf1c7",
-	},
-	tab_bar = {
-		background = theme.bg_hard,
-		active_tab = {
-			bg_color = theme.bg_soft,
-			fg_color = theme.fg,
-			intensity = "Bold",
-		},
-		inactive_tab = {
-			bg_color = theme.bg_hard,
-			fg_color = theme.fg_dim,
-		},
-		inactive_tab_hover = {
-			bg_color = theme.bg_soft,
-			fg_color = theme.fg,
-		},
-		new_tab = {
-			bg_color = theme.bg_hard,
-			fg_color = theme.fg_dim,
-		},
-		new_tab_hover = {
-			bg_color = theme.bg_soft,
-			fg_color = theme.fg,
-		},
-	},
-}
 
 config.launch_menu = {
 	{
