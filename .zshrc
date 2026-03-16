@@ -10,7 +10,6 @@ ZSH_THEME="robbyrussell"
 plugins=(git npm node docker zoxide bun uv dotnet)
 source $ZSH/oh-my-zsh.sh
 alias zshconfig="source ~/.zshrc"
-alias z="zoxide"
 alias v="nvim"
 alias lg="lazygit"
 alias ld="lazydocker"
