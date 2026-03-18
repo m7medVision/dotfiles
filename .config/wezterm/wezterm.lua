@@ -32,7 +32,16 @@ local function pane_cwd(pane)
 	end
 
 	if type(cwd) == "userdata" or type(cwd) == "table" then
-		return cwd
+		return cwd.file_path or nil
+	end
+
+	if type(cwd) == "string" and cwd:match("^%a[%w+.-]*://") then
+		if wezterm.url and wezterm.url.parse then
+			local ok, parsed = pcall(wezterm.url.parse, cwd)
+			if ok and parsed then
+				return parsed.file_path or nil
+			end
+		end
 	end
 
 	return tostring(cwd)
@@ -66,6 +75,7 @@ end
 local function spawn_tab_with_cwd(window, pane, command)
 	window:perform_action(
 		act.SpawnCommandInNewTab({
+			domain = "CurrentPaneDomain",
 			cwd = pane_cwd(pane),
 			args = command,
 		}),
