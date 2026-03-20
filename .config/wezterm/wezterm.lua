@@ -209,6 +209,8 @@ config.window_padding = {
 config.window_background_opacity = 0.96
 config.text_background_opacity = 1.0
 
+config.bidi_enabled = true
+
 config.launch_menu = {
 	{
 		label = "OpenCode",
