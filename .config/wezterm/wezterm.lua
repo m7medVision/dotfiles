@@ -161,7 +161,7 @@ config.max_fps = 120
 
 config.term = "xterm-256color"
 config.enable_kitty_keyboard = true
-config.enable_csi_u_key_encoding = true
+config.enable_csi_u_key_encoding = false
 config.disable_default_key_bindings = true
 
 config.leader = { key = "s", mods = "CTRL", timeout_milliseconds = 1000 }
