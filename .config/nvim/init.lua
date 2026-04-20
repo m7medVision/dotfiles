@@ -16,7 +16,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require 'mohammed.common'
-require 'mohammed.markdown_syntax'
 
 require('lazy').setup {
   spec = {
