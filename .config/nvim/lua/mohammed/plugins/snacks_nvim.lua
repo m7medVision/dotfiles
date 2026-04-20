@@ -304,7 +304,7 @@ return {
         { section = 'recent_files', padding = 1, limit = 6, cwd = true },
       },
     },
-    explorer = { enabled = true, eplace_netrw = false },
+    explorer = { enabled = true, replace_netrw = false },
     indent = { enabled = true },
     input = { enabled = true },
     notifier = {

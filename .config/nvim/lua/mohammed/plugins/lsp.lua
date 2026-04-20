@@ -36,10 +36,7 @@ return {
       'b0o/schemastore.nvim',
     },
     config = function()
-      -- Setup mason-lspconfig to automatically enable all installed LSP servers
-      require('mason-lspconfig').setup {
-        automatic_enable = true, -- This is the default, automatically enables all installed servers
-      }
+      require('mason-lspconfig').setup()
     end,
   },
 
