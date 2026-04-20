@@ -2,7 +2,7 @@ return {
   -- Treesitter for syntax highlighting and code understanding
   {
     'nvim-treesitter/nvim-treesitter',
-    branch = 'master',
+    branch = 'main',
     build = ':TSUpdate',
     lazy = false,
     config = function()

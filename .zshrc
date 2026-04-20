@@ -7,7 +7,7 @@ fi
 export ZSH="$HOME/.oh-my-zsh"
 export PATH="$PATH:/home/mohammed/.dotnet/tools"
 ZSH_THEME="robbyrussell"
-plugins=(git npm node docker zoxide bun uv dotnet)
+plugins=(git npm node docker zoxide bun uv dotnet command-not-found golang)
 source $ZSH/oh-my-zsh.sh
 alias zshconfig="source ~/.zshrc"
 alias v="nvim"
@@ -18,8 +18,7 @@ alias oh="sh ~/dotfiles/.config/Scripts/toggle-omo.sh"
 alias venv=source venv/bin/activate
 export PATH="/home/mohammed/.config/herd-lite/bin:$PATH"
 export PHP_INI_SCAN_DIR="/home/mohammed/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
-
-
+alias open="xdg-open"
 alias l="eza -l --icons --git -a"
 alias lt="eza --tree --level=2 --long --icons --git"
 alias ltree="eza --tree --level=2  --icons --git"
@@ -57,4 +56,6 @@ if [ -d "$HOME/.local/bin" ]; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
-. "$HOME/.local/bin/env"
+
+
+eval "$(direnv hook bash)"

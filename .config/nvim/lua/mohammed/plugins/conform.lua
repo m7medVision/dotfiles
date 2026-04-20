@@ -51,7 +51,7 @@ return {
         yaml = { 'yamlfmt' },
         zsh = { 'beautysh' },
         rust = { 'rustfmt' },
-        tex = { 'latexindent' },
+        -- tex = { 'latexindent' },
         typescript = { 'prettier', 'rustywind' },
         typst = { 'typstyle', lsp_format = 'fallback' },
         javascript = { 'prettier', 'rustywind' },
@@ -59,6 +59,7 @@ return {
         php = { 'pint' },
         blade = { 'blade-formatter' },
         typescriptreact = { 'prettier', 'rustywind' },
+        tex = { 'tex-fmt' },
         python = function(bufnr)
           if require('conform').get_formatter_info('ruff_format', bufnr).available then
             return { 'ruff_organize_imports', 'ruff_format' }

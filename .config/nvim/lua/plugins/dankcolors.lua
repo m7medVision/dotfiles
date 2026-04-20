@@ -76,7 +76,7 @@ return {
 
 			local current_file_path = vim.fn.stdpath("config") .. "/lua/plugins/dankcolors.lua"
 			if not _G._matugen_theme_watcher then
-				local uv = vim.uv or vim.loop
+				local uv = vim.uv
 				_G._matugen_theme_watcher = uv.new_fs_event()
 				_G._matugen_theme_watcher:start(current_file_path, {}, vim.schedule_wrap(function()
 					local new_spec = dofile(current_file_path)
