@@ -21,7 +21,7 @@ require('lazy').setup {
   spec = {
     { import = 'mohammed.plugins' },
   },
-  install = { colorscheme = { 'habamax' } },
+  install = { colorscheme = { 'gruvbox' } },
   checker = { enabled = false },
   lockfile = vim.fn.stdpath 'data' .. '/lazy-lock.json',
 }
