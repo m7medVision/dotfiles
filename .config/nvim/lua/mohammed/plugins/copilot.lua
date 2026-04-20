@@ -9,14 +9,7 @@ return {
     opts = {
       suggestion = { enabled = false },
       panel = { enabled = false },
-      nes = {
-        enabled = true,
-        keymap = {
-          accept_and_goto = '<S-Tab>',
-          accept = false,
-          dismiss = '<Esc>',
-        },
-      },
+      nes = { enabled = false },
     },
   },
 }
