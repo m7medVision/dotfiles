@@ -23,7 +23,8 @@ window#waybar.hidden {
 #network,
 #battery,
 #tray,
-#clock {
+#clock,
+#custom-praytime {
   background: #3c3836;
   border: 1px solid #504945;
   border-radius: 8px;
@@ -106,6 +107,14 @@ window#waybar.empty #window {
 
 #clock {
   color: #fabd2f;
+}
+
+#custom-praytime {
+  color: #b8bb26;
+}
+
+#custom-praytime.prayer-time-error {
+  color: #fb4934;
 }
 
 #tray {

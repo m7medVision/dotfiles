@@ -5,7 +5,7 @@
   "spacing": 6,
   "modules-left": ["niri/workspaces"],
   "modules-center": ["niri/window"],
-  "modules-right": ["pulseaudio", "network", "battery", "tray", "clock"],
+  "modules-right": ["pulseaudio", "network", "battery", "tray", "custom/praytime", "clock"],
 
   "niri/workspaces": {
     "format": "{icon}",
@@ -62,5 +62,13 @@
   "clock": {
     "format": "  {:%H:%M}",
     "format-alt": "  {:%a %d %b}"
+  },
+
+  "custom/praytime": {
+    "exec": "python3 /home/mohammed/dotfiles/.config/waybar/scripts/praytime --waybar",
+    "interval": 60,
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": true
   }
 }
