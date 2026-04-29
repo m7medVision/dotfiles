@@ -1,0 +1,132 @@
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "JetBrainsMono Nerd Font Mono", "Noto Naskh Arabic";
+  font-size: 13px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: #282828;
+  color: #ebdbb2;
+  transition-property: background-color;
+  transition-duration: 0.2s;
+}
+
+window#waybar.hidden {
+  opacity: 0.2;
+}
+
+#workspaces,
+#window,
+#pulseaudio,
+#network,
+#battery,
+#tray,
+#clock {
+  background: #3c3836;
+  border: 1px solid #504945;
+  border-radius: 8px;
+  color: #ebdbb2;
+  margin: 6px 4px;
+  padding: 0 12px;
+}
+
+#workspaces {
+  padding: 0 6px;
+}
+
+#workspaces button {
+  background: transparent;
+  color: #928374;
+  padding: 0 8px;
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+}
+
+#workspaces button:hover {
+  background: #504945;
+  box-shadow: none;
+  text-shadow: none;
+  color: #ebdbb2;
+}
+
+#workspaces button.active {
+  color: #fabd2f;
+}
+
+#workspaces button.urgent {
+  color: #fb4934;
+  animation: blink 0.5s linear infinite;
+}
+
+@keyframes blink {
+  to {
+    color: #ebdbb2;
+  }
+}
+
+#window {
+  color: #d5c4a1;
+}
+
+window#waybar.empty #window {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+#pulseaudio {
+  color: #83a598;
+}
+
+#pulseaudio.muted {
+  color: #928374;
+}
+
+#network {
+  color: #8ec07c;
+}
+
+#network.disconnected {
+  color: #fb4934;
+}
+
+#battery {
+  color: #b8bb26;
+}
+
+#battery.warning:not(.charging) {
+  color: #fabd2f;
+}
+
+#battery.critical:not(.charging) {
+  color: #fb4934;
+  animation: blink 0.5s linear infinite;
+}
+
+#clock {
+  color: #fabd2f;
+}
+
+#tray {
+  padding: 0 10px;
+}
+
+#tray > .passive {
+  -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
+  background-color: #fb4934;
+}
+
+tooltip {
+  background: #3c3836;
+  border: 1px solid #504945;
+  border-radius: 8px;
+}
+
+tooltip label {
+  color: #ebdbb2;
+}

@@ -1,0 +1,46 @@
+font="Iosevka"
+font-size=18
+indicator-radius=120
+indicator-thickness=6
+
+# Screen
+image=/home/mohammed/dotfiles/.config/swaylock/lock-bg.png
+scaling=fill
+
+# Inside
+inside-color=504945
+inside-clear-color=98971a
+inside-ver-color=458588
+inside-wrong-color=cc241d
+
+# Ring
+ring-color=665c54
+ring-clear-color=98971a
+ring-ver-color=458588
+ring-wrong-color=cc241d
+
+# Line
+line-color=504945
+line-clear-color=98971a
+line-ver-color=458588
+line-wrong-color=cc241d
+
+# Text
+text-color=ebdbb2
+text-clear-color=fbf1c7
+text-ver-color=fbf1c7
+text-wrong-color=fbf1c7
+
+# Highlight
+key-hl-color=d79921
+bs-hl-color=d65d0e
+caps-lock-key-hl-color=d79921
+caps-lock-bs-hl-color=d65d0e
+
+# Separator
+separator-color=3c3836
+
+# Misc
+show-failed-attempts
+show-keyboard-layout
+daemonize

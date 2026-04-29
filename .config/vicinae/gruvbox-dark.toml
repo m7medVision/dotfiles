@@ -1,0 +1,73 @@
+[meta]
+name = "Gruvbox Dark"
+description = "Retro groove color scheme for Vicinae"
+variant = "dark"
+inherits = "vicinae-dark"
+
+[colors.core]
+accent = "#458588"
+accent_foreground = "#fbf1c7"
+background = "#282828"
+foreground = "#ebdbb2"
+secondary_background = "#3c3836"
+border = "#665c54"
+
+[colors.main_window]
+border = "#665c54"
+
+[colors.settings_window]
+border = "#665c54"
+
+[colors.accents]
+blue = "#458588"
+green = "#98971a"
+magenta = "#b16286"
+orange = "#d65d0e"
+red = "#cc241d"
+yellow = "#d79921"
+cyan = "#689d6a"
+purple = "#b16286"
+
+[colors.text]
+default = "#ebdbb2"
+muted = "#d5c4a1"
+danger = "#cc241d"
+success = "#98971a"
+placeholder = "#bdae93"
+selection = { background = "#504945", foreground = "#fbf1c7" }
+
+[colors.text.links]
+default = "#458588"
+visited = "#b16286"
+
+[colors.input]
+border = "#665c54"
+border_focus = "#458588"
+border_error = "#cc241d"
+
+[colors.button.primary]
+background = "#504945"
+foreground = "#ebdbb2"
+hover = { background = "#aa665c54" }
+
+[colors.list.item.hover]
+foreground = "#ebdbb2"
+secondary_foreground = "#d5c4a1"
+
+[colors.list.item.selection]
+background = "#504945"
+foreground = "#fbf1c7"
+secondary_background = "#504945"
+secondary_foreground = "#ebdbb2"
+
+[colors.grid.item]
+background = "#3c3836"
+hover = { outline = "#ebdbb2" }
+selection = { outline = "#458588" }
+
+[colors.scrollbars]
+background = "#665c54"
+
+[colors.loading]
+bar = "#d79921"
+spinner = "#d5c4a1"
