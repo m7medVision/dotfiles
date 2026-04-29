@@ -59,6 +59,7 @@ return {
         php = { 'pint' },
         blade = { 'blade-formatter' },
         typescriptreact = { 'prettier', 'rustywind' },
+        plaintex = { 'tex-fmt' },
         tex = { 'tex-fmt' },
         python = function(bufnr)
           if require('conform').get_formatter_info('ruff_format', bufnr).available then
