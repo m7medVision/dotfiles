@@ -60,8 +60,23 @@
   },
 
   "clock": {
-    "format": "  {:%H:%M}",
-    "format-alt": "  {:%a %d %b}"
+    "format": "  {0:%H:%M}    {0:%a %d %b}",
+    "format-alt": "  {:%H:%M}",
+    "tooltip-format": "{calendar}",
+    "calendar": {
+      "mode": "month",
+      "mode-mon": false,
+      "weeks-pos": "right",
+      "days-head": ["Mo","Tu","We","Th","Fr","Sa","Su"],
+      "months-show": ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"],
+      "format": {
+        "months": "{}",
+        "days": "<span color='#b8b8b8'>{}</span>",
+        "weeks": "<span color='#b8b8b8'>{}</span>",
+        "weekdays": "<span color='#b8b8b8'>{}</span>",
+        "today": "<span color='#f5c2e7'><b>{}</b></span>"
+      }
+    }
   },
 
   "custom/praytime": {
