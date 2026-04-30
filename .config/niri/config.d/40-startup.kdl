@@ -1,0 +1,13 @@
+// =============================================================================
+// 4. STARTUP & MISC
+// =============================================================================
+spawn-at-startup "waybar"
+spawn-at-startup "vicinae" "server"
+
+hotkey-overlay {
+}
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+animations {
+}

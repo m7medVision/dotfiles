@@ -1,0 +1,24 @@
+// =============================================================================
+// 1. INPUT
+// =============================================================================
+input {
+    keyboard {
+        xkb {
+            layout "us,ara"
+            options "grp:alt_shift_toggle"
+        }
+
+        numlock
+    }
+
+    touchpad {
+        tap
+        natural-scroll
+    }
+
+    mouse {
+    }
+
+    trackpoint {
+    }
+}
