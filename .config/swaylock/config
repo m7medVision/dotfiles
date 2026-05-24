@@ -1,46 +1,39 @@
 font="Iosevka"
-font-size=18
-indicator-radius=120
-indicator-thickness=6
+font-size=20
+indicator-radius=140
+indicator-thickness=8
 
-# Screen
-image=/home/mohammed/dotfiles/.config/swaylock/lock-bg.png
+
+image=/home/mohammed/Pictures/bg.png
 scaling=fill
 
-# Inside
-inside-color=504945
-inside-clear-color=98971a
-inside-ver-color=458588
-inside-wrong-color=cc241d
+inside-color=282828cc
+inside-clear-color=98971acc
+inside-ver-color=458588cc
+inside-wrong-color=cc241dcc
 
-# Ring
-ring-color=665c54
+ring-color=ebdbb2dd
 ring-clear-color=98971a
 ring-ver-color=458588
 ring-wrong-color=cc241d
 
-# Line
-line-color=504945
+line-color=3c3836
 line-clear-color=98971a
 line-ver-color=458588
 line-wrong-color=cc241d
 
-# Text
 text-color=ebdbb2
 text-clear-color=fbf1c7
 text-ver-color=fbf1c7
 text-wrong-color=fbf1c7
 
-# Highlight
 key-hl-color=d79921
 bs-hl-color=d65d0e
 caps-lock-key-hl-color=d79921
 caps-lock-bs-hl-color=d65d0e
 
-# Separator
-separator-color=3c3836
+separator-color=504945
 
-# Misc
 show-failed-attempts
 show-keyboard-layout
 daemonize
