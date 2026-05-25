@@ -1,124 +1,165 @@
+@define-color bg0 #282828;
+@define-color bg0_h #1d2021;
+@define-color bg1 #3c3836;
+@define-color bg2 #504945;
+@define-color bg3 #665c54;
+@define-color fg0 #fbf1c7;
+@define-color fg1 #ebdbb2;
+@define-color fg2 #d5c4a1;
+@define-color gray #928374;
+@define-color red #fb4934;
+@define-color green #b8bb26;
+@define-color yellow #fabd2f;
+@define-color blue #83a598;
+@define-color orange #fe8019;
+
 * {
+  all: initial;
   border: none;
-  border-radius: 0;
+  color: @fg1;
   font-family: "JetBrainsMono Nerd Font Mono", "Noto Naskh Arabic";
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 700;
   min-height: 0;
 }
 
 window#waybar {
-  background: #282828;
-  color: #ebdbb2;
-  transition-property: background-color;
-  transition-duration: 0.2s;
+  background: transparent;
 }
 
-window#waybar.hidden {
-  opacity: 0.2;
+window#waybar > box {
+  margin: 4px;
+  background: @bg0_h;
 }
 
-#workspaces,
-#window,
-#pulseaudio,
-#network,
-#battery,
-#tray,
-#clock,
-#custom-praytime {
-  background: #3c3836;
-  border: 1px solid #504945;
-  border-radius: 8px;
-  color: #ebdbb2;
-  margin: 6px 4px;
-  padding: 0 12px;
+.module {
+  margin: 4px 3px;
+  padding: 0 10px;
+  border-radius: 11px;
+}
+
+button {
+  min-width: 16px;
+  padding: 0 8px;
+  border-radius: 9px;
+}
+
+button:hover {
+  background: @bg2;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+#custom-user {
+  min-width: 34px;
+  padding: 0;
+  color: @yellow;
 }
 
 #workspaces {
-  padding: 0 6px;
+  background: @bg1;
+  border: 1px solid @bg2;
+  padding: 0 5px;
 }
 
 #workspaces button {
   background: transparent;
-  color: #928374;
-  padding: 0 8px;
-  border-radius: 8px;
-  transition: color 0.15s, background 0.15s;
+  color: @gray;
 }
 
-#workspaces button:hover {
-  background: #504945;
-  box-shadow: none;
-  text-shadow: none;
-  color: #ebdbb2;
+#workspaces button.active label,
+#workspaces button.focused label {
+  color: @yellow;
 }
 
-#workspaces button.active {
-  color: #fabd2f;
-}
-
-#workspaces button.urgent {
-  color: #fb4934;
-  animation: blink 0.5s linear infinite;
-}
-
-@keyframes blink {
-  to {
-    color: #ebdbb2;
-  }
+#workspaces button.urgent label {
+  color: @red;
 }
 
 #window {
-  color: #d5c4a1;
+  color: @fg2;
+  font-weight: 500;
+  margin-left: 6px;
+  padding: 0 8px;
 }
 
 window#waybar.empty #window {
-  background-color: transparent;
-  border-color: transparent;
+  color: transparent;
 }
 
-#pulseaudio {
-  color: #83a598;
-}
-
-#pulseaudio.muted {
-  color: #928374;
-}
-
-#network {
-  color: #8ec07c;
-}
-
-#network.disconnected {
-  color: #fb4934;
+#battery,
+#pulseaudio,
+#clock.time,
+#clock.date,
+#network,
+#tray,
+#custom-praytime {
+  background: @bg1;
+  border: 1px solid @bg2;
 }
 
 #battery {
-  color: #b8bb26;
+  color: @green;
 }
 
 #battery.warning:not(.charging) {
-  color: #fabd2f;
+  color: @yellow;
 }
 
 #battery.critical:not(.charging) {
-  color: #fb4934;
-  animation: blink 0.5s linear infinite;
+  color: @red;
 }
 
-#clock {
-  color: #fabd2f;
+#battery.charging,
+#battery.plugged {
+  color: @green;
+}
+
+#pulseaudio {
+  color: @blue;
+}
+
+#pulseaudio.muted {
+  color: @gray;
+}
+
+#custom-distro {
+  background: @yellow;
+  color: @bg0_h;
+  font-size: 20px;
+  padding: 0 12px;
+  border-radius: 13px;
+}
+
+#clock.time {
+  color: @yellow;
+}
+
+#clock.date {
+  color: @orange;
+}
+
+#network {
+  color: @green;
+  padding: 0 9px;
+}
+
+#network.disconnected,
+#network.disabled {
+  color: @red;
 }
 
 #custom-praytime {
-  color: #b8bb26;
+  color: @yellow;
+  padding: 0 12px;
 }
 
 #custom-praytime.prayer-time-error {
-  color: #fb4934;
+  color: @red;
 }
 
 #tray {
-  padding: 0 10px;
+  padding: 0 9px;
 }
 
 #tray > .passive {
@@ -127,15 +168,20 @@ window#waybar.empty #window {
 
 #tray > .needs-attention {
   -gtk-icon-effect: highlight;
-  background-color: #fb4934;
+  background: @red;
 }
 
 tooltip {
-  background: #3c3836;
-  border: 1px solid #504945;
-  border-radius: 8px;
+  background: @bg0_h;
+  border: 1px solid @bg3;
+  border-radius: 10px;
+}
+
+tooltip > box {
+  padding: 0 6px;
 }
 
 tooltip label {
-  color: #ebdbb2;
+  color: @fg1;
+  font-weight: 500;
 }

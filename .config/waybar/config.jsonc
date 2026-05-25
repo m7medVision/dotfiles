@@ -1,11 +1,44 @@
 {
   "layer": "top",
   "position": "top",
-  "height": 34,
-  "spacing": 6,
-  "modules-left": ["niri/workspaces"],
-  "modules-center": ["niri/window"],
-  "modules-right": ["pulseaudio", "network", "battery", "tray", "custom/praytime", "clock"],
+  "height": 0,
+  "spacing": 0,
+  "margin": 0,
+  "mode": "dock",
+  "reload_style_on_change": true,
+
+  "modules-left": [
+    "custom/user",
+    "niri/workspaces",
+    "niri/window"
+  ],
+  "modules-center": [
+    "battery",
+    "pulseaudio",
+    "custom/distro",
+    "clock#time",
+    "clock#date"
+  ],
+  "modules-right": [
+    "network",
+    "custom/praytime",
+    "tray"
+  ],
+
+  "custom/user": {
+    "format": "󰍜",
+    "min-length": 4,
+    "max-length": 4,
+    "tooltip-format": "Reload Waybar",
+    "on-click": "pkill -SIGUSR2 waybar"
+  },
+
+  "custom/distro": {
+    "format": "󰣇",
+    "min-length": 4,
+    "max-length": 4,
+    "tooltip": false
+  },
 
   "niri/workspaces": {
     "format": "{icon}",
@@ -22,35 +55,44 @@
 
   "pulseaudio": {
     "format": "{icon} {volume}%",
-    "format-muted": " muted",
+    "format-muted": "󰝟 muted",
     "format-icons": {
-      "default": ["", "", ""]
+      "default": ["󰕿", "󰖀", "󰕾"],
+      "headphone": "󰋋",
+      "headset": "󰋎"
     },
-    "tooltip": false,
+    "min-length": 7,
+    "tooltip-format": "{desc}",
     "scroll-step": 5
   },
 
   "network": {
-    "format-wifi": "  {essid}",
-    "format-ethernet": "󰈀  ethernet",
-    "format-disconnected": "󰖪  offline",
+    "interval": 10,
+    "format-wifi": "{icon}",
+    "format-ethernet": "󰈀",
+    "format-disconnected": "󰤯",
+    "format-disabled": "󰤮",
+    "format-icons": ["󰤟", "󰤢", "󰤥", "󰤨"],
+    "min-length": 2,
+    "max-length": 2,
     "tooltip-format": "{ifname} via {gwaddr}",
-    "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}",
     "tooltip-format-ethernet": "{ifname}",
-    "tooltip-format-disconnected": "Disconnected",
-    "max-length": 24
+    "tooltip-format-disconnected": "Disconnected"
   },
 
   "battery": {
     "format": "{icon} {capacity}%",
-    "format-charging": " {capacity}%",
-    "format-plugged": " {capacity}%",
-    "format-icons": ["", "", "", "", ""],
+    "format-charging": "󰉁 {capacity}%",
+    "format-plugged": "󰚥 {capacity}%",
+    "format-icons": ["󰂎", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    "min-length": 7,
+    "max-length": 7,
     "states": {
-      "warning": 30,
-      "critical": 15
+      "warning": 20,
+      "critical": 10
     },
-    "tooltip": false
+    "tooltip-format": "{timeTo}"
   },
 
   "tray": {
@@ -59,22 +101,30 @@
     "show-passive-items": true
   },
 
-  "clock": {
-    "format": "  {0:%H:%M}    {0:%a %d %b}",
-    "format-alt": "  {:%H:%M}",
+  "clock#time": {
+    "format": "{:%H:%M}",
+    "min-length": 5,
+    "max-length": 5,
+    "tooltip-format": "{:%I:%M %p}"
+  },
+
+  "clock#date": {
+    "format": "󰸗 {:%d-%m}",
+    "min-length": 8,
+    "max-length": 8,
     "tooltip-format": "{calendar}",
     "calendar": {
       "mode": "month",
       "mode-mon": false,
       "weeks-pos": "right",
-      "days-head": ["Mo","Tu","We","Th","Fr","Sa","Su"],
-      "months-show": ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"],
+      "days-head": ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+      "months-show": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
       "format": {
-        "months": "{}",
-        "days": "<span color='#b8b8b8'>{}</span>",
-        "weeks": "<span color='#b8b8b8'>{}</span>",
-        "weekdays": "<span color='#b8b8b8'>{}</span>",
-        "today": "<span color='#f5c2e7'><b>{}</b></span>"
+        "months": "<span color='#fabd2f'><b>{}</b></span>",
+        "days": "<span color='#ebdbb2'>{}</span>",
+        "weeks": "<span color='#928374'>{}</span>",
+        "weekdays": "<span color='#bdae93'>{}</span>",
+        "today": "<span color='#fe8019'><b><u>{}</u></b></span>"
       }
     }
   },
