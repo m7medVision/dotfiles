@@ -22,7 +22,7 @@ alias open="xdg-open"
 alias l="eza -l --icons --git -a"
 alias lt="eza --tree --level=2 --long --icons --git"
 alias ltree="eza --tree --level=2  --icons --git"
-
+alias oc=opencode
 export EDITOR="nvim"
 
 if [ -f ~/.zshenv ]; then
