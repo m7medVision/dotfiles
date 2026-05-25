@@ -79,6 +79,11 @@ layout {
 spawn-at-startup "waybar"
 spawn-at-startup "vicinae" "server"
 spawn-at-startup "swaybg" "-i" "/home/mohammed/Pictures/bg.png" "-m" "fill"
+spawn-at-startup "xwayland-satellite"
+
+environment {
+    DISPLAY ":0"
+}
 
 hotkey-overlay {
 }
@@ -128,6 +133,7 @@ window-rule {
 binds {
     // ---- App launchers / commands ----
     Mod+Space repeat=false { spawn "vicinae" "toggle"; }
+    Mod+P repeat=false { spawn "vicinae" "vicinae://launch/clipboard/history"; }
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
     Mod+T hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
@@ -147,8 +153,9 @@ binds {
     XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
-    // ---- Overview / close ----
-    Mod+O repeat=false { toggle-overview; }
+    // ---- Handy / overview / close ----
+    Mod+O repeat=false { spawn "handy" "--toggle-transcription"; }
+    Mod+Shift+O repeat=false { toggle-overview; }
     Mod+Q repeat=false { close-window; }
 
     // ---- Focus movement ----

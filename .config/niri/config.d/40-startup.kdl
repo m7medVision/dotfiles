@@ -4,6 +4,11 @@
 spawn-at-startup "waybar"
 spawn-at-startup "vicinae" "server"
 spawn-at-startup "swaybg" "-i" "/home/mohammed/Pictures/bg.png" "-m" "fill"
+spawn-at-startup "xwayland-satellite"
+
+environment {
+    DISPLAY ":0"
+}
 
 hotkey-overlay {
 }
