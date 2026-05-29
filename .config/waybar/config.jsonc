@@ -13,14 +13,15 @@
     "niri/window"
   ],
   "modules-center": [
-    "battery",
+    "backlight",
     "pulseaudio",
     "custom/distro",
-    "clock#time",
-    "clock#date"
+    "battery",
+    "clock#time"
   ],
   "modules-right": [
     "network",
+    "clock#date",
     "custom/praytime",
     "tray"
   ],
@@ -93,6 +94,15 @@
       "critical": 10
     },
     "tooltip-format": "{timeTo}"
+  },
+
+  "backlight": {
+    "format": "{icon} {percent}%",
+    "format-icons": ["󰃞", "󰃟", "󰃠"],
+    "min-length": 7,
+    "max-length": 7,
+    "scroll-step": 5,
+    "tooltip-format": "Brightness: {percent}%"
   },
 
   "tray": {

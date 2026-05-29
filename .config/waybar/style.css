@@ -88,6 +88,7 @@ window#waybar.empty #window {
 }
 
 #battery,
+#backlight,
 #pulseaudio,
 #clock.time,
 #clock.date,
@@ -113,6 +114,10 @@ window#waybar.empty #window {
 #battery.charging,
 #battery.plugged {
   color: @green;
+}
+
+#backlight {
+  color: @yellow;
 }
 
 #pulseaudio {
