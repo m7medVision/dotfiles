@@ -30,55 +30,29 @@ input {
 // 2. OUTPUTS
 // =============================================================================
 /-output "eDP-1" {
-    mode "1920x1080@120.030"
-    scale 2
+    mode "1920x1080@60.000999"
+    scale 1
     transform "normal"
     position x=1280 y=0
+}
+output "Xiaomi Corporation A22FAB-RAGL 4834510008222" {
+    mode "1920x1080@75.000"
+    scale 1
+    position x=0 y=0
 }
 // =============================================================================
 // 3. LAYOUT
 // =============================================================================
 layout {
-    gaps 16
-    center-focused-column "never"
-
-    preset-column-widths {
-        proportion 0.33333
-        proportion 0.5
-        proportion 0.66667
-    }
-
-    default-column-width { proportion 0.5; }
-
-    focus-ring {
-        width 2
-        active-color "#d79921"
-    }
-
-    border {
-        off
-        width 4
-        active-color "#ffc87f"
-        inactive-color "#505050"
-        urgent-color "#9b0000"
-    }
-
-    shadow {
-        softness 30
-        spread 5
-        offset x=0 y=5
-        color "#0007"
-    }
-
+    gaps 0
     struts {
     }
 }
 // =============================================================================
 // 4. STARTUP & MISC
 // =============================================================================
-spawn-at-startup "waybar"
+spawn-at-startup "qs" "-c" "noctalia-shell"
 spawn-at-startup "vicinae" "server"
-spawn-at-startup "swaybg" "-i" "/home/mohammed/Pictures/bg.png" "-m" "fill"
 spawn-at-startup "xwayland-satellite"
 
 environment {
@@ -92,14 +66,6 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
 animations {
 }
-// =============================================================================
-// 5. WINDOW RULES
-// =============================================================================
-window-rule {
-    match app-id=r#"^org\.wezfurlong\.wezterm$"#
-    default-column-width {}
-}
-
 window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
     open-floating true
@@ -111,10 +77,6 @@ window-rule {
     block-out-from "screen-capture"
 }
 
-window-rule {
-    geometry-corner-radius 5
-    clip-to-geometry true
-}
 
 window-rule {
     match app-id=".*Vicinae.*"
@@ -131,15 +93,10 @@ window-rule {
 // 6. KEY BINDINGS
 // =============================================================================
 binds {
-    // ---- App launchers / commands ----
     Mod+Space repeat=false { spawn "vicinae" "toggle"; }
     Mod+P repeat=false { spawn "vicinae" "vicinae://launch/clipboard/history"; }
     Mod+Shift+Slash { show-hotkey-overlay; }
-    Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
-    Mod+T hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
-    Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
-    Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
-    Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
+    Mod+Return hotkey-overlay-title="Open a Terminal: Ghostty" { spawn "ghostty"; }
 
     // ---- Media keys ----
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
@@ -290,4 +247,9 @@ binds {
     Mod+Shift+E { quit; }
     Ctrl+Alt+Delete { quit; }
     Mod+Shift+P { power-off-monitors; }
+
+    // ---- Lock screen ----
+    Mod+Alt+L { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
 }
+
+include "./noctalia.kdl"
