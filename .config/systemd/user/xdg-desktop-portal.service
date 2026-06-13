@@ -1,0 +1,14 @@
+# Local override of xdg-desktop-portal.service (replaces the vendor unit).
+# Why: upstream 1.22.0 added "Requisite=graphical-session.target", which breaks
+# startup when niri is launched by GDM and does not activate graphical-session.target.
+# We drop the Requisite (keep PartOf/After, which only affect ordering & stop propagation).
+[Unit]
+Description=Portal service
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.portal.Desktop
+ExecStart=/usr/lib/xdg-desktop-portal
+Slice=session.slice

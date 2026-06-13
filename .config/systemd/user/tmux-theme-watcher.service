@@ -1,0 +1,17 @@
+[Unit]
+Description=Automatically switch tmux theme to match system light/dark mode
+Documentation=https://github.com/mohammed/dotfiles
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.config/tmux/theme-watcher.sh
+ExecStop=/usr/bin/kill -TERM $MAINPID
+Restart=on-failure
+RestartSec=5
+StandardOutput=null
+StandardError=journal
+
+[Install]
+WantedBy=graphical-session.target

@@ -1,0 +1,23 @@
+# Ghostty terminal configuration
+# Uses Gruvbox automatically based on the system light/dark appearance.
+
+theme = dark:gruvbox-dark-custom,light:gruvbox-light-custom
+
+font-family = "JetBrainsMono Nerd Font Mono"
+font-family = "Noto Naskh Arabic"
+font-size = 12
+
+command = /usr/bin/zsh
+
+env = TERM=xterm-256color
+
+cursor-style = block
+cursor-style-blink = true
+
+window-padding-x = 10
+window-padding-y = 10
+
+keybind = ctrl+shift+equal=increase_font_size:1
+keybind = ctrl+shift+minus=decrease_font_size:1
+keybind = ctrl+equal=ignore
+keybind = ctrl+minus=ignore
