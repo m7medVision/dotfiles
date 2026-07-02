@@ -1,6 +1,3 @@
-# Ghostty terminal configuration
-# Uses Gruvbox automatically based on the system light/dark appearance.
-
 theme = dark:gruvbox-dark-custom,light:gruvbox-light-custom
 
 font-family = "JetBrainsMono Nerd Font Mono"

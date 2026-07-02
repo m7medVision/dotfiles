@@ -59,3 +59,4 @@ fi
 
 
 eval "$(direnv hook bash)"
+export PATH="$HOME/.local/bin:$PATH"
