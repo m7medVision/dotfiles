@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# omarchy:summary=Open Voxtype configuration
+
+set -e
+
+launch-floating-terminal-with-presentation "voxtype configure"
+restart-shell

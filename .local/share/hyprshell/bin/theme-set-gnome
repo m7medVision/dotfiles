@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# omarchy:summary=Apply the current theme to GNOME color mode and icon settings
+# omarchy:hidden=true
+
+# gsettings needs a user DBus session. During ISO installs this command can be
+# reached from arch-chroot while applying the initial Omarchy theme; defer until
+# the user has a real session instead of emitting dconf warnings.
+if [[ -z ${DBUS_SESSION_BUS_ADDRESS:-} ]]; then
+  exit 0
+fi
+
+THEME_DIR=$HOME/.local/state/hyprshell/current/theme
+COLORS_FILE="$THEME_DIR/colors.toml"
+
+# theme-color resolves mode from colors.toml (`mode = "light"`), a
+# legacy light.mode marker beside it, or background luminance for user themes.
+mode=$(theme-color --file "$COLORS_FILE" mode)
+
+if [[ $mode == "light" ]]; then
+  gtk_theme="Adwaita"
+  gsettings set org.gnome.desktop.interface color-scheme "prefer-light"
+else
+  gtk_theme="Adwaita-dark"
+  gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
+fi
+gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme"
+
+# Change gnome icon theme color
+GNOME_ICONS_THEME=$HOME/.local/state/hyprshell/current/theme/icons.theme
+if [[ -f $GNOME_ICONS_THEME ]]; then
+  icon_theme="$(<$GNOME_ICONS_THEME)"
+else
+  icon_theme="Yaru-blue"
+fi
+gsettings set org.gnome.desktop.interface icon-theme "$icon_theme"
+
+# Match the libadwaita accent color to the theme's accent hex, so GTK4 apps
+# (Files, Settings, Text Editor, ...) actually shift with the theme instead of
+# only flipping between the two generic Adwaita light/dark states above.
+accent=$(theme-color --file "$COLORS_FILE" accent)
+if [[ $accent =~ ^#[0-9A-Fa-f]{6}$ ]]; then
+  nearest_accent=$(awk -v target="$accent" '
+    function hex_pair_to_int(hex, idx) {
+      return (index("0123456789abcdef", substr(hex, idx, 1)) - 1) * 16 + \
+             (index("0123456789abcdef", substr(hex, idx + 1, 1)) - 1)
+    }
+    BEGIN {
+      n = split("blue teal green yellow orange red pink purple slate", names, " ")
+      split("3584e4 2190a4 3a944a c88800 ed5b00 e62d42 d56199 9141ac 6f8396", hexes, " ")
+
+      t = tolower(target)
+      sub(/^#/, "", t)
+      tr = hex_pair_to_int(t, 1); tg = hex_pair_to_int(t, 3); tb = hex_pair_to_int(t, 5)
+
+      best = 1e18
+      for (i = 1; i <= n; i++) {
+        h = hexes[i]
+        r = hex_pair_to_int(h, 1); g = hex_pair_to_int(h, 3); b = hex_pair_to_int(h, 5)
+        d = (r - tr)^2 + (g - tg)^2 + (b - tb)^2
+        if (d < best) { best = d; nearest = names[i] }
+      }
+      print nearest
+    }
+  ')
+  [[ -n $nearest_accent ]] && gsettings set org.gnome.desktop.interface accent-color "$nearest_accent"
+fi
+
+# XWayland GTK3 apps get live settings from an XSettings manager, not GSettings.
+# Mirror the theme into xsettingsd's config and nudge a running instance to
+# re-read it; without this, light<->dark flips only reach native-Wayland apps.
+XSETTINGSD_CONF="$HOME/.xsettingsd"
+cat > "$XSETTINGSD_CONF" <<EOF
+Net/ThemeName "$gtk_theme"
+Net/IconThemeName "$icon_theme"
+EOF
+if command -v xsettingsd >/dev/null 2>&1; then
+  pkill -HUP -x xsettingsd 2>/dev/null || true
+fi
+
+# Startup-time fallback for apps that read config once at launch (XWayland GTK3
+# without xsettingsd, Qt, etc.). gsettings is the live source; these files keep
+# freshly-launched apps consistent even before a settings daemon is up.
+mkdir -p "$HOME/.config/gtk-3.0" "$HOME/.config/gtk-4.0"
+for gtk_ver in 3 4; do
+  cat > "$HOME/.config/gtk-$gtk_ver.0/settings.ini" <<EOF
+[Settings]
+gtk-theme-name=$gtk_theme
+gtk-icon-theme-name=$icon_theme
+EOF
+done

@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# summary=Restart the quickshell bar/panels
+
+shell_path="${HOME}/.local/share/hyprshell"
+CONFIG_DIR="$shell_path/shell"
+[[ -f $CONFIG_DIR/shell.qml ]] || { echo "shell config not found: $CONFIG_DIR" >&2; exit 1; }
+
+# Allow running from outside the session (e.g. over ssh) by deriving the
+# Hyprland instance signature from the newest instance runtime dir.
+if [[ -z ${HYPRLAND_INSTANCE_SIGNATURE:-} ]]; then
+  hypr_dir=$(find "${XDG_RUNTIME_DIR:-/run/user/$UID}/hypr" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' 2>/dev/null | sort -n | tail -n 1 | cut -d' ' -f2-)
+  [[ -n $hypr_dir ]] && export HYPRLAND_INSTANCE_SIGNATURE=${hypr_dir##*/}
+fi
+
+# Note: the lock screen (hyprlock) is a separate process, unrelated to this
+# shell — restarting the bar/panels never touches an active lock screen.
+
+# Each kill stops the oldest matching instance and only returns once it has
+# fully exited, so the no-duplicate launch below can't race a dying shell.
+while timeout 5 quickshell kill -p "$CONFIG_DIR" --any-display >/dev/null 2>&1; do :; done
+
+# Spawn from Hyprland so the shell inherits the canonical session environment,
+# not transient variables from a terminal, SSH connection, or development tool.
+hyprctl dispatch 'hl.dsp.exec_cmd("launch-shell")' >/dev/null
+
+for (( attempt = 0; attempt < 20; attempt++ )); do
+  if shell-ipc-run shell ping >/dev/null 2>&1; then
+    exit 0
+  fi
+  sleep 0.1
+done
+
+echo "shell did not become ready after restart." >&2
+exit 1

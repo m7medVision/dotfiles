@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "idle": {
+    "screensaver": 150,
+    "lock": 300
+  },
+  "bar": {
+    "position": "top",
+    "transparent": false,
+    "centerAnchor": "raw.clock",
+    "layout": {
+      "left": [
+        { "id": "raw.menu" },
+        { "id": "raw.workspaces" }
+      ],
+      "center": [
+        { "id": "raw.indicators" },
+        {
+          "id": "raw.clock",
+          "format": "dddd HH:mm",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "verticalFormat": "HH\n—\nmm"
+        },
+        { "id": "raw.keyboard-layout" }
+      ],
+      "right": [
+        { "id": "raw.tray" },
+        { "id": "raw.bluetooth" },
+        { "id": "raw.network" },
+        { "id": "raw.audio" },
+        { "id": "raw.monitor" },
+        { "id": "raw.power" }
+      ]
+    }
+  },
+  "plugins": []
+}

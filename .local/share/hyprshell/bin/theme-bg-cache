@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# omarchy:summary=Cache background switcher thumbnails for the current theme
+
+theme_name=$(cat "$HOME/.local/state/hyprshell/current/theme.name" 2>/dev/null)
+
+menu-images \
+  --cache-only \
+  "$HOME/.local/state/hyprshell/current/theme/backgrounds" \
+  "$HOME/.config/hyprshell/backgrounds/$theme_name"

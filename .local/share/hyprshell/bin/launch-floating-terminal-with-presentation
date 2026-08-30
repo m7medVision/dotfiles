@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# summary=Launch a floating terminal and run a command in it
+
+cmd="$*"
+
+exec setsid uwsm-app -- xdg-terminal-exec --app-id=org.hyprshell.terminal --title=hyprshell -e bash -c "$cmd"
