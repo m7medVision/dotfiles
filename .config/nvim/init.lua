@@ -126,7 +126,7 @@ end
 do
   require 'kickstart.plugins.guess_indent'
   require 'kickstart.plugins.which_key'
-  require 'kickstart.plugins.theme'
+  require 'custom.plugins.theme-sync'
   require 'kickstart.plugins.todo_comments'
   require 'kickstart.plugins.mini'
   require 'kickstart.plugins.telescope'
@@ -134,6 +134,7 @@ do
   require 'kickstart.plugins.conform'
   require 'kickstart.plugins.completion'
   require 'kickstart.plugins.treesitter'
+  require 'custom.plugins.render_markdown'
   require 'kickstart.plugins.debug'
   require 'kickstart.plugins.indent_line'
   require 'kickstart.plugins.lint'

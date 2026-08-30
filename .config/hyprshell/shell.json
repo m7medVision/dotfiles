@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "bar": {
+    "position": "top",
+    "transparent": true,
+    "centerAnchor": "raw.clock",
+    "layout": {
+      "left": [
+        {
+          "id": "raw.menu"
+        },
+        {
+          "id": "raw.workspaces"
+        }
+      ],
+      "center": [
+        {
+          "id": "raw.indicators"
+        },
+        {
+          "id": "raw.clock",
+          "format": "ddd d MMM  HH:mm",
+          "formatAlt": "d MMMM 'W'ww yyyy"
+        },
+        {
+          "id": "raw.keyboard-layout"
+        }
+      ],
+      "right": [
+        {
+          "id": "raw.tray"
+        },
+        {
+          "id": "raw.bluetooth"
+        },
+        {
+          "id": "raw.network"
+        },
+        {
+          "id": "raw.audio"
+        },
+        {
+          "id": "raw.monitor"
+        },
+        {
+          "id": "raw.power"
+        }
+      ]
+    }
+  },
+  "plugins": []
+}

@@ -47,7 +47,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
 local servers = {
   -- clangd = {},
   gopls = {},
-  -- pyright = {},
+  ruff = {},
+  pyright = {},
   -- rust_analyzer = {},
   --
   --    https://github.com/pmizio/typescript-tools.nvim

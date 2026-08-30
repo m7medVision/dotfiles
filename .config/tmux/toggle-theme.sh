@@ -1,15 +1,15 @@
 #!/bin/bash
-# Toggle between tmux light and dark themes in the current session
+# Toggle between Catppuccin Latte (light) and Mocha (dark).
 
-CURRENT=$(tmux show-option -gv @theme-mode 2>/dev/null || echo "dark")
-THEME_DIR=~/.config/tmux/themes
+CURRENT=$(tmux show-option -gv @catppuccin_flavor 2>/dev/null || echo "mocha")
 
-if [ "$CURRENT" = "dark" ]; then
-  tmux source-file "$THEME_DIR/light.conf"
-  tmux set-option -g @theme-mode "light"
-  tmux display-message "☀️  Light"
+if [ "$CURRENT" = "latte" ]; then
+  NEW="mocha"
+  MSG="🌙  Mocha"
 else
-  tmux source-file "$THEME_DIR/dark.conf"
-  tmux set-option -g @theme-mode "dark"
-  tmux display-message "🌙  Dark"
+  NEW="latte"
+  MSG="☀️  Latte"
 fi
+
+~/.config/tmux/reload-catppuccin.sh "$NEW"
+tmux display-message "$MSG"

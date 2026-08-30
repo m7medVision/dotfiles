@@ -23,40 +23,48 @@ alias l="eza -l --icons --git -a"
 alias lt="eza --tree --level=2 --long --icons --git"
 alias ltree="eza --tree --level=2  --icons --git"
 alias oc=opencode
+
+# ── Arabic / RTL ──────────────────────────────────────────────────────
+# Plain kitty gets single WORDS right but leaves sentence word order logical.
+# For full sentences you need a Mode B window (force_ltr yes) + fribidi:
+alias kar='kitty --config ~/.config/kitty/arabic-rtl.conf'
+
+# fribidi emits visually-ordered text. A plain kitty window reverses RTL runs
+# itself and would undo that, so warn instead of silently printing garbage.
+# (foot does no reordering at all, so it is fine there.)
+_rtl_filter() {
+  if [[ -n "$KITTY_WINDOW_ID" && -z "$KITTY_BIDI" ]]; then
+    print -u2 "rtl: plain kitty re-reverses this — run 'kar' for a Mode B window."
+  fi
+  fribidi --nopad "$@"
+}
+rtl() { _rtl_filter "$@" }                  # rtl notes.ar
+alias -g R='| _rtl_filter'                  # git log R
 export EDITOR="nvim"
 
-if [ -f ~/.zshenv ]; then
-  source ~/.zshenv
-fi
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
-
-# bun completions
 [ -s "/home/mohammed/.bun/_bun" ] && source "/home/mohammed/.bun/_bun"
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
 
-# opencode
-export PATH=/home/mohammed/.opencode/bin:$PATH
 export PATH="$PATH:$HOME/.cargo/bin"
 
-if [ -d "$HOME/.linuxbrew" ] || [ -d "/home/linuxbrew/.linuxbrew" ]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+_direnv_hook() {
+  trap -- '' SIGINT
+  eval "$("/usr/bin/direnv" export zsh)"
+  trap - SIGINT
+}
+typeset -ag precmd_functions
+if (( ! ${precmd_functions[(I)_direnv_hook]} )); then
+  precmd_functions=(_direnv_hook $precmd_functions)
+fi
+typeset -ag chpwd_functions
+if (( ! ${chpwd_functions[(I)_direnv_hook]} )); then
+  chpwd_functions=(_direnv_hook $chpwd_functions)
 fi
 
-if [ -d "$HOME/.local/bin" ]; then
-  export PATH="$HOME/.local/bin:$PATH"
-fi
-
-
-
-eval "$(direnv hook bash)"
 export PATH="$HOME/.local/bin:$PATH"
+
+# strix
+export PATH=/home/mohammed/.strix/bin:$PATH
