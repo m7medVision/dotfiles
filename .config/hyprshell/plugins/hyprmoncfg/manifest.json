@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "hyprmoncfg",
+  "name": "Monitor profiles",
+  "version": "1.0.0",
+  "author": "mohammed",
+  "description": "Multi-monitor layouts for Hyprland: a visual editor plus a daemon that switches profiles automatically on hotplug and lid events. Summon with: shell-ipc-run shell toggle hyprmoncfg",
+  "kinds": [
+    "panel",
+    "service",
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "panel": "Panel.qml",
+    "service": "Service.qml",
+    "barWidget": "DisplaysWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Displays",
+    "description": "Open the monitor layout editor",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

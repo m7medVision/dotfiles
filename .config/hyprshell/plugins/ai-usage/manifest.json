@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "ai-usage",
+  "name": "AI Usage",
+  "version": "1.0.0",
+  "author": "mohammed",
+  "description": "AI plan usage in the bar, powered by ai-usagebar CLI.",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "AiUsageWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "AI Usage",
+    "description": "Shows AI plan usage percentage and countdown for the busiest provider.",
+    "category": "Status",
+    "defaultSection": "right",
+    "allowMultiple": false,
+    "schema": [
+      {
+        "key": "refresh_minutes",
+        "type": "integer",
+        "label": "Refresh interval",
+        "description": "Minutes between CLI calls (1–120).",
+        "defaultValue": 5,
+        "min": 1,
+        "max": 120
+      },
+      {
+        "key": "vendor",
+        "type": "select",
+        "label": "Provider",
+        "description": "Which provider to track. 'auto' follows the busiest.",
+        "defaultValue": "auto",
+        "options": [
+          {"value": "auto", "label": "Auto (busiest)"},
+          {"value": "anthropic", "label": "Claude"},
+          {"value": "openai", "label": "Codex/ChatGPT"},
+          {"value": "zai", "label": "Z.AI"},
+          {"value": "openrouter", "label": "OpenRouter"},
+          {"value": "deepseek", "label": "DeepSeek"},
+          {"value": "kimi", "label": "Kimi"},
+          {"value": "grok", "label": "Grok"},
+          {"value": "antigravity", "label": "Antigravity"},
+          {"value": "cursor", "label": "Cursor"},
+          {"value": "kiro", "label": "Kiro CLI"}
+        ]
+      },
+      {
+        "key": "show_countdown",
+        "type": "boolean",
+        "label": "Show countdown",
+        "description": "Show time remaining until reset.",
+        "defaultValue": true
+      },
+      {
+        "key": "show_icon",
+        "type": "boolean",
+        "label": "Show icon",
+        "description": "Show the provider icon.",
+        "defaultValue": true
+      }
+    ]
+  }
+}

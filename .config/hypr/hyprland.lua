@@ -31,3 +31,19 @@ if theme_file then
     theme_file:close()
     dofile(theme_hyprland)
 end
+
+-- >>> hyprmoncfg (managed) >>>
+-- Re-applies the monitor profile hyprmoncfg activated last, so a layout
+-- survives a compositor restart. Loaded last on purpose: it is meant to win
+-- over any static hl.monitor() call earlier in the config.
+-- Remove this block with: hyprmoncfg unmanage
+local hyprmoncfg_current = os.getenv("HOME") .. "/.config/hyprmoncfg/current.lua"
+local hyprmoncfg_handle = io.open(hyprmoncfg_current, "r")
+if hyprmoncfg_handle then
+    hyprmoncfg_handle:close()
+    local hyprmoncfg_ok, hyprmoncfg_err = pcall(dofile, hyprmoncfg_current)
+    if not hyprmoncfg_ok then
+        print("hyprmoncfg: " .. tostring(hyprmoncfg_err))
+    end
+end
+-- <<< hyprmoncfg (managed) <<<

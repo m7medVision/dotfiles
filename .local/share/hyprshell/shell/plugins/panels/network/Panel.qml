@@ -119,9 +119,9 @@ Panel {
   property bool cursorActive: false
 
   // Keyboard focus zone for the panel. j/k crosses row boundaries:
-  // header actions ⇄ band ⇄ DNS row ⇄ Wi-Fi networks. h/l move
+  // header actions ⇄ band ⇄ DNS row ⇄ Tor row ⇄ Wi-Fi networks. h/l move
   // within header actions, band pills, or DNS providers.
-  property string focusSection: "dns"  // "header" | "band" | "dns" | "wifi"
+  property string focusSection: "dns"  // "header" | "band" | "dns" | "tor" | "wifi"
   property int headerIndex: 0
   readonly property bool canDisconnect: !!connectedWifiNetwork
   readonly property bool headerHasDisconnect: false
@@ -140,6 +140,14 @@ Panel {
   readonly property string toggleHint: Networking.wifiEnabled ? "Turn Wi-Fi off" : "Turn Wi-Fi on"
   readonly property var dnsProviders: ["DHCP", "Cloudflare", "Google", "Custom"]
   property int dnsIndex: 0
+  // Tor transparent routing (tor-router.service over the always-on tor SOCKS
+  // daemon). `pendingTorRouter` holds the state that was asked for while
+  // systemctl runs, so the switch answers the click immediately instead of
+  // after the service settles; actionProc reverts it if the change failed.
+  property bool torRouterOn: false
+  property string pendingTorRouter: ""
+  readonly property bool torRouterEffective: pendingTorRouter !== "" ? pendingTorRouter === "on" : torRouterOn
+  readonly property bool torRouterBusy: pendingTorRouter !== ""
   // ["2.4", "5", ...], or empty when there is nothing to choose between.
   // Wi-Fi only: on Ethernet the band of a secondary radio is not what the
   // panel is describing.
@@ -216,6 +224,7 @@ Panel {
     function hide() { root.close() }
     function toggle() { root.toggle() }
     function toggleNetwork() { root.toggleNetwork() }
+    function toggleTor() { root.setTorRouter(!root.torRouterEffective) }
     // Compat routes for configs that summon the centered cards through the
     // network target; both cards are their own plugins now.
     function showQr() { root.summonWifiQr(true) }
@@ -360,12 +369,12 @@ Panel {
 
   // Keep selectedIndex valid as scans refresh the network list.
   // If the list empties (station gone, e.g. wifi off), bounce the cursor
-  // back to the DNS row so the panel doesn't end up with no cursor at all.
+  // back to the Tor row so the panel doesn't end up with no cursor at all.
   onWifiNetworksChanged: {
     if (wifiNetworks.length === 0) {
       selectedIndex = -1
       wifiActionFocused = false
-      if (focusSection === "wifi") focusSection = "dns"
+      if (focusSection === "wifi") focusSection = "tor"
     } else if (passwordSsid !== "") {
       var passwordIndex = wifiIndexForSsid(passwordSsid)
       if (passwordIndex >= 0) {
@@ -474,6 +483,11 @@ Panel {
     if (!dnsProc.running) {
       dnsProc.command = ["bash", "-c", root.dnsCommand("")]
       dnsProc.running = true
+    }
+
+    if (!torProc.running) {
+      torProc.command = ["tor-gateway"]
+      torProc.running = true
     }
     if (!bandProc.running) {
       bandProc.command = ["network-band"]
@@ -621,6 +635,14 @@ Panel {
     dnsProvider = value || "DHCP"
   }
 
+  // Poll answers can arrive while a toggle is still in flight; the optimistic
+  // state is the one that was asked for, so let it ride until actionProc
+  // settles the outcome.
+  function updateTorRouter(raw) {
+    if (torRouterBusy) return
+    torRouterOn = String(raw || "").trim() === "on"
+  }
+
   function updateBand(raw) {
     var status = Model.parseBandStatus(raw)
 
@@ -642,6 +664,17 @@ Panel {
 
     root.pendingBand = band
     actionProc.command = ["network-band", band]
+    actionProc.running = true
+  }
+
+  // Router mode is a whole-system reroute the user will want to watch land, so
+  // the panel deliberately stays open and the switch flips in place -- same
+  // shape as a band pin, not a DNS change.
+  function setTorRouter(on) {
+    if (!root.bar || actionProc.running || on === root.torRouterEffective) return
+
+    root.pendingTorRouter = on ? "on" : "off"
+    actionProc.command = ["bash", "-c", "tor-gateway " + (on ? "on" : "off")]
     actionProc.running = true
   }
 
@@ -844,6 +877,14 @@ Panel {
   }
 
   Process {
+    id: torProc
+    stdout: StdioCollector {
+      waitForEnd: true
+      onStreamFinished: root.updateTorRouter(text)
+    }
+  }
+
+  Process {
     id: bandProc
     stdout: StdioCollector {
       waitForEnd: true
@@ -875,6 +916,13 @@ Panel {
       if (root.pendingDnsProvider !== "") {
         if (exitCode === 0) root.dnsProvider = root.pendingDnsProvider
         root.pendingDnsProvider = ""
+      }
+      if (root.pendingTorRouter !== "") {
+        if (exitCode === 0) root.torRouterOn = root.pendingTorRouter === "on"
+        root.pendingTorRouter = ""
+        // The panel stayed open through the toggle, so pull fresh state now
+        // instead of leaving a stale reading until the next poll tick.
+        root.refresh()
       }
       if (root.pendingBand !== "") {
         // A refused or reverted pin leaves bandSelected alone, so the pills
@@ -1001,8 +1049,8 @@ Panel {
           if (dy >= 0) return
         }
         if (dy !== 0) {
-          // Vertical order is header ⇄ band ⇄ DNS ⇄ wifi, with the band section
-          // dropping out of the chain entirely when it isn't on screen.
+          // Vertical order is header ⇄ band ⇄ DNS ⇄ Tor ⇄ wifi, with the band
+          // section dropping out of the chain entirely when it isn't on screen.
           if (root.focusSection === "header") {
             if (dy > 0) {
               if (root.canSelectBand) {
@@ -1029,8 +1077,8 @@ Panel {
             }
           } else if (root.focusSection === "dns") {
             // k from DNS moves up into the band section when it's on screen,
-            // then the disconnect button; otherwise stays put. j drops into the
-            // wifi list if there's anywhere to land.
+            // then the disconnect button; otherwise stays put. j drops to the
+            // Tor row, which is always on screen.
             if (dy < 0) {
               if (root.canSelectBand) {
                 root.focusSection = "band"
@@ -1039,15 +1087,23 @@ Panel {
                 root.focusSection = "header"
                 root.headerIndex = 0
               }
+            } else {
+              root.focusSection = "tor"
+            }
+          } else if (root.focusSection === "tor") {
+            // A single switch row: k climbs back to the DNS pills, j drops
+            // into the wifi list if there's anywhere to land.
+            if (dy < 0) {
+              root.focusSection = "dns"
             } else if (root.wifiNetworks.length > 0) {
               root.focusSection = "wifi"
               if (root.selectedIndex < 0) root.selectedIndex = 0
             }
           } else {  // wifi
-            // k from the top row escapes back up to the DNS row rather than
+            // k from the top row escapes back up to the Tor row rather than
             // wrapping around to the bottom of the list.
             if (dy < 0 && root.selectedIndex <= 0) {
-              root.focusSection = "dns"
+              root.focusSection = "tor"
               root.wifiActionFocused = false
             }
             else root.selectByDelta(dy)
@@ -1065,6 +1121,7 @@ Panel {
           if (root.focusSection === "header") root.activateHeader()
           else if (root.focusSection === "band") root.activateBand()
           else if (root.focusSection === "dns") root.activateDns()
+          else if (root.focusSection === "tor") root.setTorRouter(!root.torRouterEffective)
           else root.activateSelected()
         }
       }
@@ -1452,6 +1509,58 @@ Panel {
         }
       }
 
+      // Tor transparent routing. A whole-system reroute deserves its own row
+      // rather than a pill: the switch states it, the tooltip qualifies it.
+      PanelSeparator {
+        foreground: root.bar.foreground
+      }
+
+      Item {
+        width: parent.width
+        implicitHeight: Math.max(torHeader.implicitHeight, torSwitch.implicitHeight)
+
+        PanelSectionHeader {
+          id: torHeader
+          text: "TOR ROUTER"
+          foreground: root.bar.foreground
+          fontFamily: root.bar.fontFamily
+          anchors.left: parent.left
+          anchors.verticalCenter: parent.verticalCenter
+        }
+
+        // Sized off the header rather than the theme's control height so it
+        // reads as part of the header, and centred on the header's *glyphs*:
+        // PanelSectionHeader carries topPadding to protect Nerd Font
+        // overshoot, which pushes its text below its own box centre, so a
+        // plain verticalCenter would sit the switch visibly high.
+        ToggleSwitch {
+          id: torSwitch
+          trackHeight: Math.round(torHeader.font.pixelSize * 1.2)
+          cursorPad: Style.space(3)
+          anchors.right: parent.right
+          anchors.verticalCenter: torHeader.verticalCenter
+          anchors.verticalCenterOffset: Math.round(torHeader.topPadding / 2)
+          checked: root.torRouterEffective
+          busy: root.torRouterBusy
+          hasCursor: root.cursorActive && root.focusSection === "tor"
+          foreground: root.bar.foreground
+          onToggled: root.setTorRouter(!root.torRouterEffective)
+
+          onHovered: function(isHovered) {
+            if (!isHovered) return
+            root.cursorActive = true
+            root.focusSection = "tor"
+          }
+
+          PanelToolTip {
+            visible: torSwitch.containsMouse
+            text: root.torRouterEffective
+              ? "Stop routing traffic through Tor"
+              : "Route all traffic through Tor"
+            fontFamily: root.bar.fontFamily
+          }
+        }
+      }
 
       // Wi-Fi networks (only if a Wi-Fi station is available).
       PanelSeparator {

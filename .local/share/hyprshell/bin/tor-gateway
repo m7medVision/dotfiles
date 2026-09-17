@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# omarchy:summary=Show or toggle Tor transparent routing (tor-router)
+# omarchy:args=[on|off|toggle]
+# omarchy:examples=omarchy tor-gateway | omarchy tor-gateway toggle
+
+set -euo pipefail
+
+# tor-router layers iptables REDIRECT rules over the always-on tor.service
+# (SOCKS 9050 stays usable either way); the unit saves the pre-toggle ruleset
+# on start and restores it on stop, so start/stop is the whole toggle.
+SERVICE=tor-router.service
+SAVE_FILE=/var/tmp/tor-router.save
+
+current() {
+  systemctl is-active --quiet "$SERVICE" && echo on || echo off
+}
+
+# True when sudo would run this exact command without stopping for a password.
+# `sudo -l` on its own reports whether a command is permitted, which a blanket
+# %wheel rule answers yes to for everything; the long listing prints the
+# matched entry's tags, so !authenticate is the grant in
+# etc/sudoers.d/tor-gateway and nothing else.
+sudo_grants_passwordless() {
+  sudo -n -l -l "$@" 2>/dev/null | grep -q '!authenticate'
+}
+
+as_root() {
+  if (( EUID == 0 )); then
+    "$@"
+  elif sudo_grants_passwordless "$@"; then
+    sudo -n "$@"
+  else
+    pkexec "$@"
+  fi
+}
+
+recover_rules() {
+  # A start that died midway leaves the saved ruleset on disk plus whatever
+  # rules loaded before the failure -- and because the unit never activated,
+  # systemctl stop will not run ExecStop to undo it. Every later start then
+  # refuses on the stale save file. The wrapper's own stop restores the saved
+  # rules and removes the file, which is the exact cleanup needed.
+  [[ -f $SAVE_FILE ]] || return 0
+  as_root /usr/bin/tor-router stop >/dev/null 2>&1 || true
+}
+
+apply() {
+  local verb=$1 # start | stop
+
+  # systemctl is pinned to /usr/bin so the sudoers match is against the exact
+  # path the rule names; resolving through PATH could hand sudo /usr/sbin.
+  # The outcome is deliberately not fatal: a failed start still has to reach
+  # the settle check and rollback below, which set -e would otherwise skip.
+  as_root /usr/bin/systemctl "$verb" "$SERVICE" || true
+
+  # Judge the unit, not systemctl's exit code: the start job can complete
+  # with status 0 -- and is-active briefly reads "active" -- while ExecStart
+  # is failing underneath, and the packaged script exits with whatever its
+  # last iptables call returned. The rule script settles in milliseconds;
+  # half a second is far longer than it ever needs.
+  sleep 0.5
+  # is-active exits non-zero for inactive/failed units, which set -e would
+  # otherwise treat as a fatal error before the rollback below can run.
+  local state
+  state=$(systemctl is-active "$SERVICE" || true)
+
+  if [[ $verb == start && $state != active ]]; then
+    recover_rules
+    echo "tor-router.service is \"$state\" -- see: systemctl status $SERVICE" >&2
+    return 1
+  fi
+
+  if [[ $verb == stop ]]; then
+    # Covers a leftover from an earlier failed start: the unit sits failed
+    # with rules half-applied, which a plain stop never touches.
+    recover_rules
+  fi
+}
+
+case "${1:-}" in
+"")
+  current
+  ;;
+on)
+  apply start
+  ;;
+off)
+  apply stop
+  ;;
+toggle)
+  if systemctl is-active --quiet "$SERVICE"; then
+    apply stop
+  else
+    apply start
+  fi
+  ;;
+*)
+  echo "usage: tor-gateway [on|off|toggle]" >&2
+  exit 2
+  ;;
+esac

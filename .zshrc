@@ -6,6 +6,7 @@ fi
 
 export ZSH="$HOME/.oh-my-zsh"
 export PATH="$PATH:/home/mohammed/.dotnet/tools"
+export DISABLE_AUTO_TITLE='true'
 ZSH_THEME="robbyrussell"
 plugins=(git npm node docker zoxide bun uv dotnet command-not-found golang)
 source $ZSH/oh-my-zsh.sh

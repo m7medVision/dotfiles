@@ -1,7 +1,7 @@
 theme = dark:catppuccin-mocha.conf,light:catppuccin-latte.conf
 
-font-family = "JetBrainsMono Nerd Font Mono"
-font-family = "Noto Naskh Arabic"
+font-family = "GeistMono Nerd Font"
+font-family = "GeistMono Nerd Font"
 font-size = 8
 
 command = /usr/bin/zsh

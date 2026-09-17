@@ -45,6 +45,12 @@ hl.bind(mainMod .. " + TAB",        hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + SHIFT + TAB", hl.dsp.focus({ workspace = "e-1" }))
 hl.bind(mainMod .. " + CTRL + TAB", hl.dsp.focus({ workspace = "previous" }))
 
+-- Super+Ctrl+arrows: walk workspaces (existing-only, so it skips empty ones)
+hl.bind(mainMod .. " + CTRL + left",  hl.dsp.focus({ workspace = "e-1" }), { repeating = true, description = "Previous workspace" })
+hl.bind(mainMod .. " + CTRL + right", hl.dsp.focus({ workspace = "e+1" }), { repeating = true, description = "Next workspace" })
+hl.bind(mainMod .. " + CTRL + up",    hl.dsp.focus({ workspace = "e-1" }), { repeating = true, description = "Previous workspace" })
+hl.bind(mainMod .. " + CTRL + down",  hl.dsp.focus({ workspace = "e+1" }), { repeating = true, description = "Next workspace" })
+
 -- Scratchpad
 hl.bind(mainMod .. " + S",          hl.dsp.workspace.toggle_special("scratchpad"))
 hl.bind(mainMod .. " + SHIFT + S",  hl.dsp.window.move({ workspace = "special:scratchpad", follow = false }))
@@ -66,8 +72,9 @@ hl.bind(mainMod .. " + ALT + right", hl.dsp.window.move({ into_group = "r" }), {
 hl.bind(mainMod .. " + ALT + up",    hl.dsp.window.move({ into_group = "u" }), { description = "Move window into group (up)" })
 hl.bind(mainMod .. " + ALT + down",  hl.dsp.window.move({ into_group = "d" }), { description = "Move window into group (down)" })
 
-hl.bind(mainMod .. " + CTRL + left",  hl.dsp.group.prev(), { description = "Focus previous window in group" })
-hl.bind(mainMod .. " + CTRL + right", hl.dsp.group.next(), { description = "Focus next window in group" })
+-- Group tabs moved off CTRL+arrows (those now switch workspaces, below).
+hl.bind(mainMod .. " + CTRL + SHIFT + left",  hl.dsp.group.prev(), { description = "Focus previous window in group" })
+hl.bind(mainMod .. " + CTRL + SHIFT + right", hl.dsp.group.next(), { description = "Focus next window in group" })
 
 -- Resize mode: Super+R enters, arrows resize (Shift = bigger steps), Escape/Enter exits.
 hl.define_submap("resize", function()
@@ -98,6 +105,7 @@ hl.bind(mainMod .. " + CTRL + V", hl.dsp.exec_cmd("vicinae deeplink 'vicinae://l
 hl.bind(mainMod .. " + CTRL + E", hl.dsp.exec_cmd("rofimoji --selector wofi"),                              { description = "Emoji picker" })
 hl.bind(mainMod .. " + CTRL + A", hl.dsp.exec_cmd(shell_bin .. " shell toggle raw.audio"),                  { description = "Audio panel" })
 hl.bind(mainMod .. " + CTRL + B", hl.dsp.exec_cmd(shell_bin .. " shell toggle raw.bluetooth"),              { description = "Bluetooth panel" })
+hl.bind(mainMod .. " + CTRL + D", hl.dsp.exec_cmd(shell_bin .. " shell toggle hyprmoncfg"),              { description = "Display layout editor" })
 hl.bind(mainMod .. " + ALT + SPACE", hl.dsp.exec_cmd(shell_bin .. " shell toggle raw.menu '{\"menu\":\"root\"}'"), { description = "Command menu" })
 
 -- Utilities
@@ -139,3 +147,8 @@ hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true 
 -- Move/resize windows with mainMod + LMB/RMB and dragging
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+-- Voice-to-text (voxtype, compositor-driven; built-in hotkey disabled via `voxtype config set hotkey.enabled false`)
+-- SUPER+V works on laptop + external keyboards; toggle avoids hold/release wiring.
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("voxtype record toggle"), { description = "Voice-to-text toggle record" })
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("voxtype record cancel"), { description = "Voice-to-text cancel" })

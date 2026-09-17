@@ -2,7 +2,7 @@
   "version": 1,
   "bar": {
     "position": "top",
-    "transparent": true,
+    "transparent": false,
     "centerAnchor": "raw.clock",
     "layout": {
       "left": [
@@ -15,7 +15,17 @@
       ],
       "center": [
         {
-          "id": "raw.indicators"
+          "id": "raw.indicators",
+          "items": [
+            "Dictation",
+            "Reminder",
+            "NightLight",
+            "Dnd",
+            "StayAwake"
+          ]
+        },
+        {
+          "id": "raw.media"
         },
         {
           "id": "raw.clock",
@@ -31,6 +41,9 @@
           "id": "raw.tray"
         },
         {
+          "id": "hyprmoncfg"
+        },
+        {
           "id": "raw.bluetooth"
         },
         {
@@ -40,7 +53,7 @@
           "id": "raw.audio"
         },
         {
-          "id": "raw.monitor"
+          "id": "ai-usage"
         },
         {
           "id": "raw.power"
@@ -48,5 +61,9 @@
       ]
     }
   },
-  "plugins": []
+  "plugins": [
+    {
+      "id": "hyprmoncfg"
+    }
+  ]
 }

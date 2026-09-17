@@ -1,0 +1,137 @@
+#!/bin/bash
+
+# hyprmoncfg — multi-monitor profiles for Hyprland.
+#
+# The state and the switching logic live in the shell plugin (Service.qml);
+# this is the command-line face of it, plus the two things the shell cannot do
+# for itself: wiring the generated profile into hyprland.lua so a layout
+# survives a compositor restart, and taking that wiring back out.
+
+set -euo pipefail
+
+SHELL_IPC="$HOME/.local/share/hyprshell/bin/shell-ipc-run"
+CONFIG_DIR="$HOME/.config/hyprmoncfg"
+CURRENT_LUA="$CONFIG_DIR/current.lua"
+HYPR_LUA="$HOME/.config/hypr/hyprland.lua"
+BEGIN_MARK="-- >>> hyprmoncfg (managed) >>>"
+END_MARK="-- <<< hyprmoncfg (managed) <<<"
+
+fail() {
+  echo "hyprmoncfg: $*" >&2
+  exit 1
+}
+
+ipc() {
+  [[ -x $SHELL_IPC ]] || fail "shell-ipc-run not found; is hyprshell installed?"
+  "$SHELL_IPC" hyprmoncfg "$@"
+}
+
+usage() {
+  cat <<'USAGE'
+Usage: hyprmoncfg [command]
+
+  (no command)      Open the visual layout editor
+  list              List saved profiles; * marks the active one
+  status            Show the current displays, lid state, and matched profile
+  apply <name>      Switch to a saved profile now
+  save <name>       Save the current arrangement as a profile
+  remove <name>     Delete a saved profile
+  auto [on|off]     Re-run profile matching, or turn auto-switching on/off
+  manage            Load the active profile from hyprland.lua at startup
+  unmanage          Stop loading it, and stop auto-switching
+  reload            Re-read profiles and displays from disk
+
+Profiles live in ~/.config/hyprmoncfg/profiles and match on each display's
+make/model/serial, so they follow a screen between ports and docks.
+USAGE
+}
+
+manage() {
+  [[ -f $HYPR_LUA ]] || fail "no $HYPR_LUA to manage"
+  if grep -qFe "$BEGIN_MARK" "$HYPR_LUA"; then
+    echo "Already managed: $HYPR_LUA loads the active profile at startup."
+    return 0
+  fi
+
+  mkdir -p "$CONFIG_DIR"
+  [[ -f $CURRENT_LUA ]] || printf -- '-- Written by hyprmoncfg on the first apply.\n' >"$CURRENT_LUA"
+
+  cat >>"$HYPR_LUA" <<LUA
+
+$BEGIN_MARK
+-- Re-applies the monitor profile hyprmoncfg activated last, so a layout
+-- survives a compositor restart. Loaded last on purpose: it is meant to win
+-- over any static hl.monitor() call earlier in the config.
+-- Remove this block with: hyprmoncfg unmanage
+local hyprmoncfg_current = os.getenv("HOME") .. "/.config/hyprmoncfg/current.lua"
+local hyprmoncfg_handle = io.open(hyprmoncfg_current, "r")
+if hyprmoncfg_handle then
+    hyprmoncfg_handle:close()
+    local hyprmoncfg_ok, hyprmoncfg_err = pcall(dofile, hyprmoncfg_current)
+    if not hyprmoncfg_ok then
+        print("hyprmoncfg: " .. tostring(hyprmoncfg_err))
+    end
+end
+$END_MARK
+LUA
+
+  echo "Managed: $HYPR_LUA now loads ~/.config/hyprmoncfg/current.lua at startup."
+}
+
+unmanage() {
+  if [[ -f $HYPR_LUA ]] && grep -qFe "$BEGIN_MARK" "$HYPR_LUA"; then
+    # Drop the block, and the blank line that introduced it, so a
+    # manage/unmanage cycle leaves the file byte-identical.
+    awk -v begin="$BEGIN_MARK" -v end="$END_MARK" '
+      $0 == begin                { held = 0; skipping = 1; next }
+      $0 == end                  { skipping = 0; next }
+      skipping                   { next }
+      /^[[:space:]]*$/ && !held  { held = 1; next }
+      { if (held) { print ""; held = 0 } print }
+      END { if (held) print "" }
+    ' "$HYPR_LUA" >"$HYPR_LUA.hyprmoncfg.tmp"
+    mv "$HYPR_LUA.hyprmoncfg.tmp" "$HYPR_LUA"
+    echo "Unmanaged: removed the hyprmoncfg block from $HYPR_LUA."
+  else
+    echo "Not managed: no hyprmoncfg block in $HYPR_LUA."
+  fi
+  ipc setAuto false >/dev/null 2>&1 || true
+  echo "Auto-switching is off. Saved profiles are untouched in $CONFIG_DIR/profiles."
+}
+
+command="${1:-open}"
+[[ $# -gt 0 ]] && shift || true
+
+case "$command" in
+open)
+  [[ -x $SHELL_IPC ]] || fail "shell-ipc-run not found; is hyprshell installed?"
+  "$SHELL_IPC" shell toggle hyprmoncfg
+  ;;
+list) ipc list ;;
+status) ipc status ;;
+apply)
+  (( $# == 1 )) || fail "usage: hyprmoncfg apply <name>"
+  ipc apply "$1"
+  ;;
+save)
+  (( $# == 1 )) || fail "usage: hyprmoncfg save <name>"
+  ipc save "$1"
+  ;;
+remove | delete)
+  (( $# == 1 )) || fail "usage: hyprmoncfg remove <name>"
+  ipc remove "$1"
+  ;;
+auto)
+  case "${1:-}" in
+  "") ipc auto ;;
+  on | true | 1) ipc setAuto true ;;
+  off | false | 0) ipc setAuto false ;;
+  *) fail "usage: hyprmoncfg auto [on|off]" ;;
+  esac
+  ;;
+reload) ipc reload ;;
+manage) manage ;;
+unmanage) unmanage ;;
+-h | --help | help) usage ;;
+*) fail "unknown command: $command (try --help)" ;;
+esac

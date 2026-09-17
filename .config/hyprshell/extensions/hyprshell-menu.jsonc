@@ -1,0 +1,14 @@
+{
+  // Merged over ~/.local/share/hyprshell/default/hyprshell/hyprshell-menu.jsonc.
+  // Same format; see the comments at the top of that file.
+
+  // Setup → Displays. The shipped "Monitors" row opens monitors.lua in an
+  // editor, which is still the right answer for a fixed setup; this opens the
+  // hyprmoncfg editor, which is the right answer for a laptop that docks.
+  "setup.displays": {
+    "icon": "󰍹",
+    "label": "Displays",
+    "aliases": ["screens", "layout", "hyprmoncfg"],
+    "action": "\"$HOME/.config/hyprshell/plugins/hyprmoncfg/bin/hyprmoncfg\""
+  },
+}

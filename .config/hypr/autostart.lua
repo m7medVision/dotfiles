@@ -9,6 +9,18 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("powerprofiles-apply")     -- battery optimization
     hl.exec_cmd("xsettingsd")              -- XSettings manager so XWayland GTK3 apps hot-reload theme
 
+    -- Voice-to-text daemon, started here rather than by its systemd unit:
+    -- voxtype.service is WantedBy=graphical-session.target, and this session
+    -- (gdm -> start-hyprland, no uwsm) never activates that target, so the
+    -- enabled unit never actually fired at login. Disabled now to avoid a
+    -- second daemon fighting over the socket if that ever changes.
+    -- systemd-cat keeps the daemon + OSD log in the journal, since the
+    -- compositor's stdout is not somewhere you can go read it.
+    --   config: voxtype configure  (~/.config/voxtype/config.toml)
+    --   keys:   Super+V toggles, Super+Shift+V cancels (see bindings.lua)
+    --   logs:   journalctl --user -t voxtype -f
+    hl.exec_cmd("systemd-cat -t voxtype -- voxtype daemon")
+
     -- Bar + panels + tray + polkit agent, all inside one Quickshell process.
     -- Supervised: the launcher relaunches it on a crash and tees its log to
     -- the journal.
