@@ -69,3 +69,6 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # strix
 export PATH=/home/mohammed/.strix/bin:$PATH
+
+
+alias cc-work='CLAUDE_CONFIG_DIR="$HOME/.claude-work" claude'
