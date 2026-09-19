@@ -4,16 +4,13 @@
 -- ~/.local/state/hyprshell/current/theme/neovim.lua; we import that spec directly instead
 -- of hand-maintaining a second copy of the theme -> colorscheme mapping.
 --
--- Live reload of already-open sessions is handled by aether.nvim's own hotreload watcher
--- (aether.nvim is already the plugin some hyprshell themes render directly), which
--- fs_event-watches ~/.local/state/omarchy/current/theme/neovim.lua for exactly this and
--- asks lazy.nvim to load whichever plugin now owns the named colorscheme. hyprshell has no
--- `omarchy` namespace, so a one-time symlink makes its real state visible at the path
--- aether already watches.
+-- Live reload of already-open sessions is handled at the bottom of this file: a
+-- libuv fs_event watcher on the theme directory re-applies the colorscheme
+-- shortly after `theme-set` rewrites the spec, so no restart is needed.
 local state_dir = vim.fn.expand '~/.local/state'
 local hyprshell_dir = state_dir .. '/hyprshell'
-local omarchy_link = state_dir .. '/omarchy'
-if vim.fn.isdirectory(hyprshell_dir) == 1 and vim.fn.getftype(omarchy_link) == '' then vim.uv.fs_symlink(hyprshell_dir, omarchy_link) end
+local theme_dir = hyprshell_dir .. '/current/theme'
+local theme_file = theme_dir .. '/neovim.lua'
 
 local fallback_spec = { { 'ellisonleao/gruvbox.nvim' }, { 'LazyVim/LazyVim', opts = { colorscheme = 'gruvbox' } } }
 
@@ -24,7 +21,7 @@ local function read_spec(file)
   return spec
 end
 
-local current_spec = read_spec(hyprshell_dir .. '/current/theme/neovim.lua') or fallback_spec
+local current_spec = read_spec(theme_file) or fallback_spec
 local plugins = { current_spec[1], current_spec[2], { 'bjarneo/aether.nvim', opts = {} } }
 
 -- aether's live reload only asks lazy.nvim to *load* the plugin behind a colorscheme
@@ -45,5 +42,67 @@ for _, glob in ipairs { '~/.local/share/hyprshell/themes/*/neovim.lua', '~/.conf
     end
   end
 end
+
+-- ── Live reload: watch the real spec, re-apply colorscheme on change ──
+-- First entry carrying `opts.colorscheme` wins (matches every bundled theme:
+-- a colorscheme plugin plus the LazyVim entry naming it).
+local function spec_colorscheme(spec)
+  if type(spec) ~= 'table' then return nil end
+  for _, entry in ipairs(spec) do
+    if type(entry) == 'table' and type(entry.opts) == 'table' then
+      local name = entry.opts.colorscheme
+      if type(name) == 'string' and name ~= '' then return name, entry.opts.background end
+    end
+  end
+  return nil
+end
+
+local last_applied = spec_colorscheme(current_spec)
+
+local reload_timer = nil
+local function schedule_reload()
+  if reload_timer then
+    pcall(function()
+      reload_timer:stop()
+      reload_timer:close()
+    end)
+    reload_timer = nil
+  end
+  reload_timer = vim.defer_fn(function()
+    reload_timer = nil
+    local name, background = spec_colorscheme(read_spec(theme_file))
+    if not name or name == last_applied then return end
+    last_applied = name
+    if background then vim.o.background = background end
+    vim.schedule(function()
+      local ok, err = pcall(vim.cmd, 'colorscheme ' .. name)
+      if not ok then vim.notify('theme-sync: cannot apply ' .. name .. ': ' .. tostring(err), vim.log.levels.WARN) end
+    end)
+  end, 1500)
+end
+
+local function start_watcher()
+  local uv = vim.uv or vim.loop
+  if not (uv and uv.new_fs_event) then return end
+  if vim.fn.isdirectory(theme_dir) ~= 1 then return end
+  local handle = uv.new_fs_event()
+  if not handle then return end
+  -- Pinned on _G: an unreferenced uv handle is garbage-collected and the
+  -- watch dies with it.
+  _G._hyprshell_theme_watch = handle
+  local ok = pcall(handle.start, handle, theme_dir, {}, vim.schedule_wrap(function(err, fname)
+    if err then return end
+    if fname == nil or fname == 'neovim.lua' then schedule_reload() end
+  end))
+  if not ok then
+    pcall(function()
+      handle:stop()
+      handle:close()
+    end)
+    _G._hyprshell_theme_watch = nil
+  end
+end
+
+pcall(start_watcher)
 
 return plugins
