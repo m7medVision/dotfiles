@@ -29,7 +29,8 @@
         },
         {
           "id": "raw.clock",
-          "format": "ddd d MMM  HH:mm",
+          "format": "ddd d MMM  h:mm AP",
+          "verticalFormat": "h\n—\nmm\nAP",
           "formatAlt": "d MMMM 'W'ww yyyy"
         },
         {
