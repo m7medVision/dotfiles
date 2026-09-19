@@ -120,5 +120,5 @@ Saved profiles are left alone.
 
 ## Prior art
 
-Modelled on [omarchy-hyprmoncfg](https://github.com/crmne/omarchy-hyprmoncfg)
-by crmne, rebuilt against hyprshell's plugin API and Hyprland's Lua config.
+Modelled on the monitor-profile concept by crmne, rebuilt against hyprshell's
+plugin API and Hyprland's Lua config.
