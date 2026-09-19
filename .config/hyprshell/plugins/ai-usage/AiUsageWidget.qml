@@ -3,53 +3,46 @@ import Quickshell
 import Quickshell.Io
 import qs.Ui
 import qs.Commons
+
+// AI plan usage in the bar, backed by the `ai-usagebar` CLI. Click opens a
+// popup with per-provider detail; right-click on the bar icon or the
+// refresh button in the popup header re-run the CLI immediately instead of
+// waiting for the timer.
 BarWidget {
   id: root
   moduleName: "ai-usage"
 
-  implicitWidth: button.implicitWidth
-  implicitHeight: button.implicitHeight
-
-  // ── Panel lifecycle (makes this discoverable as a panel widget) ──
-  property bool opened: false
-  function open() { opened = true }
-  function close() { opened = false }
-  function toggle() { opened = !opened }
+  // ── Panel lifecycle (bar host's contract for popout coordination) ──
+  property bool popupOpen: false
+  readonly property bool opened: popupOpen
+  function open() { popupOpen = true }
+  function close() { popupOpen = false }
+  function toggle() { popupOpen = !popupOpen }
 
   // ── State ──────────────────────────────────────────────────────
   property var entries: []
   property var primaryEntry: null
-  property string barText: "—"
   property bool stale: false
-  property int activeTab: 0
+  property string activeTabId: ""
 
   // ── Settings ───────────────────────────────────────────────────
   readonly property int refreshMs: setting("refresh_minutes", 5) * 60 * 1000
-  readonly property string vendor: setting("vendor", "auto")
+  readonly property string vendorSetting: setting("vendor", "auto")
   readonly property bool showCountdown: setting("show_countdown", true)
   readonly property bool showIcon: setting("show_icon", true)
 
+  // ── Icons — JetBrainsMono Nerd Font / Material Design Icons subset ──
+  readonly property string aiGlyph: "󰚩"      // md-robot
+  readonly property string refreshGlyph: "󰑐" // md-refresh
+  readonly property string alertGlyph: "󰗖"   // md-alert_circle_outline
+
   // ── Helpers ────────────────────────────────────────────────────
 
-  function severityRank(s) {
-    switch (s) {
-      case "critical": return 3; case "high": return 2
-      case "mid": return 1; case "low": return 0; default: return -1
-    }
-  }
-
-  function severityColor(s) {
-    switch (s) {
-      case "critical": return Color.urgent; case "high": return "#e0a040"
-      case "mid": return "#c0c040"; default: return Color.foreground
-    }
-  }
-
-  function iconFor(id) {
-    var icons = { "anthropic": "★", "openai": "◉", "zai": "⚡", "openrouter": "◇",
-      "deepseek": "🐟", "kimi": "🌙", "grok": "✕", "antigravity": "✨",
-      "cursor": "↖", "kiro": "👻" }
-    return icons[id] || "🧠"
+  // The kit's own idiom is binary, not a traffic-light gradient: a meter
+  // stays in bar.foreground until it actually needs attention, then it's
+  // bar.urgent (see the battery meter and network's packet-loss color).
+  function severityColor(sev) {
+    return (sev === "high" || sev === "critical") ? root.bar.urgent : root.bar.foreground
   }
 
   function formatCountdown(resetAt) {
@@ -61,12 +54,19 @@ BarWidget {
     return h > 0 ? h + "h " + m + "m" : m + "m"
   }
 
+  function severityRank(s) {
+    switch (s) {
+      case "critical": return 3; case "high": return 2
+      case "mid": return 1; case "low": return 0; default: return -1
+    }
+  }
+
   function pickBusiest() {
     var candidates = entries.filter(function(e) { return e.status !== "error" })
     if (candidates.length === 0) return null
-    if (vendor !== "auto") {
+    if (vendorSetting !== "auto") {
       for (var i = 0; i < candidates.length; i++)
-        if (candidates[i].id === vendor) return candidates[i]
+        if (candidates[i].id === vendorSetting) return candidates[i]
     }
     candidates.sort(function(a, b) {
       var sa = severityRank(a.metrics && a.metrics[0] ? a.metrics[0].severity : "low")
@@ -80,18 +80,13 @@ BarWidget {
 
   function updateDisplay() {
     primaryEntry = pickBusiest()
-    if (primaryEntry) {
-      var m = primaryEntry.metrics && primaryEntry.metrics[0]
-      barText = (showIcon ? iconFor(primaryEntry.id) + " " : "") + (m ? m.percent + "%" : "—")
-      if (showCountdown && m) barText += " " + formatCountdown(m.reset_at)
-    } else {
-      barText = "—"
-    }
-    if (activeTab > entries.length) activeTab = 0
+    // A provider that dropped out of the last payload (renamed/removed
+    // from config) shouldn't leave the detail tab stuck on a dead id.
+    if (activeTabId !== "" && !entries.some(function(e) { return e.id === activeTabId }))
+      activeTabId = ""
   }
 
-  // ── Refresh ───────────────────────────────────────────────────
-
+  // ── Refresh ────────────────────────────────────────────────────
   function refresh() { if (!proc.running) proc.running = true }
 
   Process {
@@ -111,127 +106,398 @@ BarWidget {
   Timer { id: stallTimer; interval: 15000; onTriggered: { proc.running = false; refreshTimer.restart() } }
   Component.onCompleted: root.refresh()
 
-  // ── Bar button ─────────────────────────────────────────────────
+  // ── Bar content ────────────────────────────────────────────────
+  readonly property var primaryMetric: primaryEntry && primaryEntry.metrics && primaryEntry.metrics[0] ? primaryEntry.metrics[0] : null
+  readonly property string barPercentText: primaryMetric ? primaryMetric.percent + "%" : "—"
+  readonly property string barCountdownText: showCountdown && primaryMetric ? formatCountdown(primaryMetric.reset_at) : ""
+  readonly property color barGlyphColor: primaryMetric ? severityColor(primaryMetric.severity) : root.bar.barForeground
+  readonly property string tooltipText: {
+    if (!primaryEntry) return "AI Usage — right-click to refresh"
+    var t = (primaryEntry.display_name || primaryEntry.id) + " — " + barPercentText
+    if (primaryEntry.plan) t += " · " + primaryEntry.plan
+    if (barCountdownText) t += " · resets in " + barCountdownText
+    return t + " · right-click to refresh"
+  }
 
-  WidgetButton {
-    id: button
+  implicitWidth: root.vertical ? root.barSize : barRow.implicitWidth + Style.space(14)
+  implicitHeight: root.vertical ? barColumn.implicitHeight + Style.space(10) : root.barSize
+
+  Row {
+    id: barRow
+    visible: !root.vertical
+    anchors.centerIn: parent
+    spacing: Style.space(5)
+
+    OpticalGlyph {
+      visible: root.showIcon
+      anchors.verticalCenter: parent.verticalCenter
+      text: root.aiGlyph
+      color: root.barGlyphColor
+      fontFamily: root.bar.fontFamily
+      fontSize: Style.font.body
+    }
+
+    Text {
+      anchors.verticalCenter: parent.verticalCenter
+      text: root.barPercentText + (root.barCountdownText ? "  " + root.barCountdownText : "")
+      color: root.bar.barForeground
+      font.family: root.bar.fontFamily
+      font.pixelSize: Style.font.body
+
+      Behavior on color {
+        enabled: !root.bar || root.bar.foregroundAnimationEnabled
+        ColorAnimation { duration: 160 }
+      }
+    }
+  }
+
+  Column {
+    id: barColumn
+    visible: root.vertical
+    anchors.centerIn: parent
+    spacing: Style.space(2)
+
+    OpticalGlyph {
+      visible: root.showIcon
+      anchors.horizontalCenter: parent.horizontalCenter
+      text: root.aiGlyph
+      color: root.barGlyphColor
+      fontFamily: root.bar.fontFamily
+      fontSize: Style.font.body
+    }
+
+    Text {
+      anchors.horizontalCenter: parent.horizontalCenter
+      text: root.barPercentText
+      color: root.bar.barForeground
+      font.family: root.bar.fontFamily
+      font.pixelSize: Style.font.bodySmall
+    }
+  }
+
+  MouseArea {
     anchors.fill: parent
-    bar: root.bar
-    text: root.barText
-    fontSize: Style.font.caption
-    horizontalMargin: 6
-    tooltipText: "AI Usage — click for details"
-    onPressed: function(b) { if (b !== Qt.RightButton) root.toggle() }
+    hoverEnabled: true
+    cursorShape: Qt.PointingHandCursor
+    acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+    onClicked: function(mouse) {
+      if (mouse.button === Qt.RightButton) root.refresh()
+      else root.toggle()
+    }
+    onEntered: root.bar.showTooltip(root, root.tooltipText)
+    onExited: root.bar.hideTooltip(root)
   }
 
   // ── Popup panel ────────────────────────────────────────────────
-
-  KeyboardPanel {
-    id: panel
-    anchorItem: button
-    owner: root
+  PopupCard {
+    id: popup
+    anchorItem: root
     bar: root.bar
-    open: root.opened
-    contentWidth: panel.fittedContentWidth(Style.space(360))
-    contentHeight: panel.fittedContentHeight(panelContent.implicitHeight, Style.space(560))
+    owner: root
+    open: root.popupOpen
+    contentWidth: popup.fittedContentWidth(Style.space(340))
+    contentHeight: popup.fittedContentHeight(panelContent.implicitHeight, Style.space(520))
 
     Column {
       id: panelContent
       width: parent.width
       spacing: Style.spacing.md
 
-      // ── Tab bar ──────────────────────────────────────────
-      Row {
-        width: parent.width; spacing: Style.spacing.xs
+      PanelHero {
+        width: parent.width
+        foreground: root.bar.foreground
+        title: "AI Usage"
+        meta: root.stale ? "showing stale data" : ""
 
-        Repeater {
-          model: [{id:"",label:"Overview"}].concat(
-            root.entries.filter(function(e){return e.status!=="error"}).map(function(e,i){
-              return {id:e.id,label:root.iconFor(e.id)+" "+(e.short_name||e.id),idx:i}
-            })
-          )
-          delegate: Rectangle {
-            height: tl.implicitHeight + Style.space(8)
-            width: Math.min(tl.implicitWidth + Style.space(16), Style.space(100))
-            radius: Style.cornerRadius > 0 ? Style.cornerRadius : 4
-            color: root.activeTab === index ? Style.selectedFillFor(Color.foreground, Color.accent, Color.urgent) : "transparent"
-            border { width: 1; color: root.activeTab === index ? Style.selectedBorderFor(Color.foreground, Color.accent, Color.urgent) : Style.normalBorderFor(Color.foreground, Color.accent, Color.urgent) }
+        iconComponent: Component {
+          BorderSurface {
+            width: Style.space(32)
+            height: Style.space(32)
+            radius: Style.spacing.labelGap
+            color: Style.normalFillFor(root.bar.foreground, Color.accent)
+            borderSpec: Border.controlSpec("normal", root.bar.foreground, Color.accent)
+
             Text {
-              id: tl; anchors.centerIn: parent
-              text: modelData.label; color: Color.foreground
-              font.family: Style.font.family; font.pixelSize: Style.font.caption; font.bold: root.activeTab === index
-              elide: Text.ElideRight
+              anchors.centerIn: parent
+              text: root.aiGlyph
+              color: root.bar.foreground
+              font.family: root.bar.fontFamily
+              font.pixelSize: Style.font.iconLarge
             }
-            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.activeTab = index }
+          }
+        }
+
+        trailingControl: Component {
+          Button {
+            iconText: root.refreshGlyph
+            tooltipText: proc.running ? "Refreshing…" : "Refresh"
+            foreground: root.bar.foreground
+            horizontalPadding: Style.spacing.sm
+            verticalPadding: Style.spacing.sm
+            iconSpinning: proc.running
+            enabled: !proc.running
+            opacity: enabled ? 1.0 : 0.55
+            onClicked: root.refresh()
           }
         }
       }
 
-      PanelSeparator { foreground: Color.foreground }
+      PanelSeparator { foreground: root.bar.foreground }
 
-      // ── Overview ───────────────────────────────────────
+      ButtonGroup {
+        id: tabs
+        width: parent.width
+        value: root.activeTabId
+        foreground: root.bar.foreground
+        background: "transparent"
+        accent: Color.accent
+        fontSize: Style.font.bodySmall
+        options: [{ value: "", label: "Overview", icon: root.aiGlyph }].concat(
+          root.entries.filter(function(e) { return e.status !== "error" }).map(function(e) {
+            return { value: e.id, label: e.short_name || e.id, icon: root.aiGlyph, tooltip: e.display_name || e.id }
+          })
+        )
+        onChanged: function(v) { root.activeTabId = v }
+      }
+
+      // ── Overview ─────────────────────────────────────────────
       Column {
-        visible: root.activeTab === 0; width: parent.width; spacing: Style.spacing.sm
+        visible: root.activeTabId === ""
+        width: parent.width
+        spacing: Style.spacing.xs
 
         Repeater {
           model: root.entries
-          delegate: Column {
-            width: parent.width; spacing: Style.spacing.xxs
-            Row {
-              width: parent.width; spacing: Style.spacing.sm
-              Text { text: root.iconFor(modelData.id) + " " + (modelData.display_name||modelData.id); color: Color.foreground; font.family: Style.font.family; font.pixelSize: Style.font.body; font.bold: true; width: Style.space(130); elide: Text.ElideRight }
-              Item { width: Style.spacing.md; height: 1 }
-              Text { text: modelData.status==="error" ? "⚠ error" : (modelData.metrics&&modelData.metrics[0]?modelData.metrics[0].percent+"%":"—"); color: modelData.status==="error" ? Color.urgent : severityColor(modelData.metrics&&modelData.metrics[0]?modelData.metrics[0].severity:"low"); font.family: Style.font.family; font.pixelSize: Style.font.body; font.bold: true }
-              Text { visible: modelData.status!=="error"&&modelData.metrics&&modelData.metrics[0]; text: modelData.metrics&&modelData.metrics[0]?root.formatCountdown(modelData.metrics[0].reset_at):""; color: Qt.darker(Color.foreground,1.3); font.family: Style.font.family; font.pixelSize: Style.font.bodySmall }
-            }
-            Text { visible: modelData.plan&&modelData.plan.length>0&&modelData.status!=="error"; text: modelData.plan||""; color: Qt.darker(Color.foreground,1.4); font.family: Style.font.family; font.pixelSize: Style.font.caption; leftPadding: Style.space(18) }
-            Text { visible: modelData.status==="error"&&modelData.error; text: modelData.error||""; color: Color.urgent; font.family: Style.font.family; font.pixelSize: Style.font.caption; leftPadding: Style.space(18); width: parent.width-Style.space(18); wrapMode: Text.WordWrap; elide: Text.ElideRight; maximumLineCount: 2 }
-            Repeater {
-              model: modelData.metrics ? modelData.metrics.slice(1) : []
-              delegate: Row {
-                leftPadding: Style.space(18); spacing: Style.spacing.sm
-                Text { text: modelData.label||""; color: Qt.darker(Color.foreground,1.4); font.family: Style.font.family; font.pixelSize: Style.font.caption; width: Style.space(90); elide: Text.ElideRight }
-                Text { text: modelData.percent+"%"; color: severityColor(modelData.severity); font.family: Style.font.family; font.pixelSize: Style.font.caption; font.bold: true }
-                Text { text: root.formatCountdown(modelData.reset_at); color: Qt.darker(Color.foreground,1.3); font.family: Style.font.family; font.pixelSize: Style.font.caption }
+
+          delegate: BorderSurface {
+            id: providerRow
+            required property var modelData
+            readonly property var metric: modelData.metrics && modelData.metrics[0] ? modelData.metrics[0] : null
+            readonly property bool isError: modelData.status === "error"
+
+            width: parent.width
+            height: rowInner.implicitHeight + Style.space(10)
+            radius: Style.spacing.labelGap
+            color: rowMouse.containsMouse && !isError ? Style.hoverFillFor(root.bar.foreground, Color.accent) : "transparent"
+
+            Column {
+              id: rowInner
+              anchors.left: parent.left
+              anchors.right: parent.right
+              anchors.verticalCenter: parent.verticalCenter
+              anchors.margins: Style.space(6)
+              spacing: Style.spacing.xxs
+
+              Row {
+                width: parent.width
+                spacing: Style.space(8)
+
+                Text {
+                  anchors.verticalCenter: parent.verticalCenter
+                  text: providerRow.isError ? root.alertGlyph : root.aiGlyph
+                  color: providerRow.isError ? root.bar.urgent : root.bar.foreground
+                  font.family: root.bar.fontFamily
+                  font.pixelSize: Style.font.body
+                  width: Style.space(18)
+                  horizontalAlignment: Text.AlignHCenter
+                }
+
+                Text {
+                  anchors.verticalCenter: parent.verticalCenter
+                  text: modelData.display_name || modelData.id
+                  color: root.bar.foreground
+                  font.family: root.bar.fontFamily
+                  font.pixelSize: Style.font.body
+                  font.bold: true
+                  elide: Text.ElideRight
+                  width: parent.width - Style.space(18) - Style.space(8) - trailer.implicitWidth - Style.space(8)
+                }
+
+                Row {
+                  id: trailer
+                  anchors.verticalCenter: parent.verticalCenter
+                  spacing: Style.space(8)
+
+                  Text {
+                    visible: !providerRow.isError
+                    text: providerRow.metric ? providerRow.metric.percent + "%" : "—"
+                    color: providerRow.metric ? root.severityColor(providerRow.metric.severity) : root.bar.foreground
+                    font.family: root.bar.fontFamily
+                    font.pixelSize: Style.font.body
+                    font.bold: true
+                  }
+
+                  Text {
+                    visible: !providerRow.isError && providerRow.metric && !!providerRow.metric.reset_at
+                    text: providerRow.metric ? root.formatCountdown(providerRow.metric.reset_at) : ""
+                    color: Qt.darker(root.bar.foreground, 1.3)
+                    font.family: root.bar.fontFamily
+                    font.pixelSize: Style.font.bodySmall
+                  }
+
+                  Text {
+                    visible: providerRow.isError
+                    text: "error"
+                    color: root.bar.urgent
+                    font.family: root.bar.fontFamily
+                    font.pixelSize: Style.font.bodySmall
+                    font.bold: true
+                  }
+                }
+              }
+
+              Text {
+                visible: !providerRow.isError && !!modelData.plan
+                text: modelData.plan || ""
+                color: Qt.darker(root.bar.foreground, 1.4)
+                font.family: root.bar.fontFamily
+                font.pixelSize: Style.font.caption
+                leftPadding: Style.space(26)
+              }
+
+              Text {
+                visible: providerRow.isError && !!modelData.error
+                text: modelData.error || ""
+                color: root.bar.urgent
+                font.family: root.bar.fontFamily
+                font.pixelSize: Style.font.caption
+                leftPadding: Style.space(26)
+                width: parent.width - Style.space(26)
+                wrapMode: Text.WordWrap
+                elide: Text.ElideRight
+                maximumLineCount: 2
               }
             }
-            Item { width: 1; height: Style.spacing.sm; visible: index < root.entries.length-1 }
+
+            MouseArea {
+              id: rowMouse
+              anchors.fill: parent
+              hoverEnabled: true
+              enabled: !providerRow.isError
+              cursorShape: Qt.PointingHandCursor
+              onClicked: root.activeTabId = modelData.id
+            }
           }
         }
-        Text { visible: root.entries.length===0; text: "No providers configured.\n\nRun ai-usagebar to set up\nproviders in\n~/.config/ai-usagebar/config.toml"; color: Qt.darker(Color.foreground,1.3); font.family: Style.font.family; font.pixelSize: Style.font.bodySmall; width: parent.width; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter }
+
+        Text {
+          visible: root.entries.length === 0
+          width: parent.width
+          horizontalAlignment: Text.AlignHCenter
+          wrapMode: Text.WordWrap
+          text: "No providers configured.\n\nRun ai-usagebar to set up providers in\n~/.config/ai-usagebar/config.toml"
+          color: Qt.darker(root.bar.foreground, 1.3)
+          font.family: root.bar.fontFamily
+          font.pixelSize: Style.font.bodySmall
+        }
       }
 
-      // ── Per-provider detail ──────────────────────────────
+      // ── Per-provider detail ──────────────────────────────────
       Column {
-        visible: root.activeTab > 0; width: parent.width; spacing: Style.spacing.md
+        visible: root.activeTabId !== ""
+        width: parent.width
+        spacing: Style.spacing.md
 
         Repeater {
-          model: root.entries.filter(function(e){return e.status!=="error"})
+          model: root.entries.filter(function(e) { return e.status !== "error" })
+
           delegate: Column {
-            visible: root.activeTab === index+1; width: parent.width; spacing: Style.spacing.sm
+            required property var modelData
+            visible: modelData.id === root.activeTabId
+            width: parent.width
+            spacing: Style.spacing.sm
+
             PanelHero {
-              width: parent.width; foreground: Color.foreground; fontFamily: Style.font.family
-              title: root.iconFor(modelData.id)+" "+(modelData.display_name||modelData.id)
-              meta: modelData.plan||""; detail: modelData.status==="ready"?"active":modelData.status
+              width: parent.width
+              foreground: root.bar.foreground
+              title: modelData.display_name || modelData.id
+              meta: modelData.plan || ""
+              detail: modelData.status === "ready" ? "active" : modelData.status
+
+              iconComponent: Component {
+                BorderSurface {
+                  width: Style.space(28)
+                  height: Style.space(28)
+                  radius: Style.spacing.labelGap
+                  color: Style.normalFillFor(root.bar.foreground, Color.accent)
+                  borderSpec: Border.controlSpec("normal", root.bar.foreground, Color.accent)
+
+                  Text {
+                    anchors.centerIn: parent
+                    text: root.aiGlyph
+                    color: root.bar.foreground
+                    font.family: root.bar.fontFamily
+                    font.pixelSize: Style.font.body
+                  }
+                }
+              }
             }
-            PanelSeparator { foreground: Color.foreground }
+
+            PanelSeparator { foreground: root.bar.foreground }
+
             Repeater {
-              model: modelData.metrics||[]
+              model: modelData.metrics || []
+
               delegate: Column {
-                width: parent.width; spacing: Style.spacing.xxs
+                required property var modelData
+                width: parent.width
+                spacing: Style.spacing.xxs
+
                 Row {
-                  width: parent.width; spacing: Style.spacing.sm
-                  Text { text: modelData.label||"Metric"; color: Color.foreground; font.family: Style.font.family; font.pixelSize: Style.font.body; width: Style.space(130); elide: Text.ElideRight }
-                  Text { text: modelData.percent+"%"; color: severityColor(modelData.severity); font.family: Style.font.family; font.pixelSize: Style.font.body; font.bold: true }
-                  Text { text: root.formatCountdown(modelData.reset_at); color: Qt.darker(Color.foreground,1.3); font.family: Style.font.family; font.pixelSize: Style.font.bodySmall }
+                  width: parent.width
+                  spacing: Style.space(8)
+
+                  Text {
+                    text: modelData.label || "Usage"
+                    color: root.bar.foreground
+                    font.family: root.bar.fontFamily
+                    font.pixelSize: Style.font.body
+                    width: parent.width - Style.space(110)
+                    elide: Text.ElideRight
+                  }
+
+                  Text {
+                    text: modelData.percent + "%"
+                    color: root.severityColor(modelData.severity)
+                    font.family: root.bar.fontFamily
+                    font.pixelSize: Style.font.body
+                    font.bold: true
+                  }
+
+                  Text {
+                    text: root.formatCountdown(modelData.reset_at)
+                    color: Qt.darker(root.bar.foreground, 1.3)
+                    font.family: root.bar.fontFamily
+                    font.pixelSize: Style.font.bodySmall
+                  }
                 }
-                Rectangle {
-                  width: parent.width; height: Style.space(4); radius: 2
-                  color: Qt.rgba(Color.foreground.r,Color.foreground.g,Color.foreground.b,0.08)
-                  Rectangle { width: Math.max(0,Math.min(parent.width,parent.width*modelData.percent/100)); height: parent.height; radius: 2; color: severityColor(modelData.severity) }
+
+                BorderSurface {
+                  width: parent.width
+                  height: Style.space(4)
+                  radius: Style.space(2)
+                  color: Qt.rgba(root.bar.foreground.r, root.bar.foreground.g, root.bar.foreground.b, 0.12)
+
+                  Rectangle {
+                    width: Math.max(0, Math.min(parent.width, parent.width * modelData.percent / 100))
+                    height: parent.height
+                    radius: parent.radius
+                    color: root.severityColor(modelData.severity)
+
+                    Behavior on width { NumberAnimation { duration: 220; easing.type: Easing.OutCubic } }
+                  }
                 }
-                Text { text: modelData.detail||""; visible: modelData.detail&&modelData.detail.length>0; color: Qt.darker(Color.foreground,1.4); font.family: Style.font.family; font.pixelSize: Style.font.caption; width: parent.width; wrapMode: Text.WordWrap }
-                Item { width: 1; height: Style.spacing.sm; visible: index < (modelData.metrics?modelData.metrics.length-1:0) }
+
+                Text {
+                  visible: !!modelData.detail && modelData.detail.length > 0
+                  text: modelData.detail || ""
+                  color: Qt.darker(root.bar.foreground, 1.4)
+                  font.family: root.bar.fontFamily
+                  font.pixelSize: Style.font.caption
+                  width: parent.width
+                  wrapMode: Text.WordWrap
+                }
               }
             }
           }
