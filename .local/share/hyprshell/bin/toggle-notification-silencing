@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# omarchy:summary=Toggle notification do-not-disturb mode
-
-state=$(shell-ipc-run notifications toggleDnd 2>/dev/null || echo "")
-shell-ipc-run -q omarchy.indicators refresh
